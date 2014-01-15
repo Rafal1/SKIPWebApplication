@@ -3,7 +3,7 @@ package SKIPWebApplication;
 public class SkipapplicationService {
 
 	public static Boolean fieldNamesIfConstains(String key) {
-		String[] fieldNames = SkipapplicationUI.getFieldnames();
+		String[] fieldNames = DriversView.getFieldnames();
 		for (String names : fieldNames) {
 			if (names.equals(key)) {
 				return true;

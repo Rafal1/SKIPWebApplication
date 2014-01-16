@@ -11,7 +11,7 @@ public class LoginView extends VerticalLayout implements View {
     private TextField LOGIN = new TextField("Login");
     private PasswordField PASSWORD = new PasswordField("Hasło");
 
-    //!!! TODO provide data from server
+    //TODO provide data from server
     private String ExLo = "x";
     private String ExPa = "xx";
 

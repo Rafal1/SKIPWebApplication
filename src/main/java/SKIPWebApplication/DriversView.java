@@ -74,10 +74,9 @@ public class DriversView extends VerticalLayout implements View {
 
         VerticalLayout leftLayout = new VerticalLayout();
         splitPanel.addComponent(leftLayout);
-        splitPanel.addComponent(rightLayout); // zmiana z eitorLayout na
-        // rightLayout
-        MenuBar testMenu = createTestMenu();
-        leftLayout.addComponent(testMenu);
+        splitPanel.addComponent(rightLayout);
+//        MenuBar testMenu = createTestMenu();
+//        leftLayout.addComponent(testMenu);
         leftLayout.addComponent(driversList);
         HorizontalLayout bottomLeftLayout = new HorizontalLayout();
         leftLayout.addComponent(bottomLeftLayout);
@@ -105,24 +104,25 @@ public class DriversView extends VerticalLayout implements View {
         return splitPanel;
     }
 
-    private MenuBar createTestMenu() {
-        MenuBar testMenu = new MenuBar();
-        MenuBar.MenuItem mainItem = testMenu.addItem("Menu", null);
-        MenuBar.Command cmd = new MenuBar.Command() {
+    // można wywalić Kamil? :(
+//    private MenuBar createTestMenu() {
+//        MenuBar testMenu = new MenuBar();
+//        MenuBar.MenuItem mainItem = testMenu.addItem("Menu", null);
+//        MenuBar.Command cmd = new MenuBar.Command() {
+//
+//            @Override
+//            public void menuSelected(MenuBar.MenuItem selectedItem) {
+//                Notification.show("Wybrales " + selectedItem.getText()
+//                        + " z menu");
+//            }
+//        };
+//        mainItem.addItem("Akcja1", cmd);
+//        mainItem.addItem("Akcja2", cmd);
+//        mainItem.addItem("Akcja3", cmd);
+//        return testMenu;
+//    }
 
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                Notification.show("Wybrales " + selectedItem.getText()
-                        + " z menu");
-            }
-        };
-        mainItem.addItem("Akcja1", cmd);
-        mainItem.addItem("Akcja2", cmd);
-        mainItem.addItem("Akcja3", cmd);
-        return testMenu;
-    }
-
-    private Component createMenuPanel() {
+    public static Component createMenuPanel() {
         HorizontalLayout hl = new HorizontalLayout();
         ThemeResource logo = new ThemeResource("../../resources/icons/skip.png");
         Image logoComp = new Image(null, logo);

@@ -2,6 +2,7 @@ package SKIPWebApplication;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 
 /**
@@ -24,8 +25,10 @@ public class LoginView extends VerticalLayout implements View {
         Panel panel = new Panel();
         panel.setSizeUndefined();
         addComponent(panel);
-
+        ThemeResource logo = new ThemeResource("../../resources/icons/skip.png");
+                Image logoComp = new Image(null, logo);
         FormLayout content = new FormLayout();
+        content.addComponent(logoComp);
         content.addComponent(LOGIN);
         content.addComponent(PASSWORD);
         content.setSizeUndefined();

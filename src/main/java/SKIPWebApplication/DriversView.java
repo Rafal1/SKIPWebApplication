@@ -138,6 +138,12 @@ public class DriversView extends VerticalLayout implements View {
                 if (selectedItem.getText().equals("Wyloguj się")) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
                 }
+                if (selectedItem.getText().equals("Wiadomości")) {
+                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
+                }
+                if (selectedItem.getText().equals("Kierowcy")) {
+                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
+                }
             }
         };
         MenuBar menu = new MenuBar();

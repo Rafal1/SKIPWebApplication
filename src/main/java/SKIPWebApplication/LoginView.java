@@ -1,5 +1,6 @@
 package SKIPWebApplication;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
@@ -35,7 +36,7 @@ public class LoginView extends VerticalLayout implements View {
         content.setMargin(true);
         HorizontalLayout serviceButtons = new HorizontalLayout();
         serviceButtons.setSpacing(true);
-        Button buttonLogIn = new Button("Przypomnij hasło",
+        Button buttonForget = new Button("Przypomnij hasło",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -43,9 +44,9 @@ public class LoginView extends VerticalLayout implements View {
                         //TODO view for password reminder
                     }
                 });
-        serviceButtons.addComponent(buttonLogIn);
+        serviceButtons.addComponent(buttonForget);
 
-        Button buttonForget = new Button("Zaloguj",
+        Button buttonLogIn = new Button("Zaloguj",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -59,7 +60,8 @@ public class LoginView extends VerticalLayout implements View {
                         }
                     }
                 });
-        serviceButtons.addComponent(buttonForget);
+        buttonLogIn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        serviceButtons.addComponent(buttonLogIn);
         serviceButtons.setComponentAlignment(buttonLogIn, Alignment.MIDDLE_CENTER);
 
         content.addComponent(serviceButtons);

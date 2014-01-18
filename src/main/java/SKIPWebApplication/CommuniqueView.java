@@ -3,6 +3,13 @@ package SKIPWebApplication;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import org.tepi.filtertable.FilterTable;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.vaadin.ui.Alignment.TOP_CENTER;
 
 /**
  * @author Rafal Zawadzki
@@ -10,7 +17,7 @@ import com.vaadin.ui.*;
 public class CommuniqueView extends VerticalLayout implements View {
     private static String PAGE_WIDTH = "1024px";
     private final Integer SPLIT_POSITION = 52;
-    private Table commTable = new Table();
+    private FilterTable commTable = new FilterTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private TextField searchField = new TextField();
@@ -28,15 +35,14 @@ public class CommuniqueView extends VerticalLayout implements View {
         mainPanel.setSizeFull();
         mainPanel.setWidth(PAGE_WIDTH);
         mainPanel.addComponent(navigationBar);
-        mainPanel.setComponentAlignment(navigationBar, Alignment.TOP_CENTER);
+        mainPanel.setComponentAlignment(navigationBar, TOP_CENTER);
         mainPanel.addComponent(bodyContent);
         mainPanel.setExpandRatio(bodyContent, 1.0f);
 
         VerticalLayout layout = new VerticalLayout();
         layout.addComponent(mainPanel);
-        layout.setComponentAlignment(mainPanel, Alignment.TOP_CENTER);
+        layout.setComponentAlignment(mainPanel, TOP_CENTER);
         layout.setSizeFull();
-
         addComponent(layout);
     }
 
@@ -59,6 +65,9 @@ public class CommuniqueView extends VerticalLayout implements View {
         leftLayout.setSizeFull();
         buildTable();
         commTable.setWidth("100%");
+        commTable.setFilterBarVisible(true);
+        commTable.setRefreshingEnabled(true); //check this
+        //TODO napisy: data poczatkwa i koncowa - decorator
         leftLayout.addComponent(commTable);
 
         searchField.setInputPrompt("Wyszukaj");
@@ -70,22 +79,30 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     }
 
-    private void buildingRightLayout(){
+    private void buildingRightLayout() {
 
     }
 
     private void buildTable() {
         //TODO data source from WebService
-        String[] drivers = new String[]{"Adam Dolny", "Zygmunt Kowalski"};
-        Integer[] numer_komunikatu = new Integer[]{1, 2};
-        String[] dataTime = new String[]{"13.01.2014 11:32", "14.01.2014 21:55"};
-        String[] state = new String[]{"Jazda", "Pauza"};
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.M.yyyy hh:mm:ss");
+        try {
+            String[] drivers = new String[]{"Adam Dolny", "Zygmunt Kowalski"};
+            Integer[] numer_komunikatu = new Integer[]{1, 2};
+            Date[] dataTime = new Date[]{sdf.parse("13.01.2014 11:32:00"), sdf.parse("14.01.2014 21:55:00")   };
+            String[] state = new String[]{"Jazda", "Pauza"};
 
         commTable.addContainerProperty("Kierowca", String.class, null);
         commTable.addContainerProperty("ID", Integer.class, null);
         commTable.addContainerProperty("Komunikat", String.class, null); //TODO improve style (visibility)
-        commTable.addContainerProperty("Data nadesłania", String.class, null);
+        commTable.addContainerProperty("Data nadesłania", Date.class, null);
         commTable.addContainerProperty("Status", CheckBox.class, null);
+
+        commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
 
         for (int j = 0; j < 50; j++) {
             for (int i = 0; i < 2; i++) {
@@ -93,7 +110,9 @@ public class CommuniqueView extends VerticalLayout implements View {
                 commTable.addItem(new Object[]{drivers[i], numer_komunikatu[i], state[i], dataTime[i], isRead}, 2 * j + i + 1);
             }
         }
-
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

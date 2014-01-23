@@ -25,7 +25,6 @@ public class DriversView extends VerticalLayout implements View {
     private Table driversList = new Table();
     private TextField searchField = new TextField();
     private Button addNewDriverButton = new Button("Nowy");
-    private Button removeDriverButton = new Button("Usuń");
     private VerticalLayout rightLayout = new VerticalLayout();
     private GoogleMap googleMap;
     private FormLayout editorLayout = new FormLayout();
@@ -75,8 +74,6 @@ public class DriversView extends VerticalLayout implements View {
         VerticalLayout leftLayout = new VerticalLayout();
         splitPanel.addComponent(leftLayout);
         splitPanel.addComponent(rightLayout);
-//        MenuBar testMenu = createTestMenu();
-//        leftLayout.addComponent(testMenu);
         leftLayout.addComponent(driversList);
         HorizontalLayout bottomLeftLayout = new HorizontalLayout();
         leftLayout.addComponent(bottomLeftLayout);
@@ -104,23 +101,19 @@ public class DriversView extends VerticalLayout implements View {
         return splitPanel;
     }
 
-    // można wywalić Kamil? :(
-//    private MenuBar createTestMenu() {
-//        MenuBar testMenu = new MenuBar();
-//        MenuBar.MenuItem mainItem = testMenu.addItem("Menu", null);
-//        MenuBar.Command cmd = new MenuBar.Command() {
-//
-//            @Override
-//            public void menuSelected(MenuBar.MenuItem selectedItem) {
-//                Notification.show("Wybrales " + selectedItem.getText()
-//                        + " z menu");
-//            }
-//        };
-//        mainItem.addItem("Akcja1", cmd);
-//        mainItem.addItem("Akcja2", cmd);
-//        mainItem.addItem("Akcja3", cmd);
-//        return testMenu;
-//    }
+    private MenuBar createDriverMenu() {
+        MenuBar driverMenu = new MenuBar();
+        MenuBar.MenuItem mainItem = driverMenu.addItem("Menu", null);
+        mainItem.addItem("Usuń", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                Object contactId = driversList.getValue();
+                driversList.removeItem(contactId);
+            }
+        });
+        return driverMenu;
+    }
 
     public static Component createMenuPanel() {
         HorizontalLayout hl = new HorizontalLayout();
@@ -131,9 +124,6 @@ public class DriversView extends VerticalLayout implements View {
 
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                Notification.show("Wybrales " + selectedItem.getText()
-                        + " z menu");
-
                 //TODO conditions for other views
                 if (selectedItem.getText().equals("Wyloguj się")) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
@@ -168,7 +158,7 @@ public class DriversView extends VerticalLayout implements View {
     private void initEditor() {
 
         rightLayout.addComponent(editorLayout);
-        editorLayout.addComponent(removeDriverButton);
+        editorLayout.addComponent(createDriverMenu());
         TabSheet tabsheet = new TabSheet();
 
         final FormLayout verLayout1 = new FormLayout();
@@ -300,13 +290,6 @@ public class DriversView extends VerticalLayout implements View {
                         "Kierowca");
 
                 driversList.select(contactId);
-            }
-        });
-
-        removeDriverButton.addClickListener(new Button.ClickListener() {
-            public void buttonClick(Button.ClickEvent event) {
-                Object contactId = driversList.getValue();
-                driversList.removeItem(contactId);
             }
         });
     }

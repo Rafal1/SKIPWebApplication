@@ -1,4 +1,4 @@
-package skip;
+package returnobjects;
 
 public class Vehicle {
 	private long id;

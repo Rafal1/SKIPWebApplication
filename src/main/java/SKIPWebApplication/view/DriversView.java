@@ -1,5 +1,6 @@
-package SKIPWebApplication;
+package SKIPWebApplication.view;
 
+import SKIPWebApplication.SkipapplicationService;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -8,7 +9,6 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
@@ -17,11 +17,9 @@ import com.vaadin.ui.*;
  * @author Rafal Zawadzki
  */
 public class DriversView extends VerticalLayout implements View {
-    private static String PAGE_WIDTH = "1024px";
     private final String SHEETTAB_GENERAL_SIZE = "153px"; // constant
     private static String SHEETTAB_DETAIL_SIZE;
     private final Integer SIZE_PER_TAB = 46;
-    private final Integer SPLIT_POSITION = 30;
     private Table driversList = new Table();
     private TextField searchField = new TextField();
     private Button addNewDriverButton = new Button("Nowy");
@@ -45,12 +43,12 @@ public class DriversView extends VerticalLayout implements View {
     }
 
     private void initLayout() {
-        Component navigationBar = createMenuPanel();
+        Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
 
         VerticalLayout mainPanel = new VerticalLayout();
         mainPanel.setSizeFull();
-        mainPanel.setWidth(PAGE_WIDTH);
+        mainPanel.setWidth(DefaultViewBuilderHelper.PAGE_WIDTH);
         mainPanel.addComponent(navigationBar);
         mainPanel.setComponentAlignment(navigationBar, Alignment.TOP_CENTER);
         mainPanel.addComponent(bodyContent);
@@ -68,7 +66,7 @@ public class DriversView extends VerticalLayout implements View {
     private Component getBodyContent() {
 
         HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-        splitPanel.setSplitPosition(SPLIT_POSITION);
+        splitPanel.setSplitPosition(DefaultViewBuilderHelper.DEFAULT_SPLIT_POSITION);
         splitPanel.setLocked(true);
 
         VerticalLayout leftLayout = new VerticalLayout();
@@ -115,46 +113,6 @@ public class DriversView extends VerticalLayout implements View {
         return driverMenu;
     }
 
-    public static Component createMenuPanel() {
-        HorizontalLayout hl = new HorizontalLayout();
-        ThemeResource logo = new ThemeResource("../../resources/icons/skip.png");
-        Image logoComp = new Image(null, logo);
-        hl.addComponent(logoComp);
-        MenuBar.Command cmd = new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                //TODO conditions for other views
-                if (selectedItem.getText().equals("Wyloguj się")) {
-                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
-                }
-                if (selectedItem.getText().equals("Wiadomości")) {
-                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
-                }
-                if (selectedItem.getText().equals("Kierowcy")) {
-                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
-                }
-            }
-        };
-        MenuBar menu = new MenuBar();
-        menu.addItem("Główna", new ThemeResource(
-                "../../resources/icons/home.png"), cmd);
-        menu.addItem("Kierowcy", new ThemeResource(
-                "../../resources/icons/drivers.png"), cmd);
-        menu.addItem("Pojazdy", new ThemeResource(
-                "../../resources/icons/car.png"), cmd);
-        menu.addItem("Wiadomości", new ThemeResource(
-                "../../resources/icons/messages.png"), cmd);
-        menu.addItem("Wyloguj się", new ThemeResource(
-                "../../resources/icons/log_out.png"), cmd);
-        menu.setHeight("73px");
-        hl.addComponent(menu);
-        hl.setComponentAlignment(logoComp, Alignment.MIDDLE_CENTER);
-        hl.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
-        hl.setHeight("80px");
-        return hl;
-    }
-
     private void initEditor() {
 
         rightLayout.addComponent(editorLayout);
@@ -163,19 +121,19 @@ public class DriversView extends VerticalLayout implements View {
 
         final FormLayout verLayout1 = new FormLayout();
         verLayout1.setMargin(true);
-        if (SkipapplicationService.fieldNamesIfConstains(FNAME)) {
+        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, FNAME)) {
             TextField FNAMEfield = new TextField(FNAME);
             FNAMEfield.setWidth("15em");
             verLayout1.addComponent(FNAMEfield);
             editorFields.bind(FNAMEfield, FNAME);
         }
-        if (SkipapplicationService.fieldNamesIfConstains(LNAME)) {
+        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, LNAME)) {
             TextField LNAMEfield = new TextField(LNAME);
             LNAMEfield.setWidth("15em");
             verLayout1.addComponent(LNAMEfield);
             editorFields.bind(LNAMEfield, LNAME);
         }
-        if (SkipapplicationService.fieldNamesIfConstains(REGISTRATION_NR)) {
+        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, REGISTRATION_NR)) {
             TextField REGfield = new TextField(REGISTRATION_NR);
             REGfield.setWidth("15em");
             verLayout1.addComponent(REGfield);
@@ -372,10 +330,6 @@ public class DriversView extends VerticalLayout implements View {
         }
 
         return ic;
-    }
-
-    public static String[] getFieldnames() {
-        return fieldNames;
     }
 
     @Override

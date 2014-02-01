@@ -1,5 +1,6 @@
-package SKIPWebApplication;
+package SKIPWebApplication.view;
 
+import SKIPWebApplication.SkipapplicationUI;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;

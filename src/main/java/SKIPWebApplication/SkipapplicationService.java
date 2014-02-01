@@ -1,10 +1,11 @@
 package SKIPWebApplication;
 
+import SKIPWebApplication.view.DriversView;
+
 public class SkipapplicationService {
 
-	public static Boolean fieldNamesIfConstains(String key) {
-		String[] fieldNames = DriversView.getFieldnames();
-		for (String names : fieldNames) {
+	public static Boolean fieldNamesIfConstains(String [] array, String key) {
+		for (String names : array) {
 			if (names.equals(key)) {
 				return true;
 			}

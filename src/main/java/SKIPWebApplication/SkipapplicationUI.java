@@ -1,6 +1,10 @@
 package SKIPWebApplication;
 
 
+import SKIPWebApplication.view.CommuniqueView;
+import SKIPWebApplication.view.DriversView;
+import SKIPWebApplication.view.LoginView;
+import SKIPWebApplication.view.VehicleView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -17,6 +21,7 @@ public class SkipapplicationUI extends UI {
     public static final String DRIVERS_VIEW = "drivers";
     public static final String LOGIN_VIEW = "";
     public static final String COMMUNIQUE_VIEW = "wiadomosci";
+    public static final String VEHICLE_VIEW = "pojazdy";
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = SkipapplicationUI.class, widgetset = "SKIPWebApplication.AppWidgetSet")
@@ -35,6 +40,6 @@ public class SkipapplicationUI extends UI {
         navigator.addView("", new LoginView()); //default view
         navigator.addView(DRIVERS_VIEW, new DriversView());
         navigator.addView(COMMUNIQUE_VIEW, new CommuniqueView());
-
+        navigator.addView(VEHICLE_VIEW, new VehicleView());
     }
 }

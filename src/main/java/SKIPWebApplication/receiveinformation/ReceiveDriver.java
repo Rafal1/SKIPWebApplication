@@ -13,18 +13,12 @@ import java.util.ArrayList;
  */
 public class ReceiveDriver {
 
-    public static Driver getDriverByID(Integer unitID) {
-        RestTemplate restTemplate = new RestTemplate();
-        Driver stream = restTemplate.getForObject("http://localhost:8080/overunit?driverID={unitID}", Driver.class, unitID);
-        return stream;
-    }
-
-    public static ArrayList<Driver> getUnitsByPhrase(String phrase) {
+    public static ArrayList<Driver> getDriversList() {
         ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
-            unitsString = restTemplate.getForObject("http://localhost:8080/search?phrase={phrase}&wholeWord={wholeWord}", String.class, phrase );
+        unitsString = restTemplate.getForObject("http://localhost:8080/drivers", String.class);
         try {
             parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
             });
@@ -34,4 +28,29 @@ public class ReceiveDriver {
         }
         return parsingResponse;
     }
+
+    public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
+        RestTemplate restTemplate = new RestTemplate();
+        String unitsString;
+//            unitsString = restTemplate.postForObject("http://localhost:8080/drivers?json={driver}", dr, String.class, dr );
+        unitsString = restTemplate.postForObject("http://localhost:8080/drivers", dr, String.class);
+        return unitsString;
+    }
+
+    public static void changeDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put("http://localhost:8080/drivers/{id}", dr, dr.getId());
+    }
+
+    public static void deleteDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete("http://localhost:8080/drivers/{id}", dr, dr.getId());
+    }
+
+    public static Driver getDriver(Integer id) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny
+        RestTemplate restTemplate = new RestTemplate();
+        Driver stream = restTemplate.getForObject("http://localhost:8080/drivers/{id}", Driver.class, id);
+        return stream;
+    }
+
 }

@@ -4,7 +4,15 @@ import java.util.Date;
 
 public class Driver {
 	private long id;
-	private String firstName, lastName, latestCoordinates, phoneNumber;
+
+	private String firstName, lastName;
+	
+	private String latestCoordinates;
+	
+	private String phoneNumber, phoneNumber2;
+	
+	private String email;
+	
 	private Date coordinatesUpdateDate;
 	
 	public Driver(){}
@@ -53,6 +61,22 @@ public class Driver {
 	
 	public String getPhoneNumber(){
 		return this.phoneNumber;
+	}
+	
+	public void setPhoneNumber2(String phoneNumber2){
+		this.phoneNumber2 = phoneNumber2;
+	}
+	
+	public String getPhoneNumber2(){
+		return this.phoneNumber2;
+	}
+	
+	public void setEmail(String email){
+		this.email = email;
+	}
+	
+	public String getEmail(){
+		return this.email;
 	}
 	
 	public void setCoordinatesUpdateDate(Date date){

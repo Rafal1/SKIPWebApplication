@@ -1,4 +1,4 @@
-package SKIPWebApplication;
+package SKIPWebApplication.view;
 
 import SKIPWebApplication.view.DefaultViewBuilderHelper;
 import com.vaadin.navigator.View;

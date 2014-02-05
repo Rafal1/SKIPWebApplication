@@ -76,7 +76,6 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setContainerDataSource(buildTable());
         commTable.setFilterBarVisible(true);
-//        commTable.setRefreshingEnabled(true); //check this
         //TODO napisy: data poczatkwa i koncowa - decorator
         leftLayout.addComponent(commTable);
 
@@ -94,38 +93,6 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     }
 
-//    private void buildTable() {
-//        //TODO data source from WebService
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd.M.yyyy hh:mm:ss");
-//        try {
-//            String[] drivers = new String[]{"Adam Dolny", "Zygmunt Kowalski"};
-//            Integer[] numer_komunikatu = new Integer[]{1, 2};
-//            Date[] dataTime = new Date[]{sdf.parse("13.01.2014 11:32:00"), sdf.parse("14.01.2014 21:55:00")};
-//            String[] state = new String[]{"Jazda", "Pauza"};
-//
-//            commTable.addContainerProperty("Kierowca", String.class, null);
-//            commTable.addContainerProperty("ID", Integer.class, null);
-//            commTable.addContainerProperty("Komunikat", String.class, null); //TODO improve style (visibility)
-//            commTable.addContainerProperty("Data nadesłania", Date.class, null);
-//            commTable.addContainerProperty("Status", CheckBox.class, null);
-//
-//            commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-//            commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
-//            commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-//            commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
-//            commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
-//
-//            for (int j = 0; j < 50; j++) {
-//                for (int i = 0; i < 2; i++) {
-//                    CheckBox isRead = new CheckBox("Przeczytana");
-//                    commTable.addItem(new Object[]{drivers[i], numer_komunikatu[i], state[i], dataTime[i], isRead}, 2 * j + i + 1);
-//                }
-//            }
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private Container buildTable() {
         //TODO data source from WebService
         SimpleDateFormat sdf = new SimpleDateFormat("dd.M.yyyy hh:mm:ss");
@@ -142,6 +109,7 @@ public class CommuniqueView extends VerticalLayout implements View {
             indx.addContainerProperty("Data nadesłania", Date.class, null);
             indx.addContainerProperty("Status", Boolean.class, null);
 
+            //klopot z wyrownaniem
 //                indx.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
 //                commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
 //                commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
@@ -150,6 +118,7 @@ public class CommuniqueView extends VerticalLayout implements View {
 
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {
+                    //klopot z sortowaniem checkboxow
 //                    CheckBox isRead = new CheckBox("Przeczytana");
 //                    isRead.setValue(false);
                     Boolean isRead = false;

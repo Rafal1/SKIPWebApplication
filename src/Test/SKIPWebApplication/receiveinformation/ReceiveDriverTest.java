@@ -3,8 +3,6 @@ package SKIPWebApplication.receiveinformation;
 import org.junit.Test;
 import returnobjects.Driver;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,8 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class ReceiveDriverTest {
 
     @Test
-    public void testAddAndReadDriver() throws Exception {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //dateFormat.format(date)
+    public void testAddReadDelDriver() throws Exception {
         Date date = new Date();
         Driver exDr = new Driver("Adam", "Zapolski");
         exDr.setEmail("r@op.pl");
@@ -27,9 +24,15 @@ public class ReceiveDriverTest {
         exDr.setCoordinatesUpdateDate(date);
         ReceiveDriver.addDriver(exDr);
         ArrayList<Driver> resultList = ReceiveDriver.getDriversList();
+
         assertEquals("Adam", resultList.get(0).getFirstName());
         assertEquals("Zapolski", resultList.get(0).getLastName());
 
+        resultList = ReceiveDriver.getDriversList();
+        ReceiveDriver.deleteDriver(resultList.get(0).getId());
+        resultList = ReceiveDriver.getDriversList();
+
+        assertEquals(1, resultList.size());
     }
 
     @Test
@@ -42,18 +45,29 @@ public class ReceiveDriverTest {
 
     }
 
-    @Test
-    public void testChangeDriver() throws Exception {
-
-    }
+//    @Test //not implemented yet
+//    public void testChangeDriver() throws Exception {
+//        Date date = new Date();
+//        Driver exDr = new Driver("REAL", "Zapolski");
+//        exDr.setEmail("@op.pl");
+//        exDr.setLatestCoordinates("N20.0000000 W132.0000000");
+//        exDr.setPhoneNumber("229997845");
+//        exDr.setPhoneNumber2("48789456123");
+//        exDr.setCoordinatesUpdateDate(date);
+//        ReceiveDriver.addDriver(exDr);
+//        Long nr = new Long("14");
+//        ReceiveDriver.changeDriver(nr);
+//    }
 
     @Test
     public void testDeleteDriver() throws Exception {
-
+//        ReceiveDriver.deleteDriver((long) 1);
     }
 
     @Test
     public void testGetDriver() throws Exception {
-
+        long ID = new Long("16");
+        Driver dr = ReceiveDriver.getDriver(new Long("16"));
+        assertEquals(ID, dr.getId());
     }
 }

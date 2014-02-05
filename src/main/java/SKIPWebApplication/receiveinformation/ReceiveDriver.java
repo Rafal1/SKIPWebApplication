@@ -2,6 +2,9 @@ package SKIPWebApplication.receiveinformation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
@@ -29,11 +32,13 @@ public class ReceiveDriver {
         return parsingResponse;
     }
 
-    public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
+    public static ResponseEntity<String> addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
         RestTemplate restTemplate = new RestTemplate();
-        String unitsString;
-//            unitsString = restTemplate.postForObject("http://localhost:8080/drivers?json={driver}", dr, String.class, dr );
-        unitsString = restTemplate.postForObject("http://localhost:8080/drivers", dr, String.class);
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+        ResponseEntity<String> unitsString;
+        unitsString = restTemplate.postForEntity("http://localhost:8080/drivers", dr, String.class);
         return unitsString;
     }
 

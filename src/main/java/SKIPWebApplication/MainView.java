@@ -1,5 +1,6 @@
 package SKIPWebApplication;
 
+import SKIPWebApplication.view.DefaultViewBuilderHelper;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Alignment;
@@ -20,7 +21,7 @@ public class MainView extends VerticalLayout implements View {
     }
 
     private void initLayout() {
-        Component navigationBar = DriversView.createMenuPanel();
+        Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
 
         VerticalLayout mainPanel = new VerticalLayout();

@@ -35,7 +35,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private void initLayout() {
-        Component navigationBar = DriversView.createMenuPanel();
+        Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
 
         VerticalLayout mainPanel = new VerticalLayout();

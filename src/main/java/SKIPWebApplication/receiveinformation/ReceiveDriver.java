@@ -3,12 +3,14 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.web.client.RestTemplate;
@@ -39,7 +41,7 @@ public class ReceiveDriver {
         return parsingResponse;
     }
 
-    public static HttpResponse addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
+    public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         ObjectMapper mapper = new ObjectMapper();
         String drJSON = null;
@@ -54,8 +56,9 @@ public class ReceiveDriver {
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
         try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
             httppost.setEntity(new UrlEncodedFormEntity(params));
-            return httpclient.execute(httppost);
+            return httpclient.execute(httppost, responseHandler);
         } catch (ClientProtocolException e) {
             return null;
         } catch (IOException e) {
@@ -70,9 +73,18 @@ public class ReceiveDriver {
 //        restTemplate.put("http://localhost:8080/drivers/{id}", ID);
 //    }
 
-    public static void deleteDriver(Long ID) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete("http://localhost:8080/drivers/{id}", ID);
+    public static String deleteDriver(Long ID) {
+        String url = "http://localhost:8080/drivers/"+ ID;
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpDelete delQuery = new HttpDelete(url);
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            return httpclient.execute(delQuery, responseHandler);
+        } catch (ClientProtocolException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static Driver getDriver(Long id) {

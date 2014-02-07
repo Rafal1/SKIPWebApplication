@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Rafal Zawadzki
@@ -22,14 +23,21 @@ public class ReceiveDriverTest {
         exDr.setPhoneNumber("229997845");
         exDr.setPhoneNumber2("48789456123");
         exDr.setCoordinatesUpdateDate(date);
-        ReceiveDriver.addDriver(exDr);
+        String res = ReceiveDriver.addDriver(exDr);
         ArrayList<Driver> resultList = ReceiveDriver.getDriversList();
-
+        if(res.equals("")){
+            System.out.println("pusty, nie dodano kierowcy");
+            assertTrue(false);
+        }
         assertEquals("Adam", resultList.get(0).getFirstName());
         assertEquals("Zapolski", resultList.get(0).getLastName());
 
         resultList = ReceiveDriver.getDriversList();
-        ReceiveDriver.deleteDriver(resultList.get(0).getId());
+        String resDel = ReceiveDriver.deleteDriver(resultList.get(0).getId());
+        if(resDel.equals("")){
+            System.out.println("pusty, nie dodano kierowcy");
+            assertTrue(false);
+        }
         resultList = ReceiveDriver.getDriversList();
 
         assertEquals(1, resultList.size());

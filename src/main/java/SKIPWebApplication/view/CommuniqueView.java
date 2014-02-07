@@ -122,6 +122,7 @@ public class CommuniqueView extends VerticalLayout implements View {
 //                    CheckBox isRead = new CheckBox("Przeczytana");
 //                    isRead.setValue(false);
                     Boolean isRead = false;
+                    //todo if isRead.checked = true generate column
                     if (drivers[i].equals("Adam Dolny")) { //!!
 //                        isRead.setValue(true);
                         isRead = true;

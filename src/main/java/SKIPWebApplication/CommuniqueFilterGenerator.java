@@ -15,9 +15,9 @@ public class CommuniqueFilterGenerator implements FilterGenerator {
     public Container.Filter generateFilter(Object o, Object o2) {
         if ("Status".equals(o)) {
             if (o2 != null && o2 instanceof Boolean) {
-                System.out.println("HEJ: "+o );
-                return new Compare.Equal(o, Boolean.parseBoolean((String) o2));
-//     return new SimpleStringFilter("Status", (String) o2, true, false);
+                System.out.println("HEJ: " + o + " " + o2);
+//                return new Compare.Equal("true", o2.toString());
+                return null;
             }
         }
 
@@ -45,7 +45,7 @@ public class CommuniqueFilterGenerator implements FilterGenerator {
     @Override
     public AbstractField<?> getCustomFilterComponent(Object o) {
         if ("Status".equals(o)) {
-            return new CheckBox("Prezentacja");
+            return new CheckBox("Przeczytana");
         }
         return null;
     }

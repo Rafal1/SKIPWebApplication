@@ -36,6 +36,11 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
 
     @Override
     public String getBooleanFilterDisplayName(Object o, boolean b) {
+        if ("Komunikat".equals(o)) {
+            if (b) {
+                return "true";
+            }
+        }
         return null;
     }
 

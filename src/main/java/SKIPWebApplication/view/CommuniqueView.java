@@ -2,11 +2,13 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.CommuniqueFilterDecorator;
 import SKIPWebApplication.CommuniqueFilterGenerator;
+import SKIPWebApplication.ReadEnum;
 import SKIPWebApplication.StatusEnum;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
@@ -107,8 +109,8 @@ public class CommuniqueView extends VerticalLayout implements View {
             indx.addContainerProperty("ID", Integer.class, null);
             indx.addContainerProperty("Komunikat", StatusEnum.class, null); //TODO improve style (visibility)
             indx.addContainerProperty("Data nadesłania", Date.class, null);
-            indx.addContainerProperty("Status", Boolean.class, null);
-
+            indx.addContainerProperty("Status", ReadEnum.class, null);
+            indx.addContainerProperty("", CheckBox.class, null);
             //klopot z wyrownaniem
 //                indx.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
 //                commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
@@ -118,14 +120,12 @@ public class CommuniqueView extends VerticalLayout implements View {
 
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {
-                    //klopot z sortowaniem checkboxow
-//                    CheckBox isRead = new CheckBox("Przeczytana");
-//                    isRead.setValue(false);
-                    Boolean isRead = false;
+                    CheckBox isReadBool = new CheckBox("Przeczytaj");
+                    ReadEnum isRead = ReadEnum.Nieprzeczytany;
                     //todo if isRead.checked = true generate column
                     if (drivers[i].equals("Adam Dolny")) { //!!
-//                        isRead.setValue(true);
-                        isRead = true;
+                        isReadBool.setValue(true);
+                        isRead = ReadEnum.Przeczytany;
                     }
                     Object id = indx.addItem();
                     indx.getContainerProperty(id, "Kierowca").setValue(drivers[i]);
@@ -133,6 +133,7 @@ public class CommuniqueView extends VerticalLayout implements View {
                     indx.getContainerProperty(id, "Komunikat").setValue(state[i]);
                     indx.getContainerProperty(id, "Data nadesłania").setValue(dataTime[i]);
                     indx.getContainerProperty(id, "Status").setValue(isRead);
+                    indx.getContainerProperty(id, "").setValue(isReadBool);
 //                        indx.addItem(new Object[]{drivers[i], numer_komunikatu[i], state[i], dataTime[i], isRead});
                 }
             }

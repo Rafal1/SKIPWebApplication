@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class ReceiveDriverTest {
 
     @Test
-    public void testAddReadDelDriver() throws Exception {
+    public void testAddReadDelDriver() throws Exception { //testy dla wbudowanej bazy testowej, dla prawdziwej mogą nie działać
         Date date = new Date();
         Driver exDr = new Driver("Adam", "Zapolski");
         exDr.setEmail("r@op.pl");
@@ -35,7 +35,7 @@ public class ReceiveDriverTest {
         resultList = ReceiveDriver.getDriversList();
         String resDel = ReceiveDriver.deleteDriver(resultList.get(0).getId());
         if(resDel.equals("")){
-            System.out.println("pusty, nie dodano kierowcy");
+            System.out.println("pusty, nie usunięto kierowcy");
             assertTrue(false);
         }
         resultList = ReceiveDriver.getDriversList();

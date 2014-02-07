@@ -25,6 +25,15 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
             }
         }
 
+        if ("Status".equals(o)) {
+            ReadEnum state = (ReadEnum) stat;
+            switch (state) {
+                case Nieprzeczytany:
+                    return "Nieprzeczytany";
+                case Przeczytany:
+                    return "Przeczytany";
+            }
+        }
         // returning null will output default value
         return null;
     }
@@ -36,11 +45,6 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
 
     @Override
     public String getBooleanFilterDisplayName(Object o, boolean b) {
-        if ("Komunikat".equals(o)) {
-            if (b) {
-                return "true";
-            }
-        }
         return null;
     }
 

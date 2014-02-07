@@ -3,8 +3,8 @@ package SKIPWebApplication;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextField;
 import org.tepi.filtertable.FilterGenerator;
 
 /**
@@ -13,13 +13,13 @@ import org.tepi.filtertable.FilterGenerator;
 public class CommuniqueFilterGenerator implements FilterGenerator {
     @Override
     public Container.Filter generateFilter(Object o, Object o2) {
-        if ("Status".equals(o)) {
-            if (o2 != null && o2 instanceof Boolean) {
-                System.out.println("HEJ: " + o + " " + o2);
-//                return new Compare.Equal("true", o2.toString());
-                return null;
-            }
-        }
+//        if ("Status".equals(o)) {
+//            if (o2 != null && o2 instanceof Boolean) {
+//                System.out.println("HEJ: " + o + " " + o2);
+////                return new Compare.Equal("true", o2.toString());
+//                return null;
+//            }
+//        }
 
         if ("ID".equals(o)) {
                     /* Create an 'equals' filter for the ID field */
@@ -44,8 +44,10 @@ public class CommuniqueFilterGenerator implements FilterGenerator {
 
     @Override
     public AbstractField<?> getCustomFilterComponent(Object o) {
-        if ("Status".equals(o)) {
-            return new CheckBox("Przeczytana");
+        if ("".equals(o)) {
+            TextField empty = new TextField();
+            empty.setVisible(false);
+            return empty;
         }
         return null;
     }

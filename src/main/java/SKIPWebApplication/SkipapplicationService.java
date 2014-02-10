@@ -1,7 +1,5 @@
 package SKIPWebApplication;
 
-import SKIPWebApplication.view.DriversView;
-
 public class SkipapplicationService {
 
 	public static Boolean fieldNamesIfConstains(String [] array, String key) {

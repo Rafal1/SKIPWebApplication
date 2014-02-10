@@ -10,7 +10,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -30,7 +30,7 @@ public class SkipapplicationUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        getPage().setTitle("Navigation Example");
+        getPage().setTitle("SKiP");
 
         // Create a navigator to control the views
         navigator = new Navigator(this, this);

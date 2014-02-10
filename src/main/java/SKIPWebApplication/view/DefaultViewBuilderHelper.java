@@ -1,7 +1,6 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.SkipapplicationUI;
-import com.vaadin.navigator.View;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 

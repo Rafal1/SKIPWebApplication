@@ -238,12 +238,12 @@ public class DriversView extends VerticalLayout implements View {
     }
 
     private void initAddRemoveButtons() {
-        addNewDriverButton.addClickListener(new Fffff(this));
+        addNewDriverButton.addClickListener(new AddDriverClickListener(this));
     }
 
-    private class Fffff implements Button.ClickListener {
+    private class AddDriverClickListener implements Button.ClickListener {
         DriversView dv;
-        public Fffff(DriversView dv) {
+        public AddDriverClickListener(DriversView dv) {
             this.dv = dv;
         }
         @Override

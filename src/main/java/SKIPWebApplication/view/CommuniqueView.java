@@ -5,13 +5,11 @@ import SKIPWebApplication.CommuniqueFilterGenerator;
 import SKIPWebApplication.ReadEnum;
 import SKIPWebApplication.StatusEnum;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.*;
 import org.tepi.filtertable.FilterTable;
 
 import java.text.ParseException;
@@ -77,6 +75,28 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setContainerDataSource(buildTable());
+        commTable.removeGeneratedColumn("Status");
+
+        commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
+            @Override
+            public Object generateCell(CustomTable components, Object o, Object o2) {
+                Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
+                Boolean valueOfInstance = null;
+                if (TableCheckInstance instanceof CheckBox) {
+                    valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
+                }
+
+                VerticalLayout cell = new VerticalLayout();
+                Label enumStat = new Label();
+                if (valueOfInstance) {
+                    enumStat.setValue(ReadEnum.Przeczytany.toString());
+                } else {
+                    enumStat.setValue(ReadEnum.Nieprzeczytany.toString());
+                }
+                cell.addComponent(enumStat);
+                return cell;
+            }
+        });
         commTable.setFilterBarVisible(true);
         //TODO napisy: data poczatkwa i koncowa - decorator
         leftLayout.addComponent(commTable);
@@ -109,7 +129,7 @@ public class CommuniqueView extends VerticalLayout implements View {
             indx.addContainerProperty("ID", Integer.class, null);
             indx.addContainerProperty("Komunikat", StatusEnum.class, null); //TODO improve style (visibility)
             indx.addContainerProperty("Data nadesłania", Date.class, null);
-            indx.addContainerProperty("Status", ReadEnum.class, null);
+//            indx.addContainerProperty("Status", ReadEnum.class, null);
             indx.addContainerProperty("", CheckBox.class, null);
             //klopot z wyrownaniem
 //                indx.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
@@ -121,6 +141,35 @@ public class CommuniqueView extends VerticalLayout implements View {
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {
                     CheckBox isReadBool = new CheckBox("Przeczytaj");
+                    isReadBool.addListener(new Property.ValueChangeListener() {
+                        @Override
+                        public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                            boolean value = (Boolean) valueChangeEvent.getProperty().getValue();
+                            commTable.removeGeneratedColumn("Status");
+                            commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
+                                        @Override
+                                        public Object generateCell(CustomTable components, Object o, Object o2) {
+                                            Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
+                                            Boolean valueOfInstance = null;
+                                            if (TableCheckInstance instanceof CheckBox) {
+                                                valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
+                                            }
+
+                                            VerticalLayout cell = new VerticalLayout();
+                                            Label enumStat = new Label();
+                                            if (valueOfInstance) {
+                                                enumStat.setValue(ReadEnum.Przeczytany.toString());
+                                            } else {
+                                                enumStat.setValue(ReadEnum.Nieprzeczytany.toString());
+                                            }
+                                            cell.addComponent(enumStat);
+                                            return cell;
+                                        }
+                                    });
+                        }
+                    });
+                    isReadBool.setImmediate(true);
+
                     ReadEnum isRead = ReadEnum.Nieprzeczytany;
                     //todo if isRead.checked = true generate column
                     if (drivers[i].equals("Adam Dolny")) { //!!
@@ -132,9 +181,8 @@ public class CommuniqueView extends VerticalLayout implements View {
                     indx.getContainerProperty(id, "ID").setValue(numer_komunikatu[i]);
                     indx.getContainerProperty(id, "Komunikat").setValue(state[i]);
                     indx.getContainerProperty(id, "Data nadesłania").setValue(dataTime[i]);
-                    indx.getContainerProperty(id, "Status").setValue(isRead);
+//                    indx.getContainerProperty(id, "Status").setValue(isRead); //generated
                     indx.getContainerProperty(id, "").setValue(isReadBool);
-//                        indx.addItem(new Object[]{drivers[i], numer_komunikatu[i], state[i], dataTime[i], isRead});
                 }
             }
 

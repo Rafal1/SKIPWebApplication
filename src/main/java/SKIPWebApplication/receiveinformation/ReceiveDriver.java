@@ -3,6 +3,7 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -13,11 +14,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
-import sun.java2d.loops.CustomComponent;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,18 @@ public class ReceiveDriver {
 
     public static ArrayList<Driver> getDriversList() {
         ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
-        RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory s = new SimpleClientHttpRequestFactory() {
+            @Override
+            protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
+                super.prepareConnection(connection, httpMethod);
+
+                //Basic Authentication for Police API
+                String authorisation = "user" + ":" + "6cdb4056-d927-4ffe-8c1a-c8af8fb01bab";
+                byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+                connection.setRequestProperty("Authorization", "Basic " + new String(encodedAuthorisation));
+            }
+        };
+        RestTemplate restTemplate = new RestTemplate(s);
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         unitsString = restTemplate.getForObject("http://localhost:8080/drivers", String.class);
@@ -75,7 +88,7 @@ public class ReceiveDriver {
 //    }
 
     public static String deleteDriver(Long ID) {
-        String url = "http://localhost:8080/drivers/"+ ID;
+        String url = "http://localhost:8080/drivers/" + ID;
         HttpClient httpclient = new DefaultHttpClient();
         HttpDelete delQuery = new HttpDelete(url);
         try {

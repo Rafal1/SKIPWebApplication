@@ -34,7 +34,10 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
                     return "Przeczytany";
             }
         }
-        // returning null will output default value
+        // returning null will output defasult value
+        if ("Status".equals(o)) {
+            System.out.println("HEJJJJ filterAdded");
+        }
         return null;
     }
 

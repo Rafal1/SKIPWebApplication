@@ -27,7 +27,6 @@ public class CommuniqueView extends VerticalLayout implements View {
     private FilterTable commTable = new FilterTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
-//    private TextField searchField = new TextField();
 
     public CommuniqueView() {
         setSizeFull();
@@ -70,13 +69,21 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     private void buildingLeftLayout() {
         leftLayout.setSizeFull();
+
+//    private Button resFilters = new Button("Usuń Filtry");
+//        resFilters.addClickListener(new Button.ClickListener() {  TODO po dodaniu przycisku pojawia sie duża wolna przestrzeń
+//            @Override
+//            public void buttonClick(Button.ClickEvent clickEvent) {
+//                commTable.resetFilters();
+//            }
+//        });
+//        leftLayout.addComponent(resFilters);
         commTable.setWidth("100%");
         commTable.setImmediate(true);
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setContainerDataSource(buildTable());
         commTable.removeGeneratedColumn("Status");
-
         commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
             @Override
             public Object generateCell(CustomTable components, Object o, Object o2) {
@@ -86,33 +93,23 @@ public class CommuniqueView extends VerticalLayout implements View {
                     valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
                 }
 
-                VerticalLayout cell = new VerticalLayout();
-                Label enumStat = new Label();
+                String finalKnow = "";
                 if (valueOfInstance) {
-                    enumStat.setValue(ReadEnum.Przeczytany.toString());
+                    finalKnow = "Przeczytana";
                 } else {
-                    enumStat.setValue(ReadEnum.Nieprzeczytany.toString());
+                    finalKnow = "Nieprzeczytana";
                 }
-                cell.addComponent(enumStat);
-                return cell;
+                return finalKnow;
             }
         });
         commTable.setFilterBarVisible(true);
-        //TODO napisy: data poczatkwa i koncowa - decorator
+        commTable.setFilterFieldVisible("Status", false);
+
         leftLayout.addComponent(commTable);
-
-        //TODO w razie rezygnacji z gotowca
-//        searchField.setInputPrompt("Wyszukaj");
-//        searchField.setWidth("100%");
-//        searchField.setImmediate(true);
-//        leftLayout.addComponent(searchField);
-//
-//        leftLayout.setExpandRatio(searchField, 1);
-
     }
 
     private void buildingRightLayout() {
-
+        //TODO usunac gdy na 100% będzie wiadaomo jak ma wyglądać widok
     }
 
     private Container buildTable() {
@@ -129,14 +126,14 @@ public class CommuniqueView extends VerticalLayout implements View {
             indx.addContainerProperty("ID", Integer.class, null);
             indx.addContainerProperty("Komunikat", StatusEnum.class, null); //TODO improve style (visibility)
             indx.addContainerProperty("Data nadesłania", Date.class, null);
-//            indx.addContainerProperty("Status", ReadEnum.class, null);
             indx.addContainerProperty("", CheckBox.class, null);
-            //klopot z wyrownaniem
-//                indx.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-//                commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
-//                commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-//                commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
-//                commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
+            indx.addContainerProperty("Status", String.class, null); //TODO filtrowanie nie działa nawet po dodaniu generowanej kolumny do kontenera i próbie nadpisania. Niestety, aby kolumna się odświeżała to trzebą ją generować za każdym razem (usuwać i dodawać) i to uniemożliwia filtrowanie
+
+            commTable.setColumnAlignment("", CustomTable.ALIGN_CENTER); //TODO nie centeruje checkboxów
+            commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
+            commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
+            commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
+            commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
 
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {
@@ -144,28 +141,25 @@ public class CommuniqueView extends VerticalLayout implements View {
                     isReadBool.addListener(new Property.ValueChangeListener() {
                         @Override
                         public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                            boolean value = (Boolean) valueChangeEvent.getProperty().getValue();
                             commTable.removeGeneratedColumn("Status");
                             commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
-                                        @Override
-                                        public Object generateCell(CustomTable components, Object o, Object o2) {
-                                            Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
-                                            Boolean valueOfInstance = null;
-                                            if (TableCheckInstance instanceof CheckBox) {
-                                                valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
-                                            }
+                                @Override
+                                public Object generateCell(CustomTable components, Object o, Object o2) {
+                                    Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
+                                    Boolean valueOfInstance = null;
+                                    if (TableCheckInstance instanceof CheckBox) {
+                                        valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
+                                    }
 
-                                            VerticalLayout cell = new VerticalLayout();
-                                            Label enumStat = new Label();
-                                            if (valueOfInstance) {
-                                                enumStat.setValue(ReadEnum.Przeczytany.toString());
-                                            } else {
-                                                enumStat.setValue(ReadEnum.Nieprzeczytany.toString());
-                                            }
-                                            cell.addComponent(enumStat);
-                                            return cell;
-                                        }
-                                    });
+                                    String finalKnow = "";
+                                    if (valueOfInstance) {
+                                        finalKnow = "Przeczytana";
+                                    } else {
+                                        finalKnow = "Nieprzeczytana";
+                                    }
+                                    return finalKnow;
+                                }
+                            });
                         }
                     });
                     isReadBool.setImmediate(true);
@@ -181,8 +175,8 @@ public class CommuniqueView extends VerticalLayout implements View {
                     indx.getContainerProperty(id, "ID").setValue(numer_komunikatu[i]);
                     indx.getContainerProperty(id, "Komunikat").setValue(state[i]);
                     indx.getContainerProperty(id, "Data nadesłania").setValue(dataTime[i]);
-//                    indx.getContainerProperty(id, "Status").setValue(isRead); //generated
                     indx.getContainerProperty(id, "").setValue(isReadBool);
+//                    indx.getContainerProperty(id, "Status").setValue("hej"); //todo test czy jest w konetenrze kolumna status
                 }
             }
 

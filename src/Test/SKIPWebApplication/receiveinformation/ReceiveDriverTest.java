@@ -25,7 +25,7 @@ public class ReceiveDriverTest {
         exDr.setCoordinatesUpdateDate(date);
         String res = ReceiveDriver.addDriver(exDr);
         ArrayList<Driver> resultList = ReceiveDriver.getDriversList();
-        if(res.equals("")){
+        if (res.equals("")) {
             System.out.println("pusty, nie dodano kierowcy");
             assertTrue(false);
         }
@@ -34,13 +34,13 @@ public class ReceiveDriverTest {
 
         resultList = ReceiveDriver.getDriversList();
         String resDel = ReceiveDriver.deleteDriver(resultList.get(0).getId());
-        if(resDel.equals("")){
+        if (resDel.equals("")) {
             System.out.println("pusty, nie usunięto kierowcy");
             assertTrue(false);
         }
         resultList = ReceiveDriver.getDriversList();
 
-        assertEquals(1, resultList.size());
+        assertEquals(0, resultList.size());
     }
 
     @Test
@@ -74,8 +74,32 @@ public class ReceiveDriverTest {
 
     @Test
     public void testGetDriver() throws Exception {
-        long ID = new Long("16");
-        Driver dr = ReceiveDriver.getDriver(new Long("16"));
+        Date date = new Date();
+        Driver exDr = new Driver("Adam", "Zapolski");
+        exDr.setEmail("r@op.pl");
+        exDr.setLatestCoordinates("N20.0000000 W132.0000000");
+        exDr.setPhoneNumber("229997845");
+        exDr.setPhoneNumber2("48789456123");
+        exDr.setCoordinatesUpdateDate(date);
+        String res = ReceiveDriver.addDriver(exDr);
+        ArrayList<Driver> resultList = ReceiveDriver.getDriversList();
+        if (res.equals("")) {
+            System.out.println("pusty, nie dodano kierowcy");
+            assertTrue(false);
+        }
+        assertEquals("Adam", resultList.get(0).getFirstName());
+        assertEquals("Zapolski", resultList.get(0).getLastName());
+
+        long ID = resultList.get(0).getId();
+        Driver dr = ReceiveDriver.getDriver(ID);
         assertEquals(ID, dr.getId());
+
+        resultList = ReceiveDriver.getDriversList();
+        String resDel = ReceiveDriver.deleteDriver(resultList.get(resultList.size() - 1)
+                .getId());
+        if (resDel.equals("")) {
+            System.out.println("pusty, nie usunięto kierowcy");
+            assertTrue(false);
+        }
     }
 }

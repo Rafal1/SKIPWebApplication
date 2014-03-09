@@ -1,13 +1,19 @@
 package SKIPWebApplication;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
+import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import static com.vaadin.ui.Alignment.TOP_CENTER;
 
@@ -20,6 +26,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private FilterTable commTable = new FilterTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
+    private CustomMap customMap = new CustomMap();
 //    private TextField searchField = new TextField();
 
     public CommuniqueView() {
@@ -44,6 +51,9 @@ public class CommuniqueView extends VerticalLayout implements View {
         layout.setComponentAlignment(mainPanel, TOP_CENTER);
         layout.setSizeFull();
         addComponent(layout);
+
+
+
     }
 
     private Component getBodyContent() {
@@ -81,7 +91,10 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private void buildingRightLayout() {
-
+        rightLayout.setSizeFull();
+        Component map = customMap.getCustomMap();
+        rightLayout.addComponent(map);
+        rightLayout.setExpandRatio(map, 1.0f);
     }
 
     private void buildTable() {
@@ -92,6 +105,8 @@ public class CommuniqueView extends VerticalLayout implements View {
             Integer[] numer_komunikatu = new Integer[]{1, 2};
             Date[] dataTime = new Date[]{sdf.parse("13.01.2014 11:32:00"), sdf.parse("14.01.2014 21:55:00")};
             String[] state = new String[]{"Jazda", "Pauza"};
+            final LatLon[] coords = new LatLon[] {new LatLon(52.0922474, 21.0249287),
+                    new LatLon(52.0929999, 22.0249234), };
 
             commTable.addContainerProperty("Kierowca", String.class, null);
             commTable.addContainerProperty("ID", Integer.class, null);
@@ -99,11 +114,27 @@ public class CommuniqueView extends VerticalLayout implements View {
             commTable.addContainerProperty("Data nadesłania", Date.class, null);
             commTable.addContainerProperty("Status", CheckBox.class, null);
 
+
+
             commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
             commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
             commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
             commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
             commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
+
+            // TODO dodaje narazie tutaj, jak bedziesz chcial Rafał to sobie to gdzieś przerzuć,
+            // a jest to po to żeby dało sie kliknać w komunikat
+            commTable.setSelectable(true);
+            commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+                @Override
+                public void itemClick(ItemClickEvent event) {
+                    Random gen = new Random();
+                    int rand = gen.nextInt(2);
+                    customMap.setDefaultMarkerImage("VAADIN/resources/icons/messages.png");
+                    customMap.addOneMarker("Test", coords[rand]);
+                }
+            });
+            // koniec reakcji na klikniecie
 
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {

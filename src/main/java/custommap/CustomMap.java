@@ -13,7 +13,10 @@ import com.vaadin.ui.*;
  */
 public class CustomMap {
     private GoogleMap googleMap;
-   private  VerticalLayout verti;
+    private VerticalLayout verti;
+    private String imagePath = "VAADIN/resources/icons/drivers.png";
+
+
     public CustomMap() {
         createLayout();
     }
@@ -22,8 +25,23 @@ public class CustomMap {
 
     }
 
+    public void addOneMarker( String name,  LatLon coords ) {
+        googleMap.clearMarkers();
+        googleMap.setCenter(coords);
+        googleMap.addMarker(name, coords, false,
+                imagePath);
+    }
+
+    public void setDefaultMarkerImage(String path){
+        imagePath = path;
+    }
+
     public Component getCustomMap(){
         return verti;
+    }
+
+    public GoogleMap getGoogleMap(){
+        return googleMap;
     }
 
     private void createLayout() {

@@ -50,7 +50,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         VerticalSplitPanel splitPanel = new VerticalSplitPanel();
 
         splitPanel.setSplitPosition(SPLIT_POSITION);
-        splitPanel.setLocked(true);
+        splitPanel.setLocked(false);
 
         buildingLeftLayout();
         splitPanel.addComponent(leftLayout);

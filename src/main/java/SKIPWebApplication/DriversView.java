@@ -125,27 +125,30 @@ public class DriversView extends VerticalLayout implements View {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 //TODO conditions for other views
-                if (selectedItem.getText().equals("Wyloguj się")) {
+                if (selectedItem.getText().equals(MenuItems.LOGOUT)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
                 }
-                if (selectedItem.getText().equals("Wiadomości")) {
+                if (selectedItem.getText().equals(MenuItems.MAIN)) {
+                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
+                }
+                if (selectedItem.getText().equals(MenuItems.COMMUNIQUE)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
                 }
-                if (selectedItem.getText().equals("Kierowcy")) {
+                if (selectedItem.getText().equals(MenuItems.DRIVERS)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
                 }
             }
         };
         MenuBar menu = new MenuBar();
-        menu.addItem("Główna", new ThemeResource(
+        menu.addItem(MenuItems.MAIN, new ThemeResource(
                 "../../resources/icons/home.png"), cmd);
-        menu.addItem("Kierowcy", new ThemeResource(
+        menu.addItem(MenuItems.DRIVERS, new ThemeResource(
                 "../../resources/icons/drivers.png"), cmd);
-        menu.addItem("Pojazdy", new ThemeResource(
+        menu.addItem(MenuItems.VEHICLES, new ThemeResource(
                 "../../resources/icons/car.png"), cmd);
-        menu.addItem("Wiadomości", new ThemeResource(
+        menu.addItem(MenuItems.COMMUNIQUE, new ThemeResource(
                 "../../resources/icons/messages.png"), cmd);
-        menu.addItem("Wyloguj się", new ThemeResource(
+        menu.addItem(MenuItems.LOGOUT, new ThemeResource(
                 "../../resources/icons/log_out.png"), cmd);
         menu.setHeight("73px");
         hl.addComponent(menu);

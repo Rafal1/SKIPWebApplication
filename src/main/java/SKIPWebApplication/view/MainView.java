@@ -1,4 +1,4 @@
-package SKIPWebApplication;
+package SKIPWebApplication.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -10,17 +10,17 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * @author Rafal Zawadzki
  */
-public class VehicleView extends VerticalLayout implements View {
+public class MainView extends VerticalLayout implements View {
     private static String PAGE_WIDTH = "1024px";
     private final Integer SPLIT_POSITION = 30;
 
-    public VehicleView() {
+    public MainView() {
         setSizeFull();
         initLayout();
     }
 
     private void initLayout() {
-        Component navigationBar = DriversView.createMenuPanel();
+        Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
 
         VerticalLayout mainPanel = new VerticalLayout();
@@ -30,8 +30,6 @@ public class VehicleView extends VerticalLayout implements View {
         mainPanel.setComponentAlignment(navigationBar, Alignment.TOP_CENTER);
         mainPanel.addComponent(bodyContent);
         mainPanel.setExpandRatio(bodyContent, 1.0f);
-
-
     }
 
     private Component getBodyContent() {
@@ -45,4 +43,5 @@ public class VehicleView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
     }
+
 }

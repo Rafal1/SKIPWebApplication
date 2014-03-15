@@ -14,6 +14,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
+import custommap.CustomMap;
 import returnobjects.Driver;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class DriversView extends VerticalLayout implements View {
     private TextField searchField = new TextField();
     private Button addNewDriverButton = new Button("Nowy kierowca");
     private VerticalLayout rightLayout = new VerticalLayout();
-    private GoogleMap googleMap;
+    private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
     public static final String ID = "Id";
@@ -192,12 +193,10 @@ public class DriversView extends VerticalLayout implements View {
     }
 
     private void initMap() {
-        googleMap = new GoogleMap(new LatLon(52.0922474, 21.0249287), 12.0, "");
-        googleMap.setSizeFull();
-        googleMap.setImmediate(true);
-        googleMap.setMinZoom(4.0);
-        rightLayout.addComponent(googleMap);
-        rightLayout.setExpandRatio(googleMap, 1.0f);
+        customMap = new CustomMap();
+        VerticalLayout mapLayut =(VerticalLayout) customMap.getCustomMap();
+        rightLayout.addComponent(mapLayut);
+        rightLayout.setExpandRatio(mapLayut, 1.0f);
     }
 
     private void initSearch() {
@@ -261,10 +260,6 @@ public class DriversView extends VerticalLayout implements View {
                             .getItem(contactId));
                     editorFields.setEnabled(false);
                     // mapa
-                    googleMap.clearMarkers();
-                    googleMap.setCenter((LatLon) driversList
-                            .getContainerProperty(contactId, COORDINATES)
-                            .getValue());
                     String info = "Kierowca: " + (String) driversList
                             .getContainerProperty(contactId, FNAME)
                             .getValue() + " " + (String) driversList
@@ -272,10 +267,11 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(contactId, REGISTRATION_NR)
                             .getValue() ;
-                    googleMap.addMarker(info, (LatLon) driversList
+
+                    customMap.addOneMarker(info, (LatLon) driversList
                             .getContainerProperty(contactId, COORDINATES)
-                            .getValue(), false,
-                            "VAADIN/resources/icons/drivers.png");
+                            .getValue());
+
 
                 }
 

@@ -2,17 +2,28 @@ package SKIPWebApplication.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.VerticalLayout;
+import custommap.CustomMap;
+
+import static com.vaadin.ui.Alignment.TOP_CENTER;
 
 /**
- * @author Rafal Zawadzki
+ * User: Mariusz
+ * Date: 09.03.14
+ * Time: 19:34
+ * Desc: Klasa bedąca odwzorowaniem widoku głownego w aplikacji
  */
 public class MainView extends VerticalLayout implements View {
+
     private static String PAGE_WIDTH = "1024px";
     private final Integer SPLIT_POSITION = 30;
+
+    private GoogleMap googleMap;
+    private VerticalLayout leftLayout = new VerticalLayout();
+    private VerticalLayout rightLayout = new VerticalLayout();
 
     public MainView() {
         setSizeFull();
@@ -30,18 +41,23 @@ public class MainView extends VerticalLayout implements View {
         mainPanel.setComponentAlignment(navigationBar, Alignment.TOP_CENTER);
         mainPanel.addComponent(bodyContent);
         mainPanel.setExpandRatio(bodyContent, 1.0f);
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.addComponent(mainPanel);
+        layout.setComponentAlignment(mainPanel, TOP_CENTER);
+        layout.setSizeFull();
+        addComponent(layout);
+
+
     }
 
     private Component getBodyContent() {
-        HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-        splitPanel.setSplitPosition(SPLIT_POSITION);
-        splitPanel.setLocked(true);
-
-        return splitPanel;
+        CustomMap customMap = new CustomMap();
+        return customMap.getCustomMap();
     }
+
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
     }
-
 }

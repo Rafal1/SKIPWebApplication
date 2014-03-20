@@ -7,9 +7,12 @@ import SKIPWebApplication.StatusEnum;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
+import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 
 import java.text.ParseException;
@@ -27,6 +30,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private FilterTable commTable = new FilterTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
+    private CustomMap customMap;
 
     public CommuniqueView() {
         setSizeFull();
@@ -109,7 +113,19 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private void buildingRightLayout() {
+          initMap();
+
+        // wstawiam w tym miejscu mape - Mariusz
         //TODO usunac gdy na 100% będzie wiadaomo jak ma wyglądać widok
+
+    }
+
+    private void initMap(){
+        customMap = new CustomMap();
+        Component map = customMap.getCustomMap();
+        rightLayout.addComponent(map);
+        rightLayout.setExpandRatio(map, 1.0f);
+
     }
 
     private Container buildTable() {
@@ -183,6 +199,13 @@ public class CommuniqueView extends VerticalLayout implements View {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+               customMap.addOneMarker("przyklad" , new LatLon(52.324234 , 25.2452342));
+            }
+        });
         return indx;
     }
 

@@ -4,6 +4,9 @@ import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Mariusz
@@ -25,11 +28,22 @@ public class CustomMap {
 
     }
 
+    public void addMultipleMarkers(ArrayList<Marker> markers){
+        googleMap.clearMarkers();
+        Iterator<Marker> iter = markers.iterator();
+        while(iter.hasNext()){
+            Marker m = iter.next();
+            addMarker(m.getName(), m.getCoords());
+        }
+    }
+
+    public void addOneMarker(Marker marker){
+        addOneMarker(marker.getName(), marker.getCoords());
+    }
+
     public void addOneMarker( String name,  LatLon coords ) {
         googleMap.clearMarkers();
-        googleMap.setCenter(coords);
-        googleMap.addMarker(name, coords, false,
-                imagePath);
+        addMarker(name, coords);
     }
 
     public void setDefaultMarkerImage(String path){
@@ -61,6 +75,12 @@ public class CustomMap {
         googleMap.setImmediate(true);
         googleMap.setMinZoom(4.0);
         return googleMap;
+    }
+
+    private void addMarker(String name , LatLon coords){
+        googleMap.setCenter(coords);
+        googleMap.addMarker(name, coords, false,
+                imagePath);
     }
 
 

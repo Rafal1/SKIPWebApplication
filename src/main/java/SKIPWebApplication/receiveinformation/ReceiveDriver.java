@@ -26,9 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
 import javax.net.ssl.SSLContext;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -43,7 +41,7 @@ import java.util.List;
  */
 public class ReceiveDriver {
 
-    public static ArrayList<Driver> getDriversListSSL() {
+    public static ArrayList<Driver> getDriversList() {
         KeyStore trustStore = null;
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -51,14 +49,14 @@ public class ReceiveDriver {
             e.printStackTrace();
         }
         FileInputStream instream = null;
-        try {
-            instream = new FileInputStream(new File("my.keystore"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+            instream = null; //new FileInputStream(new File("my.keystore"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         try {
             try {
-                trustStore.load(instream, "nopassword".toCharArray());
+                trustStore.load(instream, null); //"nopassword".toCharArray(
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
@@ -67,11 +65,11 @@ public class ReceiveDriver {
                 e.printStackTrace();
             }
         } finally {
-            try {
-                instream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                instream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
 
         // Trust own CA and all self-signed certs
@@ -138,12 +136,12 @@ public class ReceiveDriver {
         return null;
     }
 
-        public static ArrayList<Driver> getDriversList() {
+        public static ArrayList<Driver> getDriversListX() {
             ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             String unitsString;
-            unitsString = restTemplate.getForObject("http://localhost:8080/drivers", String.class);
+            unitsString = restTemplate.getForObject("https://localhost:8443/drivers", String.class);
             try {
                 parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
                 });
@@ -165,7 +163,7 @@ public class ReceiveDriver {
         }
         params.add(new BasicNameValuePair("json", drJSON));
 
-        String url = "http://localhost:8080/drivers";
+        String url = "http://localhost:8443/drivers";
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
         try {
@@ -187,7 +185,7 @@ public class ReceiveDriver {
 //    }
 
     public static String deleteDriver(Long ID) {
-        String url = "http://localhost:8080/drivers/" + ID;
+        String url = "http://localhost:8443/drivers/" + ID;
         HttpClient httpclient = new DefaultHttpClient();
         HttpDelete delQuery = new HttpDelete(url);
         try {
@@ -202,7 +200,7 @@ public class ReceiveDriver {
 
     public static Driver getDriver(Long id) {
         RestTemplate restTemplate = new RestTemplate();
-        Driver stream = restTemplate.getForObject("http://localhost:8080/drivers/{id}", Driver.class, id);
+        Driver stream = restTemplate.getForObject("http://localhost:8443/drivers/{id}", Driver.class, id);
         return stream;
     }
 

@@ -3,20 +3,36 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
+import javax.net.ssl.SSLContext;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,20 +42,115 @@ import java.util.List;
 public class ReceiveDriver {
 
     public static ArrayList<Driver> getDriversList() {
-        ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        String unitsString;
-        unitsString = restTemplate.getForObject("http://localhost:8080/drivers", String.class);
+        KeyStore trustStore = null;
         try {
-            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
-            });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
+            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        } catch (KeyStoreException e) {
             e.printStackTrace();
         }
-        return parsingResponse;
+        FileInputStream instream = null;
+//        try {
+            instream = null; //new FileInputStream(new File("my.keystore"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+        try {
+            try {
+                trustStore.load(instream, null); //"nopassword".toCharArray(
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (CertificateException e) {
+                e.printStackTrace();
+            }
+        } finally {
+//            try {
+//                instream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
+
+        // Trust own CA and all self-signed certs
+        SSLContext sslcontext = null;
+        try {
+            sslcontext = SSLContexts.custom()
+                    .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
+                    .build();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+        // Allow TLSv1 protocol only
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                sslcontext,
+                new String[]{"TLSv1"},
+                null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .build();
+        try {
+
+            HttpGet httpget = new HttpGet("https://localhost:8443/drivers");
+
+            System.out.println("executing request" + httpget.getRequestLine());
+
+            CloseableHttpResponse response = null;
+            try {
+                response = httpclient.execute(httpget);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                HttpEntity entity = response.getEntity();
+
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                if (entity != null) {
+                    System.out.println("Response content length: " + entity.getContentLength());
+                }
+                try {
+                    EntityUtils.consume(entity);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
+
+        public static ArrayList<Driver> getDriversListX() {
+            ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            String unitsString;
+            unitsString = restTemplate.getForObject("https://localhost:8443/drivers", String.class);
+            try {
+                parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
+                });
+            } catch (IOException e) {
+                System.out.print("Parsing array error");
+                e.printStackTrace();
+            }
+            return parsingResponse;
+        }
 
     public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -52,7 +163,7 @@ public class ReceiveDriver {
         }
         params.add(new BasicNameValuePair("json", drJSON));
 
-        String url = "http://localhost:8080/drivers";
+        String url = "http://localhost:8443/drivers";
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
         try {
@@ -74,7 +185,7 @@ public class ReceiveDriver {
 //    }
 
     public static String deleteDriver(Long ID) {
-        String url = "http://localhost:8080/drivers/" + ID;
+        String url = "http://localhost:8443/drivers/" + ID;
         HttpClient httpclient = new DefaultHttpClient();
         HttpDelete delQuery = new HttpDelete(url);
         try {
@@ -89,7 +200,7 @@ public class ReceiveDriver {
 
     public static Driver getDriver(Long id) {
         RestTemplate restTemplate = new RestTemplate();
-        Driver stream = restTemplate.getForObject("http://localhost:8080/drivers/{id}", Driver.class, id);
+        Driver stream = restTemplate.getForObject("http://localhost:8443/drivers/{id}", Driver.class, id);
         return stream;
     }
 

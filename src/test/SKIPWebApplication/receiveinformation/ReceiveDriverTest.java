@@ -17,9 +17,34 @@ import static org.junit.Assert.assertTrue;
  * @author Rafal Zawadzki
  */
 public class ReceiveDriverTest {
+    static {
+        //for localhost testing only
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier() {
+
+                    public boolean verify(String hostname,
+                                          javax.net.ssl.SSLSession sslSession) {
+                        if (hostname.equals("localhost")) {
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+    }
 
     @Test
     public void testgetDriversListSSLMykong() {
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier() {
+
+                    public boolean verify(String hostname,
+                                          javax.net.ssl.SSLSession sslSession) {
+                        if (hostname.equals("localhost")) {
+                            return true;
+                        }
+                        return false;
+                    }
+                });
         String https_url = "https://localhost:8443/drivers";
         URL url = null;
         try {

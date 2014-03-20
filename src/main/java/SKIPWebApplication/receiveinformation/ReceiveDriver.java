@@ -27,7 +27,9 @@ import returnobjects.Driver;
 
 import javax.net.ssl.SSLContext;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -35,13 +37,27 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Rafal Zawadzki
  */
 public class ReceiveDriver {
+    private static Properties prop = new Properties();
+    private static InputStream input = null;
+
+    public static void initProp() {
+        try {
+            input = new FileInputStream("config.properties");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.println(prop.getProperty("WebServiceURL"));
+
+    }
 
     public static ArrayList<Driver> getDriversList() {
+        initProp();
         KeyStore trustStore = null;
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -50,7 +66,7 @@ public class ReceiveDriver {
         }
         FileInputStream instream = null;
 //        try {
-            instream = null; //new FileInputStream(new File("my.keystore"));
+        instream = null; //new FileInputStream(new File("my.keystore"));
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
@@ -96,7 +112,7 @@ public class ReceiveDriver {
                 .build();
         try {
 
-            HttpGet httpget = new HttpGet("https://localhost:8443/drivers");
+            HttpGet httpget = new HttpGet(prop.getProperty("WebServiceURL") + "/drivers");
 
             System.out.println("executing request" + httpget.getRequestLine());
 
@@ -136,21 +152,21 @@ public class ReceiveDriver {
         return null;
     }
 
-        public static ArrayList<Driver> getDriversListX() {
-            ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
-            RestTemplate restTemplate = new RestTemplate();
-            ObjectMapper mapper = new ObjectMapper();
-            String unitsString;
-            unitsString = restTemplate.getForObject("https://localhost:8443/drivers", String.class);
-            try {
-                parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
-                });
-            } catch (IOException e) {
-                System.out.print("Parsing array error");
-                e.printStackTrace();
-            }
-            return parsingResponse;
+    public static ArrayList<Driver> getDriversListX() {
+        ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        unitsString = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers", String.class);
+        try {
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
+            });
+        } catch (IOException e) {
+            System.out.print("Parsing array error");
+            e.printStackTrace();
         }
+        return parsingResponse;
+    }
 
     public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -163,7 +179,7 @@ public class ReceiveDriver {
         }
         params.add(new BasicNameValuePair("json", drJSON));
 
-        String url = "http://localhost:8443/drivers";
+        String url = prop.getProperty("WebServiceURL") + "/drivers";
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
         try {
@@ -175,7 +191,6 @@ public class ReceiveDriver {
         } catch (IOException e) {
             return null;
         }
-
     }
 
 //    public static void changeDriver(Long ID) { //na razie nie ma
@@ -185,7 +200,7 @@ public class ReceiveDriver {
 //    }
 
     public static String deleteDriver(Long ID) {
-        String url = "http://localhost:8443/drivers/" + ID;
+        String url = prop.getProperty("WebServiceURL") + "/drivers" + ID;
         HttpClient httpclient = new DefaultHttpClient();
         HttpDelete delQuery = new HttpDelete(url);
         try {
@@ -200,7 +215,7 @@ public class ReceiveDriver {
 
     public static Driver getDriver(Long id) {
         RestTemplate restTemplate = new RestTemplate();
-        Driver stream = restTemplate.getForObject("http://localhost:8443/drivers/{id}", Driver.class, id);
+        Driver stream = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers/{id}", Driver.class, id);
         return stream;
     }
 

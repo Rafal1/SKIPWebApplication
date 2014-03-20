@@ -177,7 +177,7 @@
                     <compileReport>true</compileReport>
                     <style>OBF</style>
                     <strict>true</strict>
-                    <runTarget>http://localhost:8080/</runTarget>
+                    <runTarget>http://localhost:8090/</runTarget> <!-- default 8080! -->
                 </configuration>
                 <executions>
                     <execution>

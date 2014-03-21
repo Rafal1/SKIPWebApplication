@@ -26,10 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
 import javax.net.ssl.SSLContext;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -48,12 +45,15 @@ public class ReceiveDriver {
 
     public static void initProp() {
         try {
-            input = new FileInputStream("config.properties");
+            input = new FileInputStream(new File("src\\main\\resuorces\\config.properties").getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        System.out.println(prop.getProperty("WebServiceURL"));
-
+        try {
+            prop.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static ArrayList<Driver> getDriversList() {

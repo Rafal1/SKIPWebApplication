@@ -21,7 +21,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
@@ -58,6 +57,7 @@ public class ReceiveDriver {
 
     public static ArrayList<Driver> getDriversList() {
         initProp();
+        ArrayList<Driver> res = null;
         KeyStore trustStore = null;
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -65,14 +65,14 @@ public class ReceiveDriver {
             e.printStackTrace();
         }
         FileInputStream instream = null;
-//        try {
-        instream = null; //new FileInputStream(new File("my.keystore"));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            instream = new FileInputStream(new File("src\\main\\resuorces\\SSL\\SKIPgen.keystore").getAbsolutePath());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         try {
             try {
-                trustStore.load(instream, null); //"nopassword".toCharArray(
+                trustStore.load(instream, prop.getProperty("keystorePassword").toCharArray());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
@@ -81,11 +81,11 @@ public class ReceiveDriver {
                 e.printStackTrace();
             }
         } finally {
-//            try {
-//                instream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                instream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // Trust own CA and all self-signed certs
@@ -113,9 +113,6 @@ public class ReceiveDriver {
         try {
 
             HttpGet httpget = new HttpGet(prop.getProperty("WebServiceURL") + "/drivers");
-
-            System.out.println("executing request" + httpget.getRequestLine());
-
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpget);
@@ -124,14 +121,20 @@ public class ReceiveDriver {
             }
             try {
                 HttpEntity entity = response.getEntity();
-
-                System.out.println("----------------------------------------");
-                System.out.println(response.getStatusLine());
-                if (entity != null) {
-                    System.out.println("Response content length: " + entity.getContentLength());
-                }
                 try {
-                    EntityUtils.consume(entity);
+                    BufferedReader rd = new BufferedReader(
+                            new InputStreamReader(entity.getContent()));
+                    StringBuffer result = new StringBuffer();
+                    String line = "";
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    res = mapper.readValue(String.valueOf(result), new TypeReference<ArrayList<Driver>>() {
+                    });
+                    System.out.println(res.toString());
+                    //EntityUtils.consume(entity);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -149,7 +152,7 @@ public class ReceiveDriver {
                 e.printStackTrace();
             }
         }
-        return null;
+        return res;
     }
 
     public static ArrayList<Driver> getDriversListX() {
@@ -195,8 +198,8 @@ public class ReceiveDriver {
 
 //    public static void changeDriver(Long ID) { //na razie nie ma
 //        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.put("http://localhost:8080/drivers/{id}", Driver.class, ID);
-//        restTemplate.put("http://localhost:8080/drivers/{id}", ID);
+//        restTemplate.put("http://localhost:8443/drivers/{id}", Driver.class, ID);
+//        restTemplate.put("http://localhost:8443/drivers/{id}", ID);
 //    }
 
     public static String deleteDriver(Long ID) {

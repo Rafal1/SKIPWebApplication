@@ -68,7 +68,7 @@ public class ReceiveDriverTest {
         }
         try {
             try {
-                trustStore.load(instream, "skipskip".toCharArray());
+                trustStore.load(instream, prop.getProperty("keystorePassword").toCharArray());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {

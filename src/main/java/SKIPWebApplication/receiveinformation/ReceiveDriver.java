@@ -1,27 +1,15 @@
 package SKIPWebApplication.receiveinformation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.springframework.web.client.RestTemplate;
 import returnobjects.Driver;
 
 import javax.net.ssl.SSLContext;
@@ -32,8 +20,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+
+import static org.atmosphere.di.ServletContextHolder.getServletContext;
 
 /**
  * @author Rafal Zawadzki
@@ -44,19 +33,27 @@ public class ReceiveDriver {
 
     public static void initProp() {
         try {
-            input = new FileInputStream(new File("src\\main\\resuorces\\config.properties").getAbsolutePath());
+//        File catalinaBase = new File( System.getProperty( "catalina.base" ) ).getAbsoluteFile();
+//        File propertyFile = new File( catalinaBase, "src\\main\\resuorces\\config.properties" );
+//        InputStream inputStream = new FileInputStream( propertyFile );
+            String rootPath = getServletContext().getRealPath("/");
+            InputStream inputStream = new FileInputStream(rootPath+"src\\main\\resuorces\\config.properties");
+            //FileInputStream in = (FileInputStream) this.getClass().getClassLoader().getResourceAsStream("config.properties");
+            //ServletContext context =
+            //input = new FileInputStream(new File("src\\main\\resuorces\\config.properties").getAbsolutePath());
+            input = inputStream;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        try {
-            prop.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            prop.load(input);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static ArrayList<Driver> getDriversList() {
-        initProp();
+//        initProp();
         ArrayList<Driver> res = null;
         KeyStore trustStore = null;
         try {
@@ -66,13 +63,14 @@ public class ReceiveDriver {
         }
         FileInputStream instream = null;
         try {
-            instream = new FileInputStream(new File("src\\main\\resuorces\\SSL\\SKIPgen.keystore").getAbsolutePath());
+            String rootPath = getServletContext().getRealPath("/");
+            instream = new FileInputStream(new File("C:\\jssecacerts")); // :((
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         try {
             try {
-                trustStore.load(instream, prop.getProperty("keystorePassword").toCharArray());
+                trustStore.load(instream, "skipskip".toCharArray()); // "skipskip".toCharArray() prop.getProperty("keystorePassword").toCharArray()
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
@@ -107,12 +105,11 @@ public class ReceiveDriver {
                 new String[]{"TLSv1"},
                 null,
                 SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-        CloseableHttpClient httpclient = HttpClients.custom()
+                CloseableHttpClient httpclient = HttpClients.custom()
                 .setSSLSocketFactory(sslsf)
                 .build();
         try {
-
-            HttpGet httpget = new HttpGet(prop.getProperty("WebServiceURL") + "/drivers");
+            HttpGet httpget = new HttpGet( "https://localhost:8443" + "/drivers"); //prop.getProperty("WebServiceURL")
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpget);
@@ -156,44 +153,46 @@ public class ReceiveDriver {
     }
 
     public static ArrayList<Driver> getDriversListX() {
-        ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        String unitsString;
-        unitsString = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers", String.class);
-        try {
-            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
-            });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
-            e.printStackTrace();
-        }
-        return parsingResponse;
+//        ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
+//        RestTemplate restTemplate = new RestTemplate();
+//        ObjectMapper mapper = new ObjectMapper();
+//        String unitsString;
+//        unitsString = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers", String.class);
+//        try {
+//            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
+//            });
+//        } catch (IOException e) {
+//            System.out.print("Parsing array error");
+//            e.printStackTrace();
+//        }
+
+        return null;
     }
 
     public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        ObjectMapper mapper = new ObjectMapper();
-        String drJSON = null;
-        try {
-            drJSON = mapper.writeValueAsString(dr);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        params.add(new BasicNameValuePair("json", drJSON));
-
-        String url = prop.getProperty("WebServiceURL") + "/drivers";
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(url);
-        try {
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            httppost.setEntity(new UrlEncodedFormEntity(params));
-            return httpclient.execute(httppost, responseHandler);
-        } catch (ClientProtocolException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
+//        List<NameValuePair> params = new ArrayList<NameValuePair>();
+//        ObjectMapper mapper = new ObjectMapper();
+//        String drJSON = null;
+//        try {
+//            drJSON = mapper.writeValueAsString(dr);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        params.add(new BasicNameValuePair("json", drJSON));
+//
+//        String url = prop.getProperty("WebServiceURL") + "/drivers";
+//        HttpClient httpclient = new DefaultHttpClient();
+//        HttpPost httppost = new HttpPost(url);
+//        try {
+//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+//            httppost.setEntity(new UrlEncodedFormEntity(params));
+//            return httpclient.execute(httppost, responseHandler);
+//        } catch (ClientProtocolException e) {
+//            return null;
+//        } catch (IOException e) {
+//            return null;
+//        }
+        return null;
     }
 
 //    public static void changeDriver(Long ID) { //na razie nie ma
@@ -203,23 +202,25 @@ public class ReceiveDriver {
 //    }
 
     public static String deleteDriver(Long ID) {
-        String url = prop.getProperty("WebServiceURL") + "/drivers" + ID;
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpDelete delQuery = new HttpDelete(url);
-        try {
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            return httpclient.execute(delQuery, responseHandler);
-        } catch (ClientProtocolException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
+//        String url = prop.getProperty("WebServiceURL") + "/drivers" + ID;
+//        HttpClient httpclient = new DefaultHttpClient();
+//        HttpDelete delQuery = new HttpDelete(url);
+//        try {
+//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+//            return httpclient.execute(delQuery, responseHandler);
+//        } catch (ClientProtocolException e) {
+//            return null;
+//        } catch (IOException e) {
+//            return null;
+//        }
+        return null;
     }
 
     public static Driver getDriver(Long id) {
-        RestTemplate restTemplate = new RestTemplate();
-        Driver stream = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers/{id}", Driver.class, id);
-        return stream;
+        //RestTemplate restTemplate = new RestTemplate();
+        //Driver stream = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers/{id}", Driver.class, id);
+        //return stream;
+        return null;
     }
 
 }

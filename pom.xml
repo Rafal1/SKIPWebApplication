@@ -52,6 +52,12 @@
             <groupId>com.vaadin.tapio</groupId>
             <artifactId>googlemaps</artifactId>
             <version>0.7.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>vaadin-server</artifactId>
+                    <groupId>com.vaadin</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -88,6 +94,20 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-push</artifactId>
             <version>${vaadin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>atmosphere-compat-tomcat7</artifactId>
+                    <groupId>com.vaadin.external.atmosphere</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>atmosphere-compat-jbossweb</artifactId>
+                    <groupId>com.vaadin.external.atmosphere</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>atmosphere-compat-tomcat</artifactId>
+                    <groupId>com.vaadin.external.atmosphere</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -100,11 +120,17 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>3.2.5.RELEASE</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-web</artifactId>-->
+            <!--<version>3.2.5.RELEASE</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<artifactId>commons-logging</artifactId>-->
+                    <!--<groupId>commons-logging</groupId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
         <dependency>
            <groupId>org.vaadin.addons</groupId>
            <artifactId>filteringtable</artifactId>
@@ -124,6 +150,12 @@
         	<groupId>org.apache.httpcomponents</groupId>
         	<artifactId>httpclient</artifactId>
         	<version>4.3.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

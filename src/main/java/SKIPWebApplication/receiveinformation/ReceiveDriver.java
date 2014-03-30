@@ -1,7 +1,5 @@
 package SKIPWebApplication.receiveinformation;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,6 +8,7 @@ import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import returnobjects.Driver;
 
 import javax.net.ssl.SSLContext;
@@ -53,8 +52,7 @@ public class ReceiveDriver {
     }
 
     public static ArrayList<Driver> getDriversList() {
-//        initProp();
-        ArrayList<Driver> res = null;
+        initProp();
         KeyStore trustStore = null;
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -63,14 +61,13 @@ public class ReceiveDriver {
         }
         FileInputStream instream = null;
         try {
-            String rootPath = getServletContext().getRealPath("/");
-            instream = new FileInputStream(new File("C:\\jssecacerts")); // :((
+            instream = new FileInputStream(new File("src\\main\\resuorces\\SSL\\SKIPgen.keystore").getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         try {
             try {
-                trustStore.load(instream, "skipskip".toCharArray()); // "skipskip".toCharArray() prop.getProperty("keystorePassword").toCharArray()
+                trustStore.load(instream, prop.getProperty("keystorePassword").toCharArray());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (NoSuchAlgorithmException e) {
@@ -105,11 +102,15 @@ public class ReceiveDriver {
                 new String[]{"TLSv1"},
                 null,
                 SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-                CloseableHttpClient httpclient = HttpClients.custom()
+        CloseableHttpClient httpclient = HttpClients.custom()
                 .setSSLSocketFactory(sslsf)
                 .build();
         try {
-            HttpGet httpget = new HttpGet( "https://localhost:8443" + "/drivers"); //prop.getProperty("WebServiceURL")
+
+            HttpGet httpget = new HttpGet(prop.getProperty("WebServiceURL") + "/drivers");
+
+            System.out.println("executing request" + httpget.getRequestLine());
+
             CloseableHttpResponse response = null;
             try {
                 response = httpclient.execute(httpget);
@@ -118,20 +119,14 @@ public class ReceiveDriver {
             }
             try {
                 HttpEntity entity = response.getEntity();
-                try {
-                    BufferedReader rd = new BufferedReader(
-                            new InputStreamReader(entity.getContent()));
-                    StringBuffer result = new StringBuffer();
-                    String line = "";
-                    while ((line = rd.readLine()) != null) {
-                        result.append(line);
-                    }
 
-                    ObjectMapper mapper = new ObjectMapper();
-                    res = mapper.readValue(String.valueOf(result), new TypeReference<ArrayList<Driver>>() {
-                    });
-                    System.out.println(res.toString());
-                    //EntityUtils.consume(entity);
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                if (entity != null) {
+                    System.out.println("Response content length: " + entity.getContentLength());
+                }
+                try {
+                    EntityUtils.consume(entity);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -149,7 +144,158 @@ public class ReceiveDriver {
                 e.printStackTrace();
             }
         }
-        return res;
+
+
+    // v2
+//        initProp();
+//        ArrayList<Driver> res = null;
+//        KeyStore trustStore = null;
+//        try {
+//            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        }
+//        FileInputStream instream = null;
+//        try {
+//            //String rootPath = getServletContext().getRealPath("/");
+//            instream = new FileInputStream(new File("C:\\keystore.jks")); // :((
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            try {
+//                trustStore.load(instream, "skipskip".toCharArray()); // "skipskip".toCharArray() prop.getProperty("keystorePassword").toCharArray()
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            } catch (CertificateException e) {
+//                e.printStackTrace();
+//            }
+//        } finally {
+//            try {
+//                instream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Trust own CA and all self-signed certs
+//        SSLContext sslcontext = null;
+//        try {
+//            sslcontext = SSLContexts.custom()
+//                    .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
+//                    .build();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (KeyManagementException e) {
+//            e.printStackTrace();
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        }
+//        // Allow TLSv1 protocol only
+//        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+//                sslcontext,
+//                new String[]{"TLSv1"},
+//                null,
+//                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+//                CloseableHttpClient httpclient = HttpClients.custom()
+//                .setSSLSocketFactory(sslsf)
+//                .build();
+//        try {
+//            HttpGet httpget = new HttpGet( "https://localhost:8443" + "/drivers"); //prop.getProperty("WebServiceURL")
+//            CloseableHttpResponse response = null;
+//            try {
+//                response = httpclient.execute(httpget);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                HttpEntity entity = response.getEntity();
+//                try {
+//                    BufferedReader rd = new BufferedReader(
+//                            new InputStreamReader(entity.getContent()));
+//                    StringBuffer result = new StringBuffer();
+//                    String line = "";
+//                    while ((line = rd.readLine()) != null) {
+//                        result.append(line);
+//                    }
+//
+//                    ObjectMapper mapper = new ObjectMapper();
+//                    res = mapper.readValue(String.valueOf(result), new TypeReference<ArrayList<Driver>>() {
+//                    });
+//                    System.out.println(res.toString());
+//                    //EntityUtils.consume(entity);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            } finally {
+//                try {
+//                    response.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } finally {
+//            try {
+//                httpclient.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return res;
+
+
+
+        //v3
+//        SSLContextBuilder builder = new SSLContextBuilder();
+//        try {
+//            builder.loadTrustMaterial(null, new TrustStrategy(){
+//                public boolean isTrusted(X509Certificate[] chain, String authType) {
+//                    return true;
+//                }
+//            });
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        }
+//        SSLConnectionSocketFactory sslsf = null;
+//        try {
+//            sslsf = new SSLConnectionSocketFactory(
+//                        builder.build());
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (KeyManagementException e) {
+//            e.printStackTrace();
+//        }
+//        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+//                    sslsf).build();
+//
+//        HttpGet httpGet = new HttpGet("https://localhost:8443" + "/drivers");
+//        CloseableHttpResponse response = null;
+//        try {
+//            response = httpclient.execute(httpGet);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//                System.out.println(response.getStatusLine());
+//                HttpEntity entity = response.getEntity();
+//            try {
+//                EntityUtils.consume(entity);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//            finally {
+//            try {
+//                response.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        return null;
     }
 
     public static ArrayList<Driver> getDriversListX() {

@@ -62,7 +62,7 @@ public class ReceiveDriverTest {
         }
         FileInputStream instream = null;
         try {
-            instream = new FileInputStream(new File("src\\main\\resuorces\\SSL\\SKIPgen.keystore").getAbsolutePath());
+            instream = new FileInputStream(new File("C:\\SKIPgen.keystore").getAbsolutePath());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

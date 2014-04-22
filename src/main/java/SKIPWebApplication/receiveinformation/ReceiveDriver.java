@@ -124,8 +124,10 @@ public class ReceiveDriver {
         } catch (ProtocolException e) {
             e.printStackTrace();
         }
-
         String urlParameters = "driver=" + drJSON;
+
+        // add request header
+        con.setRequestProperty("WebClient", "POSTaddDriver");
 
         // Send post request
         con.setDoOutput(true);
@@ -151,32 +153,192 @@ public class ReceiveDriver {
         return response.toString();
     }
 
-//    public static void changeDriver(Long ID) { //na razie nie ma
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.put("http://localhost:8443/drivers/{id}", Driver.class, ID);
-//        restTemplate.put("http://localhost:8443/drivers/{id}", ID);
-//    }
+    //todo test changeDriver
+    public static Driver changeDriver(Long ID) {
+        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String url = prop.getProperty("WebServiceURL") + "/drivers/" + ID;
 
-    public static String deleteDriver(Long ID) {
-//        String url = prop.getProperty("WebServiceURL") + "/drivers" + ID;
-//        HttpClient httpclient = new DefaultHttpClient();
-//        HttpDelete delQuery = new HttpDelete(url);
-//        try {
-//            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-//            return httpclient.execute(delQuery, responseHandler);
-//        } catch (ClientProtocolException e) {
-//            return null;
-//        } catch (IOException e) {
-//            return null;
-//        }
-        return null;
+        Driver parsingResponse = new Driver();
+
+        URL obj = null;
+        try {
+            obj = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpsURLConnection con = null;
+        try {
+            con = (HttpsURLConnection) obj.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // optional default is GET
+        try {
+            con.setRequestMethod("PUT");
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+
+        // add request header
+        con.setRequestProperty("WebClient", "PUTDriver");
+
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        try {
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Driver>() {
+            });
+        } catch (IOException e) {
+            System.out.print("Parsing array error");
+            e.printStackTrace();
+        }
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
     }
 
+    public static String deleteDriver(Long ID) {
+        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String url = prop.getProperty("WebServiceURL") + "/drivers/" + ID;
+
+        URL obj = null;
+        try {
+            obj = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpsURLConnection con = null;
+        try {
+            con = (HttpsURLConnection) obj.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            con.setRequestMethod("DELETE");
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+
+        // add request header
+        con.setRequestProperty("WebClient", "DELETEDriver");
+
+        // Send post request
+        con.setDoOutput(true);
+        StringBuffer response = new StringBuffer();
+        try {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response.toString();
+    }
+
+    //todo test getDriver
     public static Driver getDriver(Long id) {
-        //RestTemplate restTemplate = new RestTemplate();
-        //Driver stream = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers/{id}", Driver.class, id);
-        //return stream;
-        return null;
+        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String url = prop.getProperty("WebServiceURL") + "/drivers";
+
+        Driver parsingResponse = new Driver();
+
+        URL obj = null;
+        try {
+            obj = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpsURLConnection con = null;
+        try {
+            con = (HttpsURLConnection) obj.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // optional default is GET
+        try {
+            con.setRequestMethod("GET");
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+
+        //        add request header
+        con.setRequestProperty("WebClient", "GETDriver");
+
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        try {
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Driver>() {
+            });
+        } catch (IOException e) {
+            System.out.print("Parsing array error");
+            e.printStackTrace();
+        }
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
     }
 
 }

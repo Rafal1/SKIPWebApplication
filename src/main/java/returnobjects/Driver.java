@@ -1,16 +1,25 @@
 package returnobjects;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class Driver {
 	private long id;
-
+	
+	@Size(min=3, max=64)
+	@Pattern(regexp="^[a-zA-Z-]*$")
 	private String firstName, lastName;
 	
-	private String latestCoordinates;
+	@Valid
+	private Coordinates latestCoordinates;
 	
+	@Pattern(regexp="\\d{3,12}")
 	private String phoneNumber, phoneNumber2;
 	
+//	@Email
+	@Size(max=64)
 	private String email;
 	
 	private Date coordinatesUpdateDate;
@@ -47,11 +56,11 @@ public class Driver {
 		return this.lastName;
 	}
 	
-	public void setLatestCoordinates(String coordinates){
+	public void setLatestCoordinates(Coordinates coordinates){
 		this.latestCoordinates = coordinates;
 	}
 	
-	public String getLatestCoordinates(){
+	public Coordinates getLatestCoordinates(){
 		return this.latestCoordinates;
 	}
 	

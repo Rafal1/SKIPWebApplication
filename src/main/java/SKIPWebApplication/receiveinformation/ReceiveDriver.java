@@ -3,6 +3,7 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import returnobjects.Coordinates;
 import returnobjects.Driver;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -273,14 +274,14 @@ public class ReceiveDriver {
     }
 
     //todo test getDriver
-    public static Driver getDriver(Long id) {
+    public static Driver getDriver(Long ID) {
         InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
         try {
             prop.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String url = prop.getProperty("WebServiceURL") + "/drivers";
+        String url = prop.getProperty("WebServiceURL") + "/drivers/" + ID;
 
         Driver parsingResponse = new Driver();
 
@@ -341,4 +342,85 @@ public class ReceiveDriver {
         return parsingResponse;
     }
 
+    //todo test updateCoordinates
+    public static Coordinates updateDriverCoordinates(Coordinates cor, Long ID) {
+        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String url = prop.getProperty("WebServiceURL") + "/drivers/" + ID + "/updateCoordinates";
+
+        Coordinates parsingResponse = new Coordinates();
+
+        URL obj = null;
+        try {
+            obj = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpsURLConnection con = null;
+        try {
+            con = (HttpsURLConnection) obj.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // optional default is GET
+        try {
+            con.setRequestMethod("PUT");
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+
+        // add request header
+        con.setRequestProperty("WebClient", "PUTDriver");
+
+        ObjectMapper mapper = new ObjectMapper();
+        String corJSON = null;
+        try {
+            corJSON = mapper.writeValueAsString(cor);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        String urlParameters = "coordinates=" + corJSON;
+
+        con.setDoOutput(true);
+        DataOutputStream wr = null;
+        BufferedReader in = null;
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        try {
+            wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Coordinates>() {
+            });
+        } catch (IOException e) {
+            System.out.print("Parsing array error");
+            e.printStackTrace();
+        }
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
+    }
 }

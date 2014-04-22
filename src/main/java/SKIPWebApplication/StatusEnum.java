@@ -6,3 +6,4 @@ package SKIPWebApplication;
 public enum StatusEnum {
     Start, Pauza
 }
+

@@ -90,7 +90,7 @@ public class ReceiveDriver {
         return parsingResponse;
     }
 
-    public static String addDriver(Driver dr) { // webservice zwróci ID pod krórym ten kierowca będzie dostepny (unitString)
+    public static String addDriver(Driver dr) {
         InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
         try {
             prop.load(inputStream);
@@ -155,7 +155,7 @@ public class ReceiveDriver {
     }
 
     //todo test changeDriver
-    public static Driver changeDriver(Long ID) {
+    public static Driver changeDriver(Driver dr, Long ID) {
         InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
         try {
             prop.load(inputStream);
@@ -190,24 +190,36 @@ public class ReceiveDriver {
         // add request header
         con.setRequestProperty("WebClient", "PUTDriver");
 
-        BufferedReader in = null;
+        ObjectMapper mapper = new ObjectMapper();
+        String drJSON = null;
         try {
-            in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-        } catch (IOException e) {
+            drJSON = mapper.writeValueAsString(dr);
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
+        String urlParameters = "driver=" + drJSON;
+
+        con.setDoOutput(true);
+        DataOutputStream wr = null;
+        BufferedReader in = null;
         String inputLine;
         StringBuffer response = new StringBuffer();
         try {
+            wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ObjectMapper mapper = new ObjectMapper();
+
         try {
             parsingResponse = mapper.readValue(response.toString(), new TypeReference<Driver>() {
             });

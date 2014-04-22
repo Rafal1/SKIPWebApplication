@@ -36,6 +36,7 @@ public class SkipapplicationUI extends UI {
         // Create and register the views
         navigator.addView("", new LoginView()); //default view
         navigator.addView(DRIVERS_VIEW, new DriversView());
+        navigator.addView(VEHICLE_VIEW, new VehicleView());
         navigator.addView(COMMUNIQUE_VIEW, new CommuniqueView());
         navigator.addView(MAIN_VIEW, new MainView());
 

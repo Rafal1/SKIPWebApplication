@@ -5,10 +5,12 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
 import javax.servlet.annotation.WebServlet;
+import java.io.File;
 
 @Theme("mytheme")
 @SuppressWarnings("serial")
@@ -27,7 +29,11 @@ public class SkipapplicationUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        getPage().setTitle("Navigation Example");
+        getPage().setTitle("SKIP");
+
+        //SSL initialization
+        System.setProperty("javax.net.ssl.trustStore", VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "//VAADIN//ssl//skipcacert");
+        System.setProperty("javax.net.ssl.trustStorePassword", "password");
 
         // Create a navigator to control the views
         navigator = new Navigator(this, this);
@@ -36,6 +42,7 @@ public class SkipapplicationUI extends UI {
         // Create and register the views
         navigator.addView("", new LoginView()); //default view
         navigator.addView(DRIVERS_VIEW, new DriversView());
+        navigator.addView(VEHICLE_VIEW, new VehicleView());
         navigator.addView(COMMUNIQUE_VIEW, new CommuniqueView());
         navigator.addView(MAIN_VIEW, new MainView());
 

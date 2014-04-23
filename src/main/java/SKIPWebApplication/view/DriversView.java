@@ -302,18 +302,18 @@ public class DriversView extends VerticalLayout implements View {
                 ic.addContainerProperty(p, String.class, "");
         }
         LatLon[] coords = {new LatLon(-52.0922474, 21.0249287),
-                new LatLon(-52.0922474, 22.0249287),
-                new LatLon(-52.1922474, 21.0249287),
-                new LatLon(-52.2922474, 21.0949287),
-                new LatLon(-52.3922474, 21.0589287),
-                new LatLon(-52.0922474, 21.0000287),
-                new LatLon(-52.1232474, 21.0249287),
-                new LatLon(-52.0982474, 21.0249287),
-                new LatLon(-52.9082474, 21.1239287),
-                new LatLon(-52.0922474, 21.5559287),
-                new LatLon(-52.1111174, 21.2229287),
-                new LatLon(-53.0922474, 22.0249287),
-                new LatLon(-55.0922474, 21.0249287)};
+                new LatLon(52.0922474, 22.0249287),
+                new LatLon(52.1922474, 21.0249287),
+                new LatLon(52.2922474, 21.0949287),
+                new LatLon(52.3922474, 21.0589287),
+                new LatLon(52.0922474, 21.0000287),
+                new LatLon(52.1232474, 21.0249287),
+                new LatLon(52.0982474, 21.0249287),
+                new LatLon(52.9082474, 21.1239287),
+                new LatLon(52.0922474, 21.5559287),
+                new LatLon(52.1111174, 21.2229287),
+                new LatLon(53.0922474, 22.0249287),
+                new LatLon(55.0922474, 21.0249287)};
         for (Driver driver : allDrivers) {
             Object id = ic.addItem();
             ic.getContainerProperty(id, ID).setValue(driver.getId());

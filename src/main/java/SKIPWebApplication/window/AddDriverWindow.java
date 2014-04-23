@@ -61,8 +61,11 @@ public class AddDriverWindow extends Window {
                     driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
                     driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                     driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
-                    ReceiveDriver.addDriver(driver);
-                    Notification.show("Dodano nowego kierowcę");
+                    Object response = ReceiveDriver.addDriver(driver);
+                    if(response != null)
+                        Notification.show("Dodano nowego kierowcę");
+                    else
+                        Notification.show("Błąd podczas dodawania nowego kierowcy");
                     parent.refreshDataSource();
                     close();
                 }

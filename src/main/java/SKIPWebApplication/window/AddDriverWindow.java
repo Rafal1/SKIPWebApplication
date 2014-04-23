@@ -3,9 +3,11 @@ package SKIPWebApplication.window;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.view.DriversView;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
+import returnobjects.Coordinates;
 import returnobjects.Driver;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,11 +63,13 @@ public class AddDriverWindow extends Window {
                     driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
                     driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                     driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
-                    Object response = ReceiveDriver.addDriver(driver);
-                    if(response != null)
-                        Notification.show("Dodano nowego kierowcę");
-                    else
-                        Notification.show("Błąd podczas dodawania nowego kierowcy");
+
+                    //todo set initial values of parameters (ralted to coordinates)
+                    driver.setCoordinatesUpdateDate(new Date());
+                    driver.setLatestCoordinates(new Coordinates(15.1,25.1));
+
+                    ReceiveDriver.addDriver(driver);
+                    Notification.show("Dodano nowego kierowcę");
                     parent.refreshDataSource();
                     close();
                 }

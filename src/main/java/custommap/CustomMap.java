@@ -2,7 +2,8 @@ package custommap;
 
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -11,14 +11,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
 import custommap.CustomMap;
 import returnobjects.Driver;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author Rafal Zawadzki
@@ -267,11 +265,10 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(contactId, REGISTRATION_NR)
                             .getValue() ;
-
-                    customMap.addOneMarker(info, (LatLon) driversList
-                            .getContainerProperty(contactId, COORDINATES)
-                            .getValue());
-
+                    if (driversList.getContainerProperty(contactId, COORDINATES).getValue() != null)
+                        customMap.addOneMarker(info, (LatLon) driversList
+                                .getContainerProperty(contactId, COORDINATES)
+                                .getValue());
 
                 }
 
@@ -301,27 +298,17 @@ public class DriversView extends VerticalLayout implements View {
             else
                 ic.addContainerProperty(p, String.class, "");
         }
-        LatLon[] coords = {new LatLon(-52.0922474, 21.0249287),
-                new LatLon(52.0922474, 22.0249287),
-                new LatLon(52.1922474, 21.0249287),
-                new LatLon(52.2922474, 21.0949287),
-                new LatLon(52.3922474, 21.0589287),
-                new LatLon(52.0922474, 21.0000287),
-                new LatLon(52.1232474, 21.0249287),
-                new LatLon(52.0982474, 21.0249287),
-                new LatLon(52.9082474, 21.1239287),
-                new LatLon(52.0922474, 21.5559287),
-                new LatLon(52.1111174, 21.2229287),
-                new LatLon(53.0922474, 22.0249287),
-                new LatLon(55.0922474, 21.0249287)};
+
         for (Driver driver : allDrivers) {
             Object id = ic.addItem();
             ic.getContainerProperty(id, ID).setValue(driver.getId());
             ic.getContainerProperty(id, FNAME).setValue(driver.getFirstName());
             ic.getContainerProperty(id, LNAME).setValue(driver.getLastName());
             ic.getContainerProperty(id, REGISTRATION_NR).setValue("test");
-            ic.getContainerProperty(id, COORDINATES).setValue(
-                    coords[(int) (coords.length * Math.random())]);
+            if (driver.getLatestCoordinates() != null)
+                ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
+            else
+                ic.getContainerProperty(id, COORDINATES).setValue(null);
             ic.getContainerProperty(id, COMPANY_PHONE).setValue(driver.getPhoneNumber() != null ? driver.getPhoneNumber() : "");
             ic.getContainerProperty(id, PRIVATE_PHONE).setValue(driver.getPhoneNumber2() != null ? driver.getPhoneNumber2() : "");
             ic.getContainerProperty(id, E_MAIL).setValue(driver.getEmail() != null ? driver.getEmail() : "");

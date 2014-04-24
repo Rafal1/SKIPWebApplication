@@ -79,6 +79,8 @@ public class ReceiveDriver implements ServerInfo {
         Driver parsingResponse = null;
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id);
+        putQuery.setHeader( "Content-Type", "application/json" );
+
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String drJSON = null;
@@ -88,6 +90,7 @@ public class ReceiveDriver implements ServerInfo {
             e.printStackTrace();
         }
         params.add(new BasicNameValuePair("driver", drJSON));
+
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             putQuery.setEntity(new UrlEncodedFormEntity(params));
@@ -141,8 +144,8 @@ public class ReceiveDriver implements ServerInfo {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Coordinates parsingResponse = null;
         HttpClient httpclient = HttpClientBuilder.create().build();
-        System.out.println(id);
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
+        putQuery.setHeader( "Content-Type", "application/json" );
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String corJSON = null;

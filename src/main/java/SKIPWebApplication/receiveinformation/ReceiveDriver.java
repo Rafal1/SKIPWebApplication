@@ -11,9 +11,11 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import returnobjects.Coordinates;
 import returnobjects.Driver;
 
 import java.io.IOException;
@@ -24,7 +26,7 @@ import java.util.List;
  * @author Rafal Zawadzki
  * @author Kamil Malka
  */
-public class ReceiveDriver implements ServerInfo{
+public class ReceiveDriver implements ServerInfo {
 
     public static ArrayList<Driver> getDriversList() {
         ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
@@ -34,7 +36,7 @@ public class ReceiveDriver implements ServerInfo{
         String unitsString;
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            unitsString =  httpclient.execute(getQuery, responseHandler);
+            unitsString = httpclient.execute(getQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Driver>>() {
             });
         } catch (ClientProtocolException e) {
@@ -42,12 +44,12 @@ public class ReceiveDriver implements ServerInfo{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return parsingResponse;
     }
 
     public static String addDriver(Driver dr) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+        String parsingResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         String drJSON = null;
         try {
@@ -63,39 +65,107 @@ public class ReceiveDriver implements ServerInfo{
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             httppost.setEntity(new UrlEncodedFormEntity(params));
-            return httpclient.execute(httppost, responseHandler);
+            parsingResponse = httpclient.execute(httppost, responseHandler);
         } catch (ClientProtocolException e) {
             return null;
         } catch (IOException e) {
             return null;
         }
+        return parsingResponse;
     }
 
-//    public static void changeDriver(Long ID) { //na razie nie ma
-//        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.put("http://localhost:8443/drivers/{id}", Driver.class, ID);
-//        restTemplate.put("http://localhost:8443/drivers/{id}", ID);
-//    }
+    public static Driver changeDriver(Long id, Driver dr) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        Driver parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id);
+        putQuery.setHeader( "Content-Type", "application/json" );
+
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        String drJSON = null;
+        try {
+            drJSON = mapper.writeValueAsString(dr);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        params.add(new BasicNameValuePair("driver", drJSON));
+
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            putQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(putQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
+    }
 
     public static String deleteDriver(Long ID) {
         String url = SSL_ACCESS + "/drivers/" + ID;
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpDelete delQuery = new HttpDelete(url);
+        String parsingResponse = null;
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            return httpclient.execute(delQuery, responseHandler);
+            parsingResponse = httpclient.execute(delQuery, responseHandler);
         } catch (ClientProtocolException e) {
             return null;
         } catch (IOException e) {
             return null;
         }
+        return parsingResponse;
     }
 
     public static Driver getDriver(Long id) {
-        //RestTemplate restTemplate = new RestTemplate();
-        //Driver stream = restTemplate.getForObject(prop.getProperty("WebServiceURL") + "/drivers/{id}", Driver.class, id);
-        //return stream;
-        return null;
+        Driver parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/drivers/" + id);
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
     }
 
+    public static Coordinates updateDriverCoordinates(Long id, Coordinates cor) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        Coordinates parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
+        putQuery.setHeader( "Content-Type", "application/json" );
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        String corJSON = null;
+        try {
+            corJSON = mapper.writeValueAsString(cor);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        params.add(new BasicNameValuePair("coordinates", corJSON));
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            putQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(putQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Coordinates>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
+    }
 }

@@ -10,7 +10,6 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
 import javax.servlet.annotation.WebServlet;
-import java.io.File;
 
 @Theme("mytheme")
 @SuppressWarnings("serial")

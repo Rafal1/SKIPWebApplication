@@ -53,7 +53,7 @@ public class LoginView extends VerticalLayout implements View {
                     public void buttonClick(Button.ClickEvent event) {
                         Boolean corr = checkUserData(LOGIN.getValue(), PASSWORD.getValue());
                         if (corr) {
-                            UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
+                            UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                             LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
                             PASSWORD.setValue("");
                         } else {

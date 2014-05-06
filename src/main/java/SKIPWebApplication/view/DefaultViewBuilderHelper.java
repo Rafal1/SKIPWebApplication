@@ -1,6 +1,7 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.SkipapplicationUI;
+import SKIPWebApplication.consts.StringConsts;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 
@@ -26,30 +27,33 @@ public class DefaultViewBuilderHelper {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 //TODO conditions for other views
-                if (selectedItem.getText().equals("Wyloguj się")) {
+                if (selectedItem.getText().equals(StringConsts.LOGOUT_STRING)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
                 }
-                if (selectedItem.getText().equals("Wiadomości")) {
+                if (selectedItem.getText().equals(StringConsts.COMMUNIQUE_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
                 }
-                if (selectedItem.getText().equals("Kierowcy")) {
+                if (selectedItem.getText().equals(StringConsts.DRIVERS_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
                 }
-                if (selectedItem.getText().equals("Pojazdy")) {
+                if (selectedItem.getText().equals(StringConsts.VEHICLE_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.VEHICLE_VIEW);
+                }
+                if (selectedItem.getText().equals(StringConsts.MAIN_VIEW_NAME)) {
+                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                 }
             }
         };
         MenuBar menu = new MenuBar();
-        menu.addItem("Główna", new ThemeResource(
+        menu.addItem(StringConsts.MAIN_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/home.png"), cmd);
-        menu.addItem("Kierowcy", new ThemeResource(
+        menu.addItem(StringConsts.DRIVERS_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/drivers.png"), cmd);
-        menu.addItem("Pojazdy", new ThemeResource(
+        menu.addItem(StringConsts.VEHICLE_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/car.png"), cmd);
-        menu.addItem("Wiadomości", new ThemeResource(
+        menu.addItem(StringConsts.COMMUNIQUE_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/messages.png"), cmd);
-        menu.addItem("Wyloguj się", new ThemeResource(
+        menu.addItem(StringConsts.LOGOUT_STRING, new ThemeResource(
                 "../../resources/icons/log_out.png"), cmd);
         menu.setHeight("73px");
         hl.addComponent(menu);

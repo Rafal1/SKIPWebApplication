@@ -3,232 +3,102 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
+import returnobjects.Driver;
 import returnobjects.Vehicle;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
-
-import static org.atmosphere.di.ServletContextHolder.getServletContext;
+import java.util.List;
 
 /**
  * @author Rafal Zawadzki
  */
-public class ReceiveVehicle {
-    private static Properties prop = new Properties();
+public class ReceiveVehicle implements ServerInfo {
 
     public static ArrayList<Vehicle> getVehiclesList() {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles";
-
         ArrayList<Vehicle> parsingResponse = new ArrayList<Vehicle>();
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // optional default is GET
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-
-//        add request header
-        con.setRequestProperty("WebClient", "GETVehiclesList");
-
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        try {
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/vehicles");
         ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
         try {
-            parsingResponse = mapper.readValue(response.toString(), new TypeReference<ArrayList<Vehicle>>() {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Vehicle>>() {
             });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-        }
-        try {
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return parsingResponse;
     }
 
-    public static String addVehicle(Vehicle dr) {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles";
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public static String addVehicle(Vehicle veh) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        String parsingResponse = null;
         ObjectMapper mapper = new ObjectMapper();
-        String drJSON = null;
+        String vehJSON = null;
         try {
-            drJSON = mapper.writeValueAsString(dr);
+            vehJSON = mapper.writeValueAsString(veh);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        params.add(new BasicNameValuePair("vehicle", vehJSON));
+
+        String url = SSL_ACCESS + "/vehicles";
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpPost httppost = new HttpPost(url);
         try {
-            con.setRequestMethod("POST");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        String urlParameters = "vehicle=" + drJSON;
-
-        // add request header
-        con.setRequestProperty("WebClient", "POSTaddVehicle");
-
-        // Send post request
-        con.setDoOutput(true);
-        DataOutputStream wr = null;
-        StringBuffer response = new StringBuffer();
-        try {
-            wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            httppost.setEntity(new UrlEncodedFormEntity(params));
+            parsingResponse = httpclient.execute(httppost, responseHandler);
+        } catch (ClientProtocolException e) {
+            return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return response.toString();
+        return parsingResponse;
     }
 
-    //todo test changeVehicle
-    public static Vehicle changeVehicle(Vehicle dr, Long ID) {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles/" + ID;
-
-        Vehicle parsingResponse = new Vehicle();
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // optional default is GET
-        try {
-            con.setRequestMethod("PUT");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-
-        // add request header
-        con.setRequestProperty("WebClient", "PUTVehicle");
+    public static Vehicle changeVehicle(Long id, Vehicle veh) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        Vehicle parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + id);
+        putQuery.setHeader( "Content-Type", "application/json" );
 
         ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
         String drJSON = null;
         try {
-            drJSON = mapper.writeValueAsString(dr);
+            drJSON = mapper.writeValueAsString(veh);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        String urlParameters = "vehicle=" + drJSON;
-
-        con.setDoOutput(true);
-        DataOutputStream wr = null;
-        BufferedReader in = null;
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        try {
-            wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-
-            in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        params.add(new BasicNameValuePair("vehicle", drJSON));
 
         try {
-            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Vehicle>() {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            putQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(putQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
             });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-        }
-        try {
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -236,118 +106,34 @@ public class ReceiveVehicle {
     }
 
     public static String deleteVehicle(Long ID) {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        String url = SSL_ACCESS + "/vehicles/" + ID;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpDelete delQuery = new HttpDelete(url);
+        String parsingResponse = null;
         try {
-            prop.load(inputStream);
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            parsingResponse = httpclient.execute(delQuery, responseHandler);
+        } catch (ClientProtocolException e) {
+            return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles/" + ID;
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            con.setRequestMethod("DELETE");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-
-        // add request header
-        con.setRequestProperty("WebClient", "DELETEVehicle");
-
-        // Send post request
-        con.setDoOutput(true);
-        StringBuffer response = new StringBuffer();
-        try {
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return response.toString();
+        return parsingResponse;
     }
 
-    //todo test getVehicle
-    public static Vehicle getVehicle(Long ID) {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles/" + ID;
-
-        Vehicle parsingResponse = new Vehicle();
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // optional default is GET
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-
-        //        add request header
-        con.setRequestProperty("WebClient", "GETVehicle");
-
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        try {
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static Vehicle getVehicle(Long id) {
+        Vehicle parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/vehicles/" + id);
         ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
         try {
-            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Vehicle>() {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
             });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
+        } catch (ClientProtocolException e) {
             e.printStackTrace();
-        }
-        try {
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -355,8 +141,10 @@ public class ReceiveVehicle {
     }
 
     //todo test updateCoordinates
+    //czy to wgl jest potrzebne??
+
     public static Coordinates updateVehicleCoordinates(Coordinates cor, Long ID) {
-        InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
+        /*InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
         try {
             prop.load(inputStream);
         } catch (IOException e) {
@@ -433,6 +221,7 @@ public class ReceiveVehicle {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return parsingResponse;
+        return parsingResponse;*/
+        return null;
     }
 }

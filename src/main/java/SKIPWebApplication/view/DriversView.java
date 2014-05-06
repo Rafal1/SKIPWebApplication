@@ -252,27 +252,27 @@ public class DriversView extends VerticalLayout implements View {
     private void initDriverList() {
         driversList.addValueChangeListener(new Property.ValueChangeListener() {
             public void valueChange(Property.ValueChangeEvent event) {
-                Object contactId = driversList.getValue();
-                if (contactId != null) {
+                Object currentDriver = driversList.getValue();
+                if (currentDriver != null) {
                     editorFields.setItemDataSource(driversList
-                            .getItem(contactId));
+                            .getItem(currentDriver));
                     editorFields.setEnabled(false);
                     // mapa
                     String info = "Kierowca: " + (String) driversList
-                            .getContainerProperty(contactId, FNAME)
+                            .getContainerProperty(currentDriver, FNAME)
                             .getValue() + " " + (String) driversList
-                            .getContainerProperty(contactId, LNAME)
+                            .getContainerProperty(currentDriver, LNAME)
                             .getValue() + "\nPojazd: " + (String) driversList
-                            .getContainerProperty(contactId, REGISTRATION_NR)
+                            .getContainerProperty(currentDriver, REGISTRATION_NR)
                             .getValue() ;
-                    if (driversList.getContainerProperty(contactId, COORDINATES).getValue() != null)
+                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
                         customMap.addOneMarker(info, (LatLon) driversList
-                                .getContainerProperty(contactId, COORDINATES)
+                                .getContainerProperty(currentDriver, COORDINATES)
                                 .getValue());
 
                 }
 
-                rightLayout.setVisible(contactId != null);
+                rightLayout.setVisible(currentDriver != null);
             }
         });
     }

@@ -1,6 +1,6 @@
 package SKIPWebApplication.view;
 
-import SKIPWebApplication.SkipapplicationService;
+import SKIPWebApplication.receiveinformation.ReceiveVehicle;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -12,14 +12,16 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
+import returnobjects.Vehicle;
+
+import java.util.ArrayList;
 
 /**
  * @author Rafal Zawadzki
  */
 public class VehicleView extends VerticalLayout implements View {
 
-    private final String SHEETTAB_GENERAL_SIZE = "153px"; // constant
-    private static String SHEETTAB_DETAIL_SIZE;
+    private final String SHEETTAB_GENERAL_SIZE = "200px"; // constant
     private final Integer SIZE_PER_TAB = 46;
     private Table vehiclesList = new Table();
     private TextField searchField = new TextField();
@@ -29,13 +31,14 @@ public class VehicleView extends VerticalLayout implements View {
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
     private static final String BRAND = "Marka";
-    private static final String MODEL = "Model";
+    private static final String COLOUR = "Kolor nadwozia";
     private static final String REGISTRATION_NR = "Nr rejestracyjny";
-    private static final String COORDINATES = "Współrzędne";
-    private static final String[] fieldNames = new String[]{BRAND, MODEL,
-            REGISTRATION_NR, "Poj. silnika", "Przebieg", "Rok produkcji",
-            "Data lokalizacji"};
-    IndexedContainer vehiclesContainer = createDummyDatasource();
+    private static final String MAX_LOAD = "Ładowność (kg)";
+    public static final String ID = "Id";
+    private static final String[] firstTab = new String[]{BRAND, REGISTRATION_NR,
+            COLOUR, MAX_LOAD};
+    private static final String[] notVisible = new String[]{ID};
+    IndexedContainer vehiclesContainer;
 
     public VehicleView() {
         setSizeFull();
@@ -89,7 +92,7 @@ public class VehicleView extends VerticalLayout implements View {
         bottomLeftLayout.setExpandRatio(searchField, 1);
 
         editorLayout.setMargin(true);
-        initContactList();
+        initVehiclesList();
         initEditor();
         initMap();
         initSearch();
@@ -98,123 +101,31 @@ public class VehicleView extends VerticalLayout implements View {
         return splitPanel;
     }
 
-    private static IndexedContainer createDummyDatasource() {
-        IndexedContainer ic = new IndexedContainer();
-
-        for (String p : fieldNames) {
-            ic.addContainerProperty(p, String.class, "");
-        }
-
-        ic.addContainerProperty(COORDINATES, LatLon.class, new LatLon());
-
-        String[] brands = {"Mercedes", "Renault", "Volvo", "Man", "Scania", "Daf"};
-        String[] models = {"Actross", "Magnum", "C1230", "A15002900"};
-        String[] regNrs = {"WM2352", "WA32452", "SA35235", "WW34235",
-                "WTE3245", "AW32423", "KR32423", "WE23423", "WW34242",
-                "WA32423", "RE23424", "WE32423", "WE34234", "WWA4324",
-                "WWT4323"};
-        LatLon[] coords = {new LatLon(52.0922474, 21.0249287),
-                new LatLon(52.0922474, 22.0249287),
-                new LatLon(52.1922474, 21.0249287),
-                new LatLon(52.2922474, 21.0949287),
-                new LatLon(52.3922474, 21.0589287),
-                new LatLon(52.0922474, 21.0000287),
-                new LatLon(52.1232474, 21.0249287),
-                new LatLon(52.0982474, 21.0249287),
-                new LatLon(52.9082474, 21.1239287),
-                new LatLon(52.0922474, 21.5559287),
-                new LatLon(52.1111174, 21.2229287),
-                new LatLon(53.0922474, 22.0249287),
-                new LatLon(55.0922474, 21.0249287)};
-        for (int i = 0; i < 100; i++) {
-            Object id = ic.addItem();
-            ic.getContainerProperty(id, BRAND).setValue(
-                    brands[(int) (brands.length * Math.random())]);
-            ic.getContainerProperty(id, MODEL).setValue(
-                    models[(int) (models.length * Math.random())]);
-            ic.getContainerProperty(id, REGISTRATION_NR).setValue(
-                    regNrs[(int) (regNrs.length * Math.random())]);
-            ic.getContainerProperty(id, COORDINATES).setValue(
-                    coords[(int) (coords.length * Math.random())]);
-        }
-
-        return ic;
-    }
-
     private void initEditor() {
 
         rightLayout.addComponent(editorLayout);
+        rightLayout.setVisible(false);
         editorLayout.addComponent(getVehicleMenu());
         TabSheet tabsheet = new TabSheet();
 
         final FormLayout verLayout1 = new FormLayout();
         verLayout1.setMargin(true);
-        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, BRAND)) {
-            TextField brandField = new TextField(BRAND);
-            brandField.setWidth("15em");
-            verLayout1.addComponent(brandField);
-            editorFields.bind(brandField, BRAND);
-        }
-        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, MODEL)) {
-            TextField modelField = new TextField(MODEL);
-            modelField.setWidth("15em");
-            verLayout1.addComponent(modelField);
-            editorFields.bind(modelField, MODEL);
-        }
-        if (SkipapplicationService.fieldNamesIfConstains(fieldNames, REGISTRATION_NR)) {
-            TextField regField = new TextField(REGISTRATION_NR);
-            regField.setWidth("15em");
-            verLayout1.addComponent(regField);
-            editorFields.bind(regField, REGISTRATION_NR);
-        }
+        for (String fieldName : firstTab) {
+            TextField field = new TextField(fieldName);
+            field.setWidth("20em");
 
-        FormLayout verLayout2 = new FormLayout();
-        verLayout2.setMargin(true);
-        // todo 9.4.4 VaadinBook (validation)
-        Integer count = 0;
-        for (String fieldName : fieldNames) {
-            if (fieldName != BRAND && fieldName != MODEL
-                    && fieldName != REGISTRATION_NR) {
-                count++;
-                TextField field = new TextField(fieldName);
-                if (fieldName.equals("E-mail")) {
-                    field.setWidth("20em");
-                } else {
-                    field.setWidth("10em");
-                }
-                verLayout2.addComponent(field);
-                editorFields.bind(field, fieldName);
-            }
+            verLayout1.addComponent(field);
+            editorFields.bind(field, fieldName);
             editorFields.setBuffered(false); // narazie może być, ale musi być
             // true aby podłączone
             // walidatory działały
         }
 
-        SHEETTAB_DETAIL_SIZE = SkipapplicationService.createFormatForDetailSizeTab(SIZE_PER_TAB
-                * count);
-
         editorFields.setBuffered(false);
+        editorFields.setEnabled(false);
         tabsheet.addTab(verLayout1, "Informacje ogólne", null);
-        tabsheet.addTab(verLayout2, "Informacje szczegółowe", null);
-        tabsheet.addSelectedTabChangeListener(listenerForTab());
-
         editorLayout.addComponent(tabsheet);
 
-    }
-
-    public TabSheet.SelectedTabChangeListener listenerForTab() {
-        TabSheet.SelectedTabChangeListener listener = new TabSheet.SelectedTabChangeListener() {
-            public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
-                TabSheet tabsheet = event.getTabSheet();
-                TabSheet.Tab tab = tabsheet.getTab(tabsheet.getSelectedTab());
-                if (tab.getCaption().equals("Informacje szczegółowe")) {
-                    tabsheet.setHeight(SHEETTAB_DETAIL_SIZE);
-                } else {
-                    tabsheet.setHeight(SHEETTAB_GENERAL_SIZE);
-                }
-            }
-        };
-        return listener;
     }
 
     private void initMap() {
@@ -257,12 +168,13 @@ public class VehicleView extends VerticalLayout implements View {
         public boolean passesFilter(Object itemId, Item item)
                 throws UnsupportedOperationException {
             String haystack = ("" + item.getItemProperty(BRAND).getValue()
-                    + item.getItemProperty(MODEL).getValue() + item
+                    + item.getItemProperty(COLOUR).getValue() + item
                     .getItemProperty(REGISTRATION_NR).getValue()).toLowerCase();
             return haystack.contains(needle);
         }
     }
 
+    //TODO
     private void initAddRemoveButtons() {
         addNewVehicleButton.addClickListener(new Button.ClickListener() {
             @SuppressWarnings("unchecked")
@@ -273,7 +185,7 @@ public class VehicleView extends VerticalLayout implements View {
 
                 vehiclesList.getContainerProperty(contactId, BRAND).setValue(
                         "Nowy");
-                vehiclesList.getContainerProperty(contactId, MODEL).setValue(
+                vehiclesList.getContainerProperty(contactId, COLOUR).setValue(
                         "Pojazd");
 
                 vehiclesList.select(contactId);
@@ -281,54 +193,79 @@ public class VehicleView extends VerticalLayout implements View {
         });
     }
 
-    private void initContactList() {
-        vehiclesList.setContainerDataSource(vehiclesContainer);
-        vehiclesList.setColumnReorderingAllowed(false);
-        vehiclesList.setVisibleColumns(new Object[]{BRAND, MODEL,
-                REGISTRATION_NR});
-        vehiclesList.setSelectable(true);
-        vehiclesList.setImmediate(true);
-
+    private void initVehiclesList() {
         vehiclesList.addValueChangeListener(new Property.ValueChangeListener() {
             public void valueChange(Property.ValueChangeEvent event) {
-                Object contactId = vehiclesList.getValue();
-
-                if (contactId != null) {
+                Object currentVehicle = vehiclesList.getValue();
+                if (currentVehicle != null) {
                     editorFields.setItemDataSource(vehiclesList
-                            .getItem(contactId));
-                    // mapa
-                    googleMap.clearMarkers();
-                    googleMap.setCenter((LatLon) vehiclesList
-                            .getContainerProperty(contactId, COORDINATES)
-                            .getValue());
-                    googleMap.addMarker("Przykład", (LatLon) vehiclesList
-                            .getContainerProperty(contactId, COORDINATES)
-                            .getValue(), false,
-                            "VAADIN/resources/icons/car.png");
-
+                            .getItem(currentVehicle));
+                    editorFields.setEnabled(false);
                 }
 
-                rightLayout.setVisible(contactId != null);
+                rightLayout.setVisible(currentVehicle != null);
             }
         });
     }
 
     private MenuBar getVehicleMenu() {
-        MenuBar driverMenu = new MenuBar();
-        MenuBar.MenuItem mainItem = driverMenu.addItem("Menu", null);
-        mainItem.addItem("Usuń", new MenuBar.Command() {
+        MenuBar vehicleMenu = new MenuBar();
+        MenuBar.MenuItem mainItem = vehicleMenu.addItem("Usuń", new MenuBar.Command() {
 
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                Object id = vehiclesList.getValue();
-                vehiclesList.removeItem(id);
+                Object currentVehicle = vehiclesList.getValue();
+                String result = ReceiveVehicle.deleteVehicle((Long) vehiclesList
+                        .getContainerProperty(currentVehicle, ID)
+                        .getValue());
+                Notification.show("Kierowca został usunięty");
+                refreshDataSource();
             }
         });
-        return driverMenu;
+        return vehicleMenu;
+    }
+
+    private IndexedContainer prepareForVehiclesList(ArrayList<Vehicle> allVehicles) {
+        IndexedContainer ic = new IndexedContainer();
+
+        for (String p : notVisible) {
+            if (p.equals(ID))
+                ic.addContainerProperty(p, Long.class, new Long(-1));
+            else
+                ic.addContainerProperty(p, String.class, "");
+        }
+        for (String p : firstTab) {
+            if (p.equals(MAX_LOAD))
+                ic.addContainerProperty(p, Integer.class, null);
+            else
+                ic.addContainerProperty(p, String.class, "");
+        }
+
+        for (Vehicle vehicle : allVehicles) {
+            Object id = ic.addItem();
+            ic.getContainerProperty(id, ID).setValue(vehicle.getId());
+            ic.getContainerProperty(id, BRAND).setValue(vehicle.getBrand() != null ? vehicle.getBrand() : "");
+            ic.getContainerProperty(id, COLOUR).setValue(vehicle.getColour() != null ? vehicle.getColour() : "");
+            ic.getContainerProperty(id, REGISTRATION_NR).setValue(vehicle.getRegistrationNumber() != null ? vehicle.getRegistrationNumber() : "");
+            ic.getContainerProperty(id, MAX_LOAD).setValue(vehicle.getTruckload());
+        }
+
+        return ic;
+    }
+    private void refreshDataSource() {
+        vehiclesContainer = prepareForVehiclesList(ReceiveVehicle.getVehiclesList());
+        vehiclesList.setContainerDataSource(vehiclesContainer);
+        vehiclesList.setColumnReorderingAllowed(false);
+        vehiclesList.setVisibleColumns(new Object[]{BRAND,
+                REGISTRATION_NR});
+        vehiclesList.setSelectable(true);
+        vehiclesList.setImmediate(true);
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        refreshDataSource();
     }
+
+
 }

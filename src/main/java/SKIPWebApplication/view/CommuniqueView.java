@@ -86,6 +86,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setImmediate(true);
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
+        commTable.setSelectable(true);
         commTable.setContainerDataSource(buildTable());
         commTable.removeGeneratedColumn("Status");
         commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {

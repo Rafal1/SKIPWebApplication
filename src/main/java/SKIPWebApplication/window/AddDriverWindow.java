@@ -105,7 +105,12 @@ public class AddDriverWindow extends Window {
 
                 //todo set initial values of parameters (ralted to coordinates)
                 driver.setCoordinatesUpdateDate(new Date());
-                driver.setLatestCoordinates(new Coordinates(15.1, 25.1));
+
+                //losowanie koordynatów tak aby każdy kierowca miał inne połozenie, pózniej można usunąć
+                //TEST
+                double lat = Math.random() * 2 + 50 ;
+                double lon = Math.random() * 2 + 20;
+                driver.setLatestCoordinates(new Coordinates(lat, lon));
 
                 Boolean valOk = true;
                 Collection colFields = fields.getFields();

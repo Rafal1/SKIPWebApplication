@@ -11,11 +11,13 @@ import com.vaadin.tapio.googlemaps.client.LatLon;
  */
 public class Marker {
     private LatLon coords;
+    private long driverId ;
     private String name;
 
-    public Marker (String name, LatLon coords){
+    public Marker (String name, LatLon coords, long driverId){
         this.name = name;
         this.coords =  coords;
+        this.driverId = driverId;
     }
 
     public String getName() {

@@ -74,11 +74,11 @@ public class ReceiveDriver implements ServerInfo {
         return parsingResponse;
     }
 
-    public static Driver changeDriver(Long id, Driver dr) {
+    public static Driver changeDriver(Driver dr) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Driver parsingResponse = null;
         HttpClient httpclient = HttpClientBuilder.create().build();
-        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id);
+        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + dr.getId());
         putQuery.setHeader( "Content-Type", "application/json" );
 
         ObjectMapper mapper = new ObjectMapper();

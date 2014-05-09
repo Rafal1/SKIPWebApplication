@@ -74,11 +74,11 @@ public class ReceiveVehicle implements ServerInfo {
         return parsingResponse;
     }
 
-    public static Vehicle changeVehicle(Long id, Vehicle veh) {
+    public static Vehicle changeVehicle(Vehicle veh) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Vehicle parsingResponse = null;
         HttpClient httpclient = HttpClientBuilder.create().build();
-        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + id);
+        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + veh.getId());
         putQuery.setHeader( "Content-Type", "application/json" );
 
         ObjectMapper mapper = new ObjectMapper();

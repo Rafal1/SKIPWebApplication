@@ -3,6 +3,7 @@ package SKIPWebApplication.view;
 import SKIPWebApplication.SkipapplicationService;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.window.AddDriverWindow;
+import SKIPWebApplication.window.EditDriverWindow;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -28,6 +29,7 @@ public class DriversView extends VerticalLayout implements View {
     private Table driversList = new Table();
     private TextField searchField = new TextField();
     private Button addNewDriverButton = new Button("Nowy kierowca");
+    private Button editModeButton = new Button("Edytuj");
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();
@@ -39,11 +41,11 @@ public class DriversView extends VerticalLayout implements View {
     public static final String COMPANY_PHONE = "Tel. firmowy";
     public static final String PRIVATE_PHONE = "Tel. prywatny";
     public static final String E_MAIL = "E-mail";
-    private static final String LAST_DATE =  "Zlokalizowano";
+    private static final String LAST_DATE = "Zlokalizowano";
     private static final String COORDINATES = "Współrzędne";
     private static final String[] firstTab = new String[]{FNAME, LNAME,
             REGISTRATION_NR, COMPANY_PHONE};
-    private static final String[] secondTab = new String[]{PRIVATE_PHONE , E_MAIL,
+    private static final String[] secondTab = new String[]{PRIVATE_PHONE, E_MAIL,
             LAST_DATE};
     private static final String[] notVisible = new String[]{ID, COORDINATES};
 
@@ -72,7 +74,6 @@ public class DriversView extends VerticalLayout implements View {
         layout.setSizeFull();
 
         addComponent(layout);
-
     }
 
     private Component getBodyContent() {
@@ -128,16 +129,10 @@ public class DriversView extends VerticalLayout implements View {
 
         driverMenu.addItem("Edytuj", new MenuBar.Command() {
             @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                rightLayout.setVisible(true);
-            }
-        });
-
-        driverMenu.addItem("Zatwierdź", new MenuBar.Command() {
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                //todo validation foreach FieldGroup field.validate();
-                rightLayout.setVisible(false);
+            public void menuSelected(MenuBar.MenuItem menuItem) {
+                EditDriverWindow window = new EditDriverWindow(driversList);
+                getUI().addWindow(window);
+                refreshDataSource();
             }
         });
         return driverMenu;
@@ -146,8 +141,8 @@ public class DriversView extends VerticalLayout implements View {
     private void initEditor() {
 
         rightLayout.addComponent(editorLayout);
-        rightLayout.setVisible(false);
         editorLayout.addComponent(createDriverMenu());
+        rightLayout.setVisible(false);
         TabSheet tabsheet = new TabSheet();
 
         final FormLayout verLayout1 = new FormLayout();
@@ -164,7 +159,7 @@ public class DriversView extends VerticalLayout implements View {
         FormLayout verLayout2 = new FormLayout();
         verLayout2.setMargin(true);
         // todo 9.4.4 VaadinBook (validation)
-                    //todo add validators
+        //todo add validators
         for (String fieldName : secondTab) {
             TextField field = new TextField(fieldName);
             field.setWidth("15em");
@@ -189,8 +184,8 @@ public class DriversView extends VerticalLayout implements View {
             public void selectedTabChange(TabSheet.SelectedTabChangeEvent event) {
                 TabSheet tabsheet = event.getTabSheet();
                 TabSheet.Tab tab = tabsheet.getTab(tabsheet.getSelectedTab());
-                if (Integer.parseInt(SHEETTAB_DETAIL_SIZE.substring(0,  SHEETTAB_DETAIL_SIZE.indexOf("px")))
-                        > Integer.parseInt(SHEETTAB_GENERAL_SIZE.substring(0,  SHEETTAB_GENERAL_SIZE.indexOf("px"))) ) {
+                if (Integer.parseInt(SHEETTAB_DETAIL_SIZE.substring(0, SHEETTAB_DETAIL_SIZE.indexOf("px")))
+                        > Integer.parseInt(SHEETTAB_GENERAL_SIZE.substring(0, SHEETTAB_GENERAL_SIZE.indexOf("px")))) {
                     tabsheet.setHeight(SHEETTAB_DETAIL_SIZE);
                 } else {
                     tabsheet.setHeight(SHEETTAB_GENERAL_SIZE);
@@ -202,7 +197,7 @@ public class DriversView extends VerticalLayout implements View {
 
     private void initMap() {
         customMap = new CustomMap();
-        VerticalLayout mapLayut =(VerticalLayout) customMap.getCustomMap();
+        VerticalLayout mapLayut = (VerticalLayout) customMap.getCustomMap();
         rightLayout.addComponent(mapLayut);
         rightLayout.setExpandRatio(mapLayut, 1.0f);
     }
@@ -250,15 +245,18 @@ public class DriversView extends VerticalLayout implements View {
 
     private class AddDriverClickListener implements Button.ClickListener {
         DriversView dv;
+
         public AddDriverClickListener(DriversView dv) {
             this.dv = dv;
         }
+
         @Override
         public void buttonClick(Button.ClickEvent event) {
             AddDriverWindow window = new AddDriverWindow(dv);
             getUI().addWindow(window);
         }
     }
+
     private void initDriverList() {
         driversList.addValueChangeListener(new Property.ValueChangeListener() {
             public void valueChange(Property.ValueChangeEvent event) {
@@ -274,7 +272,7 @@ public class DriversView extends VerticalLayout implements View {
                             .getContainerProperty(currentDriver, LNAME)
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(currentDriver, REGISTRATION_NR)
-                            .getValue() ;
+                            .getValue();
                     if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
                         customMap.addOneMarker(info, (LatLon) driversList
                                 .getContainerProperty(currentDriver, COORDINATES)
@@ -328,7 +326,7 @@ public class DriversView extends VerticalLayout implements View {
         return ic;
     }
 
-    public void refreshDataSource () {
+    public void refreshDataSource() {
         driversContainer = prepareForDriversList(ReceiveDriver.getDriversList());
         driversList.setContainerDataSource(driversContainer);
         driversList.setColumnReorderingAllowed(false);
@@ -336,7 +334,8 @@ public class DriversView extends VerticalLayout implements View {
                 REGISTRATION_NR});
         driversList.setSelectable(true);
         driversList.setImmediate(true);
-        }
+    }
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         refreshDataSource();

@@ -1,7 +1,10 @@
 package custommap;
 
 import com.vaadin.tapio.googlemaps.GoogleMap;
+import com.vaadin.tapio.googlemaps.client.GoogleMapInfoWindow;
+import com.vaadin.tapio.googlemaps.client.GoogleMapMarker;
 import com.vaadin.tapio.googlemaps.client.LatLon;
+import com.vaadin.tapio.googlemaps.client.events.MarkerClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
@@ -13,20 +16,17 @@ import java.util.Iterator;
  * User: Mariusz
  * Date: 09.03.14
  * Time: 20:52
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class CustomMap {
     private GoogleMap googleMap;
     private VerticalLayout verti;
     private String imagePath = "VAADIN/resources/icons/drivers.png";
+    private  GoogleMapInfoWindow mapInfo = new GoogleMapInfoWindow("");
 
 
     public CustomMap() {
         createLayout();
-    }
-
-    public void addFilters() {
-
     }
 
     public void addMultipleMarkers(ArrayList<Marker> markers){
@@ -43,7 +43,7 @@ public class CustomMap {
     }
 
     public void addOneMarker( String name,  LatLon coords ) {
-        googleMap.clearMarkers();
+        //googleMap.clearMarkers();
         addMarker(name, coords);
     }
 
@@ -51,7 +51,7 @@ public class CustomMap {
         imagePath = path;
     }
 
-    public Component getCustomMap(){
+    public VerticalLayout getCustomMap(){
         return verti;
     }
 
@@ -82,6 +82,17 @@ public class CustomMap {
         googleMap.setCenter(coords);
         googleMap.addMarker(name, coords, false,
                 imagePath);
+
+        googleMap.addMarkerClickListener(new MarkerClickListener() {
+            @Override
+            public void markerClicked(GoogleMapMarker googleMapMarker) {
+                mapInfo.setAnchorMarker(googleMapMarker);
+                mapInfo.setContent(googleMapMarker.getCaption());
+                googleMap.closeInfoWindow(mapInfo);
+                googleMap.openInfoWindow(mapInfo);
+            }
+        });
+
     }
 
 

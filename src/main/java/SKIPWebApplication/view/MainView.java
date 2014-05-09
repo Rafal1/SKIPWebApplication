@@ -1,12 +1,16 @@
 package SKIPWebApplication.view;
 
+import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.tapio.googlemaps.GoogleMap;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.tapio.googlemaps.client.LatLon;
+import com.vaadin.ui.*;
 import custommap.CustomMap;
+import custommap.Marker;
+import returnobjects.Driver;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.vaadin.ui.Alignment.TOP_CENTER;
 
@@ -18,16 +22,26 @@ import static com.vaadin.ui.Alignment.TOP_CENTER;
  */
 public class MainView extends VerticalLayout implements View {
 
-    private static String PAGE_WIDTH = "1024px";
-    private final Integer SPLIT_POSITION = 30;
 
-    private GoogleMap googleMap;
-    private VerticalLayout leftLayout = new VerticalLayout();
-    private VerticalLayout rightLayout = new VerticalLayout();
+    private  CustomMap customMap      ;
+    Table table = new Table();
 
     public MainView() {
         setSizeFull();
         initLayout();
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+
+        refreshData();
+    }
+
+    public void refreshData(){
+        ArrayList<Driver> driverList  = ReceiveDriver.getDriversList();
+        ArrayList<Marker> markerList = makeMarkerListfromDrivers(driverList);
+        addAllDrivers(driverList);
+        customMap.addMultipleMarkers(markerList);
     }
 
     private void initLayout() {
@@ -36,6 +50,7 @@ public class MainView extends VerticalLayout implements View {
 
         VerticalLayout mainPanel = new VerticalLayout();
         mainPanel.setSizeFull();
+        String PAGE_WIDTH = "1024px";
         mainPanel.setWidth(PAGE_WIDTH);
         mainPanel.addComponent(navigationBar);
         mainPanel.setComponentAlignment(navigationBar, Alignment.TOP_CENTER);
@@ -51,13 +66,53 @@ public class MainView extends VerticalLayout implements View {
 
     }
 
-    private Component getBodyContent() {
-        CustomMap customMap = new CustomMap();
-        return customMap.getCustomMap();
+    private ArrayList<Marker> makeMarkerListfromDrivers (ArrayList<Driver> allDrivers){
+           Iterator<Driver> driversIterator =  allDrivers.iterator();
+            ArrayList<Marker> markersList = new ArrayList<Marker>();
+           while(driversIterator.hasNext()){
+               Driver tmpDriver = driversIterator.next();
+               markersList.add(new Marker(tmpDriver.getFirstName() + " " + tmpDriver.getLastName(),
+                       new LatLon(tmpDriver.getLatestCoordinates().getLatitude(),
+                               tmpDriver.getLatestCoordinates().getLongitude() ), tmpDriver.getId()));
+           }
+        return markersList;
     }
 
+    private Component getBodyContent() {
+        customMap = new CustomMap();
+        initTable();
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponent(table);
+        Button moreLessButton = new Button("Mniej");
+        moreLessButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                Notification.show("buttonClick"); //TEST
+               // Animator.animate(table, new Css().scaleX(0.1)).duration(1000);   // na razie wyłączone trzeba
+                //skompilowac widgetset
+                //TODO
+            }
+        });
+        horizontalLayout.addComponent(moreLessButton);
+        horizontalLayout.addComponent(customMap.getGoogleMap());
+        horizontalLayout.setSizeFull();
+        horizontalLayout.setExpandRatio(customMap.getGoogleMap(), 1.0f);
+        return horizontalLayout;
+    }
+
+    private void initTable(){
+        table.addContainerProperty("First Name", String.class,  null);
+        table.addContainerProperty("Last Name",  String.class,  null);
+        //table.addContainerProperty("Year",       Integer.class, null);
+    }
+    private void addAllDrivers(ArrayList<Driver> drivers){
+        for (Driver driver : drivers) {
+            addDriverToTable(driver);
+        }
+    }
+    private void addDriverToTable(Driver driver){
+        table.addItem(new Object[] {
+                driver.getFirstName(),driver.getLastName()}, driver.getId());
     }
 }

@@ -125,6 +125,21 @@ public class DriversView extends VerticalLayout implements View {
                 refreshDataSource();
             }
         });
+
+        driverMenu.addItem("Edytuj", new MenuBar.Command() {
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                rightLayout.setVisible(true);
+            }
+        });
+
+        driverMenu.addItem("Zatwierdź", new MenuBar.Command() {
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                //todo validation foreach FieldGroup field.validate();
+                rightLayout.setVisible(false);
+            }
+        });
         return driverMenu;
     }
 
@@ -139,34 +154,29 @@ public class DriversView extends VerticalLayout implements View {
         verLayout1.setMargin(true);
         for (String fieldName : firstTab) {
             TextField field = new TextField(fieldName);
+            //todo add validators
             field.setWidth("15em");
-
             verLayout1.addComponent(field);
             editorFields.bind(field, fieldName);
-            editorFields.setBuffered(false); // narazie może być, ale musi być
-            // true aby podłączone
-            // walidatory działały
+            editorFields.setBuffered(true);
         }
 
         FormLayout verLayout2 = new FormLayout();
         verLayout2.setMargin(true);
         // todo 9.4.4 VaadinBook (validation)
+                    //todo add validators
         for (String fieldName : secondTab) {
             TextField field = new TextField(fieldName);
             field.setWidth("15em");
-
             verLayout2.addComponent(field);
             editorFields.bind(field, fieldName);
-            editorFields.setBuffered(false); // narazie może być, ale musi być
-            // true aby podłączone
-            // walidatory działały
+            editorFields.setBuffered(true);
         }
 
         SHEETTAB_DETAIL_SIZE = SkipapplicationService.createFormatForDetailSizeTab(SIZE_PER_TAB
                 * secondTab.length);
 
-        editorFields.setBuffered(false);
-        editorFields.setEnabled(false);
+        editorFields.setBuffered(true);
         tabsheet.addTab(verLayout1, "Informacje ogólne", null);
         tabsheet.addTab(verLayout2, "Informacje szczegółowe", null);
         tabsheet.addSelectedTabChangeListener(listenerForTab());

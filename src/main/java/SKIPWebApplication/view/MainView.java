@@ -7,6 +7,8 @@ import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
 import custommap.CustomMap;
 import custommap.Marker;
+import org.vaadin.jouni.animator.Animator;
+import org.vaadin.jouni.dom.client.Css;
 import returnobjects.Driver;
 
 import java.util.ArrayList;
@@ -89,7 +91,7 @@ public class MainView extends VerticalLayout implements View {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
                 Notification.show("buttonClick"); //TEST
-               // Animator.animate(table, new Css().scaleX(0.1)).duration(1000);   // na razie wyłączone trzeba
+                Animator.animate(table, new Css().scaleX(0)).duration(1000);   // na razie wyłączone trzeba
                 //skompilowac widgetset
                 //TODO
             }

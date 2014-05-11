@@ -29,7 +29,6 @@ public class DriversView extends VerticalLayout implements View {
     private Table driversList = new Table();
     private TextField searchField = new TextField();
     private Button addNewDriverButton = new Button("Nowy kierowca");
-    private Button editModeButton = new Button("Edytuj");
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();

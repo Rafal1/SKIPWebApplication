@@ -1,6 +1,7 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.receiveinformation.ReceiveVehicle;
+import SKIPWebApplication.window.EditVehicleWindow;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -30,10 +31,10 @@ public class VehicleView extends VerticalLayout implements View {
     private GoogleMap googleMap;
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
-    private static final String BRAND = "Marka";
-    private static final String COLOUR = "Kolor nadwozia";
-    private static final String REGISTRATION_NR = "Nr rejestracyjny";
-    private static final String MAX_LOAD = "Ładowność (kg)";
+    public static final String BRAND = "Marka";
+    public static final String COLOUR = "Kolor nadwozia";
+    public static final String REGISTRATION_NR = "Nr rejestracyjny";
+    public static final String MAX_LOAD = "Ładowność (kg)";
     public static final String ID = "Id";
     private static final String[] firstTab = new String[]{BRAND, REGISTRATION_NR,
             COLOUR, MAX_LOAD};
@@ -222,6 +223,16 @@ public class VehicleView extends VerticalLayout implements View {
                 refreshDataSource();
             }
         });
+
+        vehicleMenu.addItem("Edytuj", new MenuBar.Command() {
+            @Override
+            public void menuSelected(MenuBar.MenuItem menuItem) {
+                EditVehicleWindow window = new EditVehicleWindow(vehiclesList);
+                getUI().addWindow(window);
+                refreshDataSource();
+            }
+        });
+
         return vehicleMenu;
     }
 
@@ -252,6 +263,7 @@ public class VehicleView extends VerticalLayout implements View {
 
         return ic;
     }
+
     private void refreshDataSource() {
         vehiclesContainer = prepareForVehiclesList(ReceiveVehicle.getVehiclesList());
         vehiclesList.setContainerDataSource(vehiclesContainer);

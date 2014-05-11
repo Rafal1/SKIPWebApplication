@@ -21,6 +21,7 @@ import java.util.Iterator;
 public class CustomMap {
     private GoogleMap googleMap;
     private VerticalLayout verti;
+
     private String imagePath = "VAADIN/resources/icons/drivers.png";
     private  GoogleMapInfoWindow mapInfo = new GoogleMapInfoWindow("");
 
@@ -31,6 +32,7 @@ public class CustomMap {
 
     public void addMultipleMarkers(ArrayList<Marker> markers){
         googleMap.clearMarkers();
+
         Iterator<Marker> iter = markers.iterator();
         while(iter.hasNext()){
             Marker m = iter.next();
@@ -39,9 +41,23 @@ public class CustomMap {
     }
 
     public void addOneMarker(Marker marker){
+
         addOneMarker(marker.getName(), marker.getCoords());
     }
 
+    public boolean showMarkerOnMap(String name){
+            Iterator<GoogleMapMarker> iterator = googleMap.getMarkers().iterator();
+            while(iterator.hasNext()){
+               GoogleMapMarker marker = iterator.next();
+                if(marker.getCaption().equals(name)){
+                    googleMap.setCenter(marker.getPosition());
+                    showMapInfo(marker);
+                    return true;
+                }
+            }
+            return false;
+    }
+    @Deprecated
     public void addOneMarker( String name,  LatLon coords ) {
         //googleMap.clearMarkers();
         addMarker(name, coords);
@@ -86,12 +102,17 @@ public class CustomMap {
         googleMap.addMarkerClickListener(new MarkerClickListener() {
             @Override
             public void markerClicked(GoogleMapMarker googleMapMarker) {
-                mapInfo.setAnchorMarker(googleMapMarker);
-                mapInfo.setContent(googleMapMarker.getCaption());
-                googleMap.closeInfoWindow(mapInfo);
-                googleMap.openInfoWindow(mapInfo);
+                showMapInfo(googleMapMarker);
             }
         });
+
+    }
+
+    private void showMapInfo(GoogleMapMarker googleMapMarker){
+        mapInfo.setAnchorMarker(googleMapMarker);
+        mapInfo.setContent(googleMapMarker.getCaption());
+        googleMap.closeInfoWindow(mapInfo);
+        googleMap.openInfoWindow(mapInfo);
 
     }
 

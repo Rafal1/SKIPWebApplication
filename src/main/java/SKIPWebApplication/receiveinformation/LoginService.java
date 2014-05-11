@@ -3,6 +3,8 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import returnobjects.Driver;
 
 import java.io.IOException;
@@ -47,14 +50,22 @@ public class LoginService implements ServerInfo {
 
 
         HttpClient httpclient = HttpClientBuilder.create().build();
-        HttpPost httppost = new HttpPost(LOGIN_SUFFIX_URL);
+        HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL);
         try {
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            httppost.setEntity(new UrlEncodedFormEntity(params));
-            parsingResponse = httpclient.execute(httppost, responseHandler);
+            HttpResponse response = httpclient.execute(httppost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            parsingResponse = EntityUtils.toString(entity);
+
+            if (statusCode != 200) {
+                // responseBody will have the error response
+            }
+
         } catch (ClientProtocolException e) {
+            e.printStackTrace();
             return false;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -72,6 +83,7 @@ public class LoginService implements ServerInfo {
         String unitsString;
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
+
             unitsString = httpclient.execute(getQuery, responseHandler);
 
         } catch (ClientProtocolException e) {

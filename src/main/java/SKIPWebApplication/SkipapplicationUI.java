@@ -31,8 +31,8 @@ public class SkipapplicationUI extends UI {
         getPage().setTitle("SKIP");
 
         //SSL initialization
-        System.setProperty("javax.net.ssl.trustStore", VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "//VAADIN//ssl//skipcacert");
-        System.setProperty("javax.net.ssl.trustStorePassword", "password");
+        System.setProperty("javax.net.ssl.trustStore", VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "//VAADIN//ssl//cacertsts" );
+        System.setProperty("javax.net.ssl.trustStorePassword", "18SK1P");
 
         // Create a navigator to control the views
         navigator = new Navigator(this, this);

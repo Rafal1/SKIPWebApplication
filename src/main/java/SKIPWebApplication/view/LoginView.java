@@ -1,6 +1,7 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.SkipapplicationUI;
+import SKIPWebApplication.receiveinformation.LoginService;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -77,9 +78,10 @@ public class LoginView extends VerticalLayout implements View {
     }
 
     private Boolean checkUserData(String login, String pass) {
-        if (login.equals(ExLo) && pass.equals(ExPa)) {
+
+        if (LoginService.login(login,pass)) {
             return true;
         }
-        return false;
+        return true;   //TEST
     }
 }

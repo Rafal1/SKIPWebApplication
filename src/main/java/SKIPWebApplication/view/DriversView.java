@@ -337,6 +337,7 @@ public class DriversView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        DefaultViewBuilderHelper.checkLogin();
         refreshDataSource();
     }
 

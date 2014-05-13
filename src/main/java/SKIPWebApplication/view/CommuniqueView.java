@@ -212,5 +212,6 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+        DefaultViewBuilderHelper.checkLogin();
     }
 }

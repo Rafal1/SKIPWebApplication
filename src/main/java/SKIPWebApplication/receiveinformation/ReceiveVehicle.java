@@ -3,6 +3,7 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vaadin.server.VaadinSession;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -12,8 +13,10 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
@@ -30,7 +33,12 @@ public class ReceiveVehicle implements ServerInfo {
 
     public static ArrayList<Vehicle> getVehiclesList() {
         ArrayList<Vehicle> parsingResponse = new ArrayList<Vehicle>();
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        Object cookieObject = VaadinSession.getCurrent().getAttribute(LoginService.COOKIE_STORE_SEESION_TAG);
+        if(cookieObject == null){
+            return parsingResponse;
+        }
+        BasicCookieStore cookieStore = (BasicCookieStore) cookieObject;
+        HttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/vehicles");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;

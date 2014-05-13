@@ -1,5 +1,6 @@
 package SKIPWebApplication.view;
 
+import SKIPWebApplication.consts.StringConsts;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import com.vaadin.data.Property;
 import com.vaadin.event.ItemClickEvent;
@@ -39,7 +40,7 @@ public class MainView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
-
+        DefaultViewBuilderHelper.checkLogin();
         refreshData();
     }
 
@@ -89,24 +90,24 @@ public class MainView extends VerticalLayout implements View {
         final VerticalLayout tableLayout = (VerticalLayout) getTableLayout();
         HorizontalLayout horizontalLayout = new HorizontalLayout();
 
-        final Button moreLessButton = new Button("Mniej");
+        final Button moreLessButton = new Button(StringConsts.LESS_LABEL);
         moreLessButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-                Notification.show("buttonClick"); //TEST
+
 
                 if (isTableVisible) {
                    // proxy.animate(table, AnimType.FADE_OUT).setDuration(200);
                     isTableVisible = false;
                     tableLayout.setVisible(false);
-                    moreLessButton.setCaption("Więcej");
+                    moreLessButton.setCaption(StringConsts.MORE_LABEL);
                 } else {
                     //proxy.animate(table, AnimType.FADE_IN).setDuration(300);
                     //TODO animacja pojawiania i zanikania
 
                     isTableVisible = true;
                     tableLayout.setVisible(true);
-                    moreLessButton.setCaption("Mniej");
+                    moreLessButton.setCaption(StringConsts.LESS_LABEL);
                 }
 
             }

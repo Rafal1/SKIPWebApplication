@@ -1,20 +1,19 @@
 package SKIPWebApplication.receiveinformation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vaadin.server.VaadinSession;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import returnobjects.Driver;
 
@@ -31,34 +30,37 @@ import java.util.List;
  */
 public class LoginService implements ServerInfo {
 
+    public static final String COOKIE_STORE_SEESION_TAG = "CookieSession";
 
-    public static boolean login(String username, String password){
+
+    public static boolean login(String username, String password) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         String parsingResponse = null;
-        ObjectMapper mapper = new ObjectMapper();
-        String usernameJSON = null;
-        String passwordJSON = null;
-        try {
-            usernameJSON = mapper.writeValueAsString(username);
-            passwordJSON = mapper.writeValueAsString(password);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        params.add(new BasicNameValuePair("username", usernameJSON));
-        params.add(new BasicNameValuePair("password", passwordJSON));
 
+        BasicCookieStore cookieStore = new BasicCookieStore();
+        CloseableHttpClient httpClient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
 
-        HttpClient httpclient = HttpClientBuilder.create().build();
-        HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL);
+        HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL + "?username=" + username + "&password=" + password);
+        CloseableHttpResponse response2 = null;
         try {
-            HttpResponse response = httpclient.execute(httppost);
+            HttpResponse response = httpClient.execute(httppost);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             parsingResponse = EntityUtils.toString(entity);
 
-            if (statusCode != 200) {
-                // responseBody will have the error response
+            {
+                HttpGet httpGet = new HttpGet(SSL_ACCESS + "/login");
+                response2 = httpClient.execute(httpGet);
+                HttpEntity entity2 = response2.getEntity();
+                parsingResponse = EntityUtils.toString(entity2);
+                if (parsingResponse.equals(username)) {
+                    VaadinSession.getCurrent().setAttribute(COOKIE_STORE_SEESION_TAG, cookieStore);
+                    return true;
+                } else
+                    return false;
+
+
             }
 
         } catch (ClientProtocolException e) {
@@ -67,19 +69,27 @@ public class LoginService implements ServerInfo {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                if (response2 != null) {
+                    response2.close();
+                }
+                httpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
-
-        //TODO sprawdzenie czy udało sie zalogować. należy sprawdzić co zostało zwrócone przez serwer.
-
-        System.out.println(parsingResponse);
-        return true;
     }
 
-    public static boolean logout(){
+    public static boolean logout() {
         Driver parsingResponse = null;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        Object cookieObject = VaadinSession.getCurrent().getAttribute(COOKIE_STORE_SEESION_TAG);
+        if (cookieObject == null) {
+            return false;
+        }
+        BasicCookieStore cookieStore = (BasicCookieStore) cookieObject;
+        HttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + LOGOUT_SUFFIX_URL);
-        ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -91,8 +101,7 @@ public class LoginService implements ServerInfo {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //TODO sprawdzić czy udało się wylogować
+        VaadinSession.getCurrent().close();
         return true;
     }
 

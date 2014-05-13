@@ -6,6 +6,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 
 /**
@@ -74,14 +75,15 @@ public class LoginView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Notification.show("Widok Logowania");
+
     }
 
     private Boolean checkUserData(String login, String pass) {
 
-        if (LoginService.login(login,pass)) {
+        if ( LoginService.login(login, pass)) {
+            VaadinSession.getCurrent().setAttribute("login", true);
             return true;
         }
-        return true;   //TEST
+        return false;
     }
 }

@@ -2,7 +2,9 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.SkipapplicationUI;
 import SKIPWebApplication.consts.StringConsts;
+import SKIPWebApplication.receiveinformation.LoginService;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 
 /**
@@ -28,7 +30,10 @@ public class DefaultViewBuilderHelper {
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 //TODO conditions for other views
                 if (selectedItem.getText().equals(StringConsts.LOGOUT_STRING)) {
-                    UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
+                    if(LoginService.logout())
+                        UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
+                    else
+                        Notification.show("Nie udało sie wylogować, spróbuj jeszcze raz");
                 }
                 if (selectedItem.getText().equals(StringConsts.COMMUNIQUE_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
@@ -61,5 +66,15 @@ public class DefaultViewBuilderHelper {
         hl.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
         hl.setHeight("80px");
         return hl;
+    }
+
+    public static boolean checkLogin(){
+        Object isLoged =VaadinSession.getCurrent().getAttribute("login");
+        if(isLoged != null && ((Boolean)isLoged) == true ){
+            return true;
+        }else{
+            UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
+        }
+        return false;
     }
 }

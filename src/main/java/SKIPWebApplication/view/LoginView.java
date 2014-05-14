@@ -30,9 +30,10 @@ public class LoginView extends VerticalLayout implements View {
         panel.setSizeUndefined();
         addComponent(panel);
         ThemeResource logo = new ThemeResource("../../resources/icons/skip.png");
-                Image logoComp = new Image(null, logo);
+        Image logoComp = new Image(null, logo);
         FormLayout content = new FormLayout();
         content.addComponent(logoComp);
+        content.setComponentAlignment(logoComp, Alignment.MIDDLE_CENTER);
         content.addComponent(LOGIN);
         content.addComponent(PASSWORD);
         content.setSizeUndefined();

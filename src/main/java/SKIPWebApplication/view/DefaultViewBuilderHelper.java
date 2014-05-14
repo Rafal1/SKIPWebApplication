@@ -21,9 +21,6 @@ public class DefaultViewBuilderHelper {
 
     public static Component getDefaultMenuPanel() {
         HorizontalLayout hl = new HorizontalLayout();
-        ThemeResource logo = new ThemeResource("../../resources/icons/skip.png");
-        Image logoComp = new Image(null, logo);
-        hl.addComponent(logoComp);
         MenuBar.Command cmd = new MenuBar.Command() {
 
             @Override
@@ -50,6 +47,8 @@ public class DefaultViewBuilderHelper {
             }
         };
         MenuBar menu = new MenuBar();
+        menu.addItem("", new ThemeResource(
+                "../../resources/icons/skip.png"), null);
         menu.addItem(StringConsts.MAIN_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/home.png"), cmd);
         menu.addItem(StringConsts.DRIVERS_VIEW_NAME, new ThemeResource(
@@ -61,8 +60,8 @@ public class DefaultViewBuilderHelper {
         menu.addItem(StringConsts.LOGOUT_STRING, new ThemeResource(
                 "../../resources/icons/log_out.png"), cmd);
         menu.setHeight("73px");
+        menu.setWidth(PAGE_WIDTH);
         hl.addComponent(menu);
-        hl.setComponentAlignment(logoComp, Alignment.MIDDLE_CENTER);
         hl.setComponentAlignment(menu, Alignment.MIDDLE_CENTER);
         hl.setHeight("80px");
         return hl;

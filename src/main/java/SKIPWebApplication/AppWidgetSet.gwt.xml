@@ -40,5 +40,5 @@
 
     <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset" />
 
-    <inherits name="org.vaadin.jouni.dom.DomWidgetset" />
+    
 </module>

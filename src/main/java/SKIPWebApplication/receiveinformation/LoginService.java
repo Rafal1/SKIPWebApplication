@@ -83,18 +83,13 @@ public class LoginService implements ServerInfo {
 
     public static boolean logout() {
         Driver parsingResponse = null;
-        Object cookieObject = VaadinSession.getCurrent().getAttribute(COOKIE_STORE_SEESION_TAG);
-        if (cookieObject == null) {
-            return false;
-        }
-        BasicCookieStore cookieStore = (BasicCookieStore) cookieObject;
-        HttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
+        HttpClient httpClient = HttpClientHelper.getHttpClient();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + LOGOUT_SUFFIX_URL);
         String unitsString;
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
-            unitsString = httpclient.execute(getQuery, responseHandler);
+            unitsString = httpClient.execute(getQuery, responseHandler);
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();

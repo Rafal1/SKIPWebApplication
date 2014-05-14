@@ -33,12 +33,11 @@ public class ReceiveVehicle implements ServerInfo {
 
     public static ArrayList<Vehicle> getVehiclesList() {
         ArrayList<Vehicle> parsingResponse = new ArrayList<Vehicle>();
-        Object cookieObject = VaadinSession.getCurrent().getAttribute(LoginService.COOKIE_STORE_SEESION_TAG);
-        if(cookieObject == null){
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if(httpclient == null){
+            System.out.println("ReceiveVehicle: error in getting vehicle List ");
             return parsingResponse;
         }
-        BasicCookieStore cookieStore = (BasicCookieStore) cookieObject;
-        HttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/vehicles");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -68,7 +67,11 @@ public class ReceiveVehicle implements ServerInfo {
         params.add(new BasicNameValuePair("vehicle", vehJSON));
 
         String url = SSL_ACCESS + "/vehicles";
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if(httpclient == null){
+            System.out.println("ReceiveVehicle: error in adding vehicle ");
+            return parsingResponse;
+        }
         HttpPost httppost = new HttpPost(url);
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -85,7 +88,11 @@ public class ReceiveVehicle implements ServerInfo {
     public static Vehicle changeVehicle(Vehicle veh) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Vehicle parsingResponse = null;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if(httpclient == null){
+            System.out.println("ReceiveVehicle: error in changing vehicle ");
+            return parsingResponse;
+        }
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + veh.getId());
         putQuery.setHeader( "Content-Type", "application/json" );
 
@@ -115,7 +122,11 @@ public class ReceiveVehicle implements ServerInfo {
 
     public static String deleteVehicle(Long ID) {
         String url = SSL_ACCESS + "/vehicles/" + ID;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if(httpclient == null){
+            System.out.println("ReceiveVehicle: error in deleting vehicle ");
+            return null;
+        }
         HttpDelete delQuery = new HttpDelete(url);
         String parsingResponse = null;
         try {
@@ -131,7 +142,11 @@ public class ReceiveVehicle implements ServerInfo {
 
     public static Vehicle getVehicle(Long id) {
         Vehicle parsingResponse = null;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if(httpclient == null){
+            System.out.println("ReceiveVehicle: error in getting vehicle " + id);
+            return parsingResponse;
+        }
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/vehicles/" + id);
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;

@@ -3,7 +3,6 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaadin.server.VaadinSession;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -13,10 +12,8 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
@@ -35,7 +32,7 @@ public class ReceiveDriver implements ServerInfo {
         ArrayList<Driver> parsingResponse = new ArrayList<Driver>();
 
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveDriver: error in getting driverList ");
             return parsingResponse;
         }
@@ -69,7 +66,7 @@ public class ReceiveDriver implements ServerInfo {
 
         String url = SSL_ACCESS + "/drivers";
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveDriver: error in adding driver ");
             return parsingResponse;
         }
@@ -90,12 +87,12 @@ public class ReceiveDriver implements ServerInfo {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Driver parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveDriver: error in changing driver ");
             return parsingResponse;
         }
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + dr.getId());
-        putQuery.setHeader( "Content-Type", "application/json" );
+        putQuery.setHeader("Content-Type", "application/json");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -124,7 +121,7 @@ public class ReceiveDriver implements ServerInfo {
     public static String deleteDriver(Long ID) {
         String url = SSL_ACCESS + "/drivers/" + ID;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveDriver: error in deleting driver ");
             return null;
         }
@@ -164,12 +161,12 @@ public class ReceiveDriver implements ServerInfo {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Coordinates parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveDriver: error in updating driver coordinates ");
             return parsingResponse;
         }
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
-        putQuery.setHeader( "Content-Type", "application/json" );
+        putQuery.setHeader("Content-Type", "application/json");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String corJSON = null;

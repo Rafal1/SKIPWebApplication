@@ -108,8 +108,8 @@ public class AddDriverWindow extends Window {
 
                 //losowanie koordynatów tak aby każdy kierowca miał inne połozenie, pózniej można usunąć
                 //TEST
-                double lat = Math.random() * 2 + 50 ;
-                double lon = Math.random() * 2 + 20;
+                double lat = Math.random() * 2 + 20;
+                double lon = Math.random() * 2 + 50;
                 driver.setLatestCoordinates(new Coordinates(lat, lon));
 
                 Boolean valOk = true;

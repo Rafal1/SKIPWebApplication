@@ -3,7 +3,6 @@ package SKIPWebApplication.receiveinformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaadin.server.VaadinSession;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -13,10 +12,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
@@ -34,7 +30,7 @@ public class ReceiveVehicle implements ServerInfo {
     public static ArrayList<Vehicle> getVehiclesList() {
         ArrayList<Vehicle> parsingResponse = new ArrayList<Vehicle>();
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveVehicle: error in getting vehicle List ");
             return parsingResponse;
         }
@@ -68,7 +64,7 @@ public class ReceiveVehicle implements ServerInfo {
 
         String url = SSL_ACCESS + "/vehicles";
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveVehicle: error in adding vehicle ");
             return parsingResponse;
         }
@@ -89,12 +85,12 @@ public class ReceiveVehicle implements ServerInfo {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         Vehicle parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveVehicle: error in changing vehicle ");
             return parsingResponse;
         }
         HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + veh.getId());
-        putQuery.setHeader( "Content-Type", "application/json" );
+        putQuery.setHeader("Content-Type", "application/json");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -123,7 +119,7 @@ public class ReceiveVehicle implements ServerInfo {
     public static String deleteVehicle(Long ID) {
         String url = SSL_ACCESS + "/vehicles/" + ID;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveVehicle: error in deleting vehicle ");
             return null;
         }
@@ -143,7 +139,7 @@ public class ReceiveVehicle implements ServerInfo {
     public static Vehicle getVehicle(Long id) {
         Vehicle parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
-        if(httpclient == null){
+        if (httpclient == null) {
             System.out.println("ReceiveVehicle: error in getting vehicle " + id);
             return parsingResponse;
         }

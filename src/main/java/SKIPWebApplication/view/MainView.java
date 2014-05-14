@@ -2,20 +2,16 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.consts.StringConsts;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
-import com.vaadin.data.Property;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.tapio.googlemaps.client.LatLon;
+import com.vaadin.tapio.googlemaps.client.GoogleMapMarker;
 import com.vaadin.ui.*;
 import custommap.CustomMap;
-import custommap.Marker;
-
-import org.vaadin.jouni.animator.AnimatorProxy;
+import custommap.SKIPMarkerClickListener;
 import returnobjects.Driver;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static com.vaadin.ui.Alignment.TOP_CENTER;
 
@@ -32,7 +28,8 @@ public class MainView extends VerticalLayout implements View {
     private Table table = new Table();
     ArrayList<Driver> driverList;
     private boolean isTableVisible = true;
-    AnimatorProxy proxy = new AnimatorProxy();
+
+    //AnimatorProxy proxy = new AnimatorProxy();
     public MainView() {
         setSizeFull();
         initLayout();
@@ -46,9 +43,7 @@ public class MainView extends VerticalLayout implements View {
 
     public void refreshData() {
         driverList = ReceiveDriver.getDriversList();
-        ArrayList<Marker> markerList = makeMarkerListfromDrivers(driverList);
-        addAllDrivers(driverList);
-        customMap.addMultipleMarkers(markerList);
+        addDriversToView(driverList);
     }
 
     private void initLayout() {
@@ -73,18 +68,6 @@ public class MainView extends VerticalLayout implements View {
 
     }
 
-    private ArrayList<Marker> makeMarkerListfromDrivers(ArrayList<Driver> allDrivers) {
-        Iterator<Driver> driversIterator = allDrivers.iterator();
-        ArrayList<Marker> markersList = new ArrayList<Marker>();
-        while (driversIterator.hasNext()) {
-            Driver tmpDriver = driversIterator.next();
-            markersList.add(new Marker(makeMarkerName(tmpDriver),
-                    new LatLon(tmpDriver.getLatestCoordinates().getLatitude(),
-                            tmpDriver.getLatestCoordinates().getLongitude()), tmpDriver.getId()));
-        }
-        return markersList;
-    }
-
     private Component getBodyContent() {
         customMap = new CustomMap();
         final VerticalLayout tableLayout = (VerticalLayout) getTableLayout();
@@ -97,7 +80,7 @@ public class MainView extends VerticalLayout implements View {
 
 
                 if (isTableVisible) {
-                   // proxy.animate(table, AnimType.FADE_OUT).setDuration(200);
+                    // proxy.animate(table, AnimType.FADE_OUT).setDuration(200);
                     isTableVisible = false;
                     tableLayout.setVisible(false);
                     moreLessButton.setCaption(StringConsts.MORE_LABEL);
@@ -113,7 +96,7 @@ public class MainView extends VerticalLayout implements View {
             }
         });
         horizontalLayout.addComponent(tableLayout);
-        horizontalLayout.setExpandRatio(tableLayout , 0.3f);
+        horizontalLayout.setExpandRatio(tableLayout, 0.3f);
         horizontalLayout.addComponent(moreLessButton);
         horizontalLayout.setComponentAlignment(moreLessButton, Alignment.MIDDLE_CENTER);
 
@@ -135,35 +118,44 @@ public class MainView extends VerticalLayout implements View {
         table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent itemClickEvent) {
-              long driverId = (Long)itemClickEvent.getItemId();
-             Iterator<Driver> iterator = driverList.iterator();
-               while(iterator.hasNext()){
-                   Driver driver = iterator.next();
-                   if(driver.getId() == driverId){
-                       customMap.showMarkerOnMap(makeMarkerName(driver));
-                       break;
-                   }
-               }
+                long googleMapId = (Long) itemClickEvent.getItemId();
+                customMap.showMarkerOnMap(googleMapId);
             }
-        });
+        }
 
-       return c;
+        );
+
+        return c;
 
     }
 
-    private void addAllDrivers(ArrayList<Driver> drivers) {
+    private void addDriversToView(ArrayList<Driver> drivers) {
+        addListenerToCustomMap();
+        customMap.clearMarkers();
+        table.removeAllItems();
         for (Driver driver : drivers) {
-            addDriverToTable(driver);
+            long markerId = customMap.addMarkerFromDriver(driver);
+            addDriverToTable(driver, markerId);
         }
     }
 
-    private void addDriverToTable(Driver driver) {
-        table.addItem(new Object[]{
-                driver.getFirstName(), driver.getLastName()}, driver.getId());
+    private void addListenerToCustomMap() {
+        SKIPMarkerClickListener markerListener = new SKIPMarkerClickListener() {
+            @Override
+            public void onMarkerClick(GoogleMapMarker googleMarker) {
+                table.select(googleMarker.getId());
+            }
+        };
+        customMap.setSKIPMarkerClickListener(markerListener);
     }
 
-    private String makeMarkerName(Driver driver){
-           return driver.getFirstName() + " " + driver.getLastName();
+    private void addDriverToTable(Driver driver, long markerId) {
+        table.addItem(new Object[]{
+                driver.getFirstName(), driver.getLastName()}, markerId);
+    }
+
+    public static String makeMarkerName(Driver driver) {
+        return driver.getFirstName() + " " + driver.getLastName();
 
     }
 }

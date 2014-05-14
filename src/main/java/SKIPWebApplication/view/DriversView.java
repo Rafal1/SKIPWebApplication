@@ -273,6 +273,7 @@ public class DriversView extends VerticalLayout implements View {
                             .getContainerProperty(currentDriver, REGISTRATION_NR)
                             .getValue();
                     if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
+                        customMap.clearMarkers();
                         customMap.addOneMarker(info, (LatLon) driversList
                                 .getContainerProperty(currentDriver, COORDINATES)
                                 .getValue());

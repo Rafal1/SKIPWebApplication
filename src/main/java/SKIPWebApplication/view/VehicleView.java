@@ -13,6 +13,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
+import custommap.CustomMap;
+import custommap.Marker;
 import returnobjects.Vehicle;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class VehicleView extends VerticalLayout implements View {
     private TextField searchField = new TextField();
     private Button addNewVehicleButton = new Button("Nowy");
     private VerticalLayout rightLayout = new VerticalLayout();
-    private GoogleMap googleMap;
+    private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
     public static final String BRAND = "Marka";
@@ -130,12 +132,10 @@ public class VehicleView extends VerticalLayout implements View {
     }
 
     private void initMap() {
-        googleMap = new GoogleMap(new LatLon(52.0922474, 21.0249287), 12.0, "");
-        googleMap.setSizeFull();
-        googleMap.setImmediate(true);
-        googleMap.setMinZoom(4.0);
-        rightLayout.addComponent(googleMap);
-        rightLayout.setExpandRatio(googleMap, 1.0f);
+        customMap = new CustomMap();
+        customMap.clearMarkers();
+        rightLayout.addComponent(customMap.getCustomMap());
+        rightLayout.setExpandRatio(customMap.getCustomMap(), 1.0f);
     }
 
     private void initSearch() {

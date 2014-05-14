@@ -2,8 +2,6 @@ package SKIPWebApplication.receiveinformation;
 
 import com.vaadin.server.VaadinSession;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -15,11 +13,9 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import returnobjects.Driver;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,8 +31,7 @@ public class LoginService implements ServerInfo {
 
     public static boolean login(String username, String password) {
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        String parsingResponse = null;
+        String parsingResponse;
 
         BasicCookieStore cookieStore = new BasicCookieStore();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
@@ -44,10 +39,8 @@ public class LoginService implements ServerInfo {
         HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL + "?username=" + username + "&password=" + password);
         CloseableHttpResponse response2 = null;
         try {
-            HttpResponse response = httpClient.execute(httppost);
-            int statusCode = response.getStatusLine().getStatusCode();
-            HttpEntity entity = response.getEntity();
-            parsingResponse = EntityUtils.toString(entity);
+            httpClient.execute(httppost);
+
 
             {
                 HttpGet httpGet = new HttpGet(SSL_ACCESS + "/login");
@@ -76,20 +69,20 @@ public class LoginService implements ServerInfo {
                 }
                 httpClient.close();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }
 
     public static boolean logout() {
-        Driver parsingResponse = null;
+
         HttpClient httpClient = HttpClientHelper.getHttpClient();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + LOGOUT_SUFFIX_URL);
-        String unitsString;
+
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
-            unitsString = httpClient.execute(getQuery, responseHandler);
+            httpClient.execute(getQuery, responseHandler);
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();

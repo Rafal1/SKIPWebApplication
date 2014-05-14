@@ -108,8 +108,8 @@ public class MainView extends VerticalLayout implements View {
 
     private Component getTableLayout() {
         VerticalLayout c = new VerticalLayout();
-        table.addContainerProperty("First Name", String.class, null);
-        table.addContainerProperty("Last Name", String.class, null);
+        table.addContainerProperty("Imię", String.class, null);
+        table.addContainerProperty("Nazwisko", String.class, null);
         table.setSelectable(true);
         c.addComponent(table);
         c.setExpandRatio(table, 1);

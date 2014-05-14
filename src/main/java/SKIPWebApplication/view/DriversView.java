@@ -125,15 +125,7 @@ public class DriversView extends VerticalLayout implements View {
                 refreshDataSource();
             }
         });
-
-        driverMenu.addItem("Edytuj", new MenuBar.Command() {
-            @Override
-            public void menuSelected(MenuBar.MenuItem menuItem) {
-                EditDriverWindow window = new EditDriverWindow(driversList);
-                getUI().addWindow(window);
-                refreshDataSource();
-            }
-        });
+        driverMenu.addItem("Edytuj", new EditDriverCommand(this));
         return driverMenu;
     }
 
@@ -256,6 +248,18 @@ public class DriversView extends VerticalLayout implements View {
         }
     }
 
+    private class EditDriverCommand implements MenuBar.Command {
+        DriversView dv;
+
+        public EditDriverCommand(DriversView dv) {
+            this.dv = dv;
+        }
+        public void menuSelected(MenuBar.MenuItem selectedItem) {
+            EditDriverWindow window = new EditDriverWindow(dv);
+            getUI().addWindow(window);
+        }
+    }
+
     private void initDriverList() {
         driversList.addValueChangeListener(new Property.ValueChangeListener() {
             public void valueChange(Property.ValueChangeEvent event) {
@@ -334,6 +338,10 @@ public class DriversView extends VerticalLayout implements View {
                 REGISTRATION_NR});
         driversList.setSelectable(true);
         driversList.setImmediate(true);
+    }
+
+    public Table getDriversList() {
+        return driversList;
     }
 
     @Override

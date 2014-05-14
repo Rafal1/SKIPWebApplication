@@ -22,7 +22,6 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class AddDriverWindow extends Window {
-    DriversView parent;
 
     public AddDriverWindow(final DriversView parent) {
         super("Nowy kierowca");

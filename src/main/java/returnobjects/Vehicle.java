@@ -34,8 +34,7 @@ public class Vehicle {
         return registrationNumber;
     }
 
-    @SuppressWarnings("unused")
-    private void setId(long ID){
+    public void setId(long ID){
         this.id = ID;
     }
 

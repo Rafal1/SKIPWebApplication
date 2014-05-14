@@ -1,6 +1,7 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.receiveinformation.ReceiveVehicle;
+import SKIPWebApplication.window.AddVehicleWindow;
 import SKIPWebApplication.window.EditVehicleWindow;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -26,6 +27,7 @@ public class VehicleView extends VerticalLayout implements View {
 
     private final String SHEETTAB_GENERAL_SIZE = "200px"; // constant
     private final Integer SIZE_PER_TAB = 46;
+
     private Table vehiclesList = new Table();
     private TextField searchField = new TextField();
     private Button addNewVehicleButton = new Button("Nowy");
@@ -177,21 +179,7 @@ public class VehicleView extends VerticalLayout implements View {
 
     //TODO
     private void initAddRemoveButtons() {
-        addNewVehicleButton.addClickListener(new Button.ClickListener() {
-            @SuppressWarnings("unchecked")
-            public void buttonClick(Button.ClickEvent event) {
-
-                vehiclesContainer.removeAllContainerFilters();
-                Object contactId = vehiclesContainer.addItemAt(0);
-
-                vehiclesList.getContainerProperty(contactId, BRAND).setValue(
-                        "Nowy");
-                vehiclesList.getContainerProperty(contactId, COLOUR).setValue(
-                        "Pojazd");
-
-                vehiclesList.select(contactId);
-            }
-        });
+        addNewVehicleButton.addClickListener(new AddVehicleClickListener(this));
     }
 
     private void initVehiclesList() {
@@ -224,14 +212,7 @@ public class VehicleView extends VerticalLayout implements View {
             }
         });
 
-        vehicleMenu.addItem("Edytuj", new MenuBar.Command() {
-            @Override
-            public void menuSelected(MenuBar.MenuItem menuItem) {
-                EditVehicleWindow window = new EditVehicleWindow(vehiclesList);
-                getUI().addWindow(window);
-                refreshDataSource();
-            }
-        });
+        vehicleMenu.addItem("Edytuj",new EditVehicleCommand(this));
 
         return vehicleMenu;
     }
@@ -264,7 +245,7 @@ public class VehicleView extends VerticalLayout implements View {
         return ic;
     }
 
-    private void refreshDataSource() {
+    public void refreshDataSource() {
         vehiclesContainer = prepareForVehiclesList(ReceiveVehicle.getVehiclesList());
         vehiclesList.setContainerDataSource(vehiclesContainer);
         vehiclesList.setColumnReorderingAllowed(false);
@@ -280,5 +261,35 @@ public class VehicleView extends VerticalLayout implements View {
         refreshDataSource();
     }
 
+    private class AddVehicleClickListener implements Button.ClickListener {
+        VehicleView vv;
+
+        public AddVehicleClickListener(VehicleView vv) {
+            this.vv = vv;
+        }
+
+        @Override
+        public void buttonClick(Button.ClickEvent event) {
+            AddVehicleWindow window = new AddVehicleWindow(vv);
+            getUI().addWindow(window);
+        }
+
+    }
+
+    public Table getVehiclesList() {
+        return vehiclesList;
+    }
+
+    private class EditVehicleCommand implements MenuBar.Command {
+        VehicleView vv;
+
+        public EditVehicleCommand(VehicleView vv) {
+            this.vv = vv;
+        }
+        public void menuSelected(MenuBar.MenuItem selectedItem) {
+            EditVehicleWindow window = new EditVehicleWindow(vv);
+            getUI().addWindow(window);
+        }
+    }
 
 }

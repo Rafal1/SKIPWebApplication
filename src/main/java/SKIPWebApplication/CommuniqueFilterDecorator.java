@@ -34,10 +34,6 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
                     return "Przeczytany";
             }
         }
-        // returning null will output defasult value
-        if ("Status".equals(o)) {
-            System.out.println("HEJJJJ filterAdded");
-        }
         return null;
     }
 
@@ -99,7 +95,7 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
 
     @Override
     public Locale getLocale() {
-        return null;
+        return new Locale("pl_PL");
     }
 
     @Override
@@ -109,7 +105,13 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
 
     @Override
     public NumberFilterPopupConfig getNumberFilterPopupConfig() {
-        return null;
+        NumberFilterPopupConfig cinfInst = new NumberFilterPopupConfig();
+        cinfInst.setEqPrompt("Równe");
+        cinfInst.setGtPrompt("Wieksze");
+        cinfInst.setOkCaption("Filtruj");
+        cinfInst.setResetCaption("Resetuj");
+        cinfInst.setLtPrompt("Mniejsze");
+        return cinfInst;
     }
 
     @Override

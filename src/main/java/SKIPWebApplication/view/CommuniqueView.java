@@ -5,13 +5,17 @@ import SKIPWebApplication.CommuniqueFilterGenerator;
 import SKIPWebApplication.ReadEnum;
 import SKIPWebApplication.StatusEnum;
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.tapio.googlemaps.client.LatLon;
-import com.vaadin.ui.*;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 
@@ -31,6 +35,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
+    private boolean TestRead = false;
 
     public CommuniqueView() {
         setSizeFull();
@@ -84,44 +89,45 @@ public class CommuniqueView extends VerticalLayout implements View {
 //        leftLayout.addComponent(resFilters);
         commTable.setWidth("100%");
         commTable.setImmediate(true);
+        commTable.setSortEnabled(true);
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setSelectable(true);
         commTable.setContainerDataSource(buildTable());
-        commTable.removeGeneratedColumn("Status");
-        commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
-            @Override
-            public Object generateCell(CustomTable components, Object o, Object o2) {
-                Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
-                Boolean valueOfInstance = null;
-                if (TableCheckInstance instanceof CheckBox) {
-                    valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
-                }
-
-                String finalKnow = "";
-                if (valueOfInstance) {
-                    finalKnow = "Przeczytana";
-                } else {
-                    finalKnow = "Nieprzeczytana";
-                }
-                return finalKnow;
-            }
-        });
+//        commTable.removeGeneratedColumn("Status");
+//        commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
+//            @Override
+//            public Object generateCell(CustomTable components, Object o, Object o2) {
+//                Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
+//                Boolean valueOfInstance = null;
+//                if (TableCheckInstance instanceof CheckBox) {
+//                    valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
+//                }
+//
+//                String finalKnow = "";
+//                if (valueOfInstance) {
+//                    finalKnow = "Przeczytana";
+//                } else {
+//                    finalKnow = "Nieprzeczytana";
+//                }
+//                return finalKnow;
+//            }
+//        });
         commTable.setFilterBarVisible(true);
-        commTable.setFilterFieldVisible("Status", false);
+//        commTable.setFilterFieldVisible("Status", false);
 
         leftLayout.addComponent(commTable);
     }
 
     private void buildingRightLayout() {
-          initMap();
+        initMap();
 
         // wstawiam w tym miejscu mape - Mariusz
         //TODO usunac gdy na 100% będzie wiadaomo jak ma wyglądać widok
 
     }
 
-    private void initMap(){
+    private void initMap() {
         customMap = new CustomMap();
         Component map = customMap.getCustomMap();
         rightLayout.addComponent(map);
@@ -132,68 +138,79 @@ public class CommuniqueView extends VerticalLayout implements View {
     private Container buildTable() {
         //TODO data source from WebService
         SimpleDateFormat sdf = new SimpleDateFormat("dd.M.yyyy hh:mm:ss");
-        IndexedContainer indx = new IndexedContainer();
+        final IndexedContainer indx = new IndexedContainer();
         try {
             String[] drivers = new String[]{"Adam Dolny", "Zygmunt Kowalski"};
             Integer[] numer_komunikatu = new Integer[]{1, 2};
             Date[] dataTime = new Date[]{sdf.parse("13.01.2014 11:32:00"), sdf.parse("14.01.2014 21:55:00")};
             StatusEnum[] state = new StatusEnum[]{StatusEnum.Pauza, StatusEnum.Start};
+            ReadEnum[] readStat = {ReadEnum.Nieprzeczytany, ReadEnum.Przeczytany};
 
             indx.addContainerProperty("Kierowca", String.class, null);
             indx.addContainerProperty("ID", Integer.class, null);
             indx.addContainerProperty("Komunikat", StatusEnum.class, null); //TODO improve style (visibility)
             indx.addContainerProperty("Data nadesłania", Date.class, null);
             indx.addContainerProperty("", CheckBox.class, null);
-            indx.addContainerProperty("Status", String.class, null); //TODO filtrowanie nie działa nawet po dodaniu generowanej kolumny do kontenera i próbie nadpisania. Niestety, aby kolumna się odświeżała to trzebą ją generować za każdym razem (usuwać i dodawać) i to uniemożliwia filtrowanie
+            indx.addContainerProperty("Status", ReadEnum.class, null); //TODO filtrowanie nie działa nawet po dodaniu generowanej kolumny do kontenera i próbie nadpisania. Niestety, aby kolumna się odświeżała to trzebą ją generować za każdym razem (usuwać i dodawać) i to uniemożliwia filtrowanie
 
-            commTable.setColumnAlignment("", CustomTable.ALIGN_CENTER); //TODO nie centeruje checkboxów
-            commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
-            commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-            commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
-            commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
+//            commTable.setColumnAlignment("", CustomTable.ALIGN_CENTER); //TODO nie centeruje checkboxów
+//            commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
+//            commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
+//            commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
+//            commTable.setColumnAlignment("Status", CustomTable.ALIGN_CENTER);
 
             for (int j = 0; j < 50; j++) {
                 for (int i = 0; i < 2; i++) {
-                    CheckBox isReadBool = new CheckBox("Przeczytaj");
+                    final CheckBox isReadBool = new CheckBox("Przeczytaj");
                     isReadBool.addListener(new Property.ValueChangeListener() {
                         @Override
                         public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                            commTable.removeGeneratedColumn("Status");
-                            commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
-                                @Override
-                                public Object generateCell(CustomTable components, Object o, Object o2) {
-                                    Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
-                                    Boolean valueOfInstance = null;
-                                    if (TableCheckInstance instanceof CheckBox) {
-                                        valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
-                                    }
+                            Item item = indx.getItem(1);
+//                            indx.getContainerProperty(item, "Status").setValue("HEJ");
+                            TestRead = true;
+                            commTable.setContainerDataSource(buildTable());
 
-                                    String finalKnow = "";
-                                    if (valueOfInstance) {
-                                        finalKnow = "Przeczytana";
-                                    } else {
-                                        finalKnow = "Nieprzeczytana";
-                                    }
-                                    return finalKnow;
-                                }
-                            });
+                            //  commTable.removeGeneratedColumn("Status");
+                            //  commTable.addGeneratedColumn("Status", new CustomTable.ColumnGenerator() {
+//                                @Override
+//                                public Object generateCell(CustomTable components, Object o, Object o2) {
+//                                    Object TableCheckInstance = components.getContainerProperty(o, "").getValue();
+//                                    Boolean valueOfInstance = null;
+//                                    if (TableCheckInstance instanceof CheckBox) {
+//                                        valueOfInstance = ((CheckBox) TableCheckInstance).getValue();
+//                                    }
+
+//                                    String finalKnow = "";
+//                                    if (valueOfInstance) {
+//                                        finalKnow = "Przeczytana";
+//                                    } else {
+//                                        finalKnow = "Nieprzeczytana";
+//                                    }
+//                                    return finalKnow;
+//                                }
+                            //  });
                         }
                     });
                     isReadBool.setImmediate(true);
+//
+//                    ReadEnum isRead = ReadEnum.Nieprzeczytany;
+//                    //todo if isRead.checked = true generate column
+//                    if (drivers[i].equals("Adam Dolny")) { //!!
+//                        isReadBool.setValue(true);
+//                        isRead = ReadEnum.Przeczytany;
+//                    }
 
-                    ReadEnum isRead = ReadEnum.Nieprzeczytany;
-                    //todo if isRead.checked = true generate column
-                    if (drivers[i].equals("Adam Dolny")) { //!!
-                        isReadBool.setValue(true);
-                        isRead = ReadEnum.Przeczytany;
-                    }
                     Object id = indx.addItem();
                     indx.getContainerProperty(id, "Kierowca").setValue(drivers[i]);
                     indx.getContainerProperty(id, "ID").setValue(numer_komunikatu[i]);
                     indx.getContainerProperty(id, "Komunikat").setValue(state[i]);
                     indx.getContainerProperty(id, "Data nadesłania").setValue(dataTime[i]);
                     indx.getContainerProperty(id, "").setValue(isReadBool);
-//                    indx.getContainerProperty(id, "Status").setValue("hej"); //todo test czy jest w konetenrze kolumna status
+                    if (TestRead) {
+                        indx.getContainerProperty(id, "Status").setValue(ReadEnum.HEJ); //todo test czy jest w konetenrze kolumna status
+                    } else {
+                        indx.getContainerProperty(id, "Status").setValue(readStat[i]); //todo test czy jest w konetenrze kolumna status
+                    }
                 }
             }
 
@@ -204,7 +221,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-               customMap.addOneMarker("przyklad" , new LatLon(52.324234 , 25.2452342));
+                customMap.addOneMarker("przyklad", new LatLon(52.324234, 25.2452342));
             }
         });
         return indx;

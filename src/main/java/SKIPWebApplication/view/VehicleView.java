@@ -11,11 +11,8 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.tapio.googlemaps.GoogleMap;
-import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
 import custommap.CustomMap;
-import custommap.Marker;
 import returnobjects.Vehicle;
 
 import java.util.ArrayList;
@@ -207,7 +204,7 @@ public class VehicleView extends VerticalLayout implements View {
                 String result = ReceiveVehicle.deleteVehicle((Long) vehiclesList
                         .getContainerProperty(currentVehicle, ID)
                         .getValue());
-                Notification.show("Kierowca został usunięty");
+                Notification.show("Pojazd został usunięty");
                 refreshDataSource();
             }
         });

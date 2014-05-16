@@ -31,6 +31,8 @@ public class EditVehicleWindow extends Window {
         fieldBRAND.addValidator(new StringLengthValidator("Niepoprawna długość pola marka", 3, 64, false));
         fieldBRAND.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Marka zawiera nie właściwe znaki"));
         fieldBRAND.setWidth("20em");
+        fieldBRAND.setRequired(true);
+        fieldBRAND.setRequiredError("Pole Marka jest wymagane");
         fieldBRAND.setImmediate(true);
         newVehicleLayout.addComponent(fieldBRAND);
         fields.bind(fieldBRAND, fieldName);
@@ -41,6 +43,8 @@ public class EditVehicleWindow extends Window {
         fieldCOLOUR.addValidator(new StringLengthValidator("Niepoprawna długość pola Kolor nadwozia", 3, 64, false));
         fieldCOLOUR.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
         fieldCOLOUR.setWidth("20em");
+        fieldCOLOUR.setRequired(true);
+        fieldCOLOUR.setRequiredError("Pole Kolor nadwozia jest wymagane");
         fieldCOLOUR.setImmediate(true);
         newVehicleLayout.addComponent(fieldCOLOUR);
         fields.bind(fieldCOLOUR, fieldName);
@@ -49,8 +53,11 @@ public class EditVehicleWindow extends Window {
         TextField fieldMAX_LOAD = new TextField(fieldName);
         fieldMAX_LOAD.setValue(vehiclesList.getContainerProperty(vehiclesList.getValue(), VehicleView.MAX_LOAD).getValue().toString());
         fieldMAX_LOAD.setConverter(Integer.class);
+        fieldMAX_LOAD.setConversionError("Wprowadzona wartość nie jest liczbą");
         fieldMAX_LOAD.addValidator(new IntegerRangeValidator("Niewłaściwa wartość ładowności", 0, Integer.MAX_VALUE));
         fieldMAX_LOAD.setWidth("20em");
+        fieldMAX_LOAD.setRequired(true);
+        fieldMAX_LOAD.setRequiredError("Pole Ładowność jest wymagane");
         fieldMAX_LOAD.setImmediate(true);
         newVehicleLayout.addComponent(fieldMAX_LOAD);
         fields.bind(fieldMAX_LOAD, fieldName);
@@ -61,6 +68,8 @@ public class EditVehicleWindow extends Window {
         fieldREGISTRATION_NR.addValidator(new StringLengthValidator("Niepoprawna długość pola Nr rejestracyjny", 4, 12, false));
         fieldREGISTRATION_NR.addValidator(new RegexpValidator("^[A-Z0-9-]*$", "pole Kolor zawiera nie właściwe znaki"));
         fieldREGISTRATION_NR.setWidth("20em");
+        fieldREGISTRATION_NR.setRequired(true);
+        fieldREGISTRATION_NR.setRequiredError("Pole Nr rejestracyjny jest wymagane");
         fieldREGISTRATION_NR.setImmediate(true);
         newVehicleLayout.addComponent(fieldREGISTRATION_NR);
         fields.bind(fieldREGISTRATION_NR, fieldName);
@@ -82,7 +91,7 @@ public class EditVehicleWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Vehicle veh = new Vehicle();
-                veh.setId((Long)parent.getVehiclesList().getContainerProperty( parent.getVehiclesList().getValue(), VehicleView.ID).getValue());
+                veh.setId((Long) parent.getVehiclesList().getContainerProperty(parent.getVehiclesList().getValue(), VehicleView.ID).getValue());
                 veh.setBrand((String) fields.getField(VehicleView.BRAND).getValue());
                 veh.setColour((String) fields.getField(VehicleView.COLOUR).getValue());
                 veh.setTruckload(Integer.parseInt(fields.getField(VehicleView.MAX_LOAD).getValue().toString()));
@@ -114,7 +123,7 @@ public class EditVehicleWindow extends Window {
             public void windowClose(Window.CloseEvent e) {
                 parent.setEnabled(true);
             }
-        } );
+        });
         parent.setEnabled(false);
 
         setContent(newVehicleLayout);

@@ -104,7 +104,7 @@ public class ReceiveVehicle implements ServerInfo {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             PostQuery.setEntity(new UrlEncodedFormEntity(params));
             unitsString = httpclient.execute(PostQuery, responseHandler);
-            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Vehicle>() {
             });
         } catch (ClientProtocolException e) {
             e.printStackTrace();

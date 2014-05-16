@@ -30,6 +30,7 @@ public class AddVehicleWindow extends Window {
         fieldBRAND.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Marka zawiera nie właściwe znaki"));
         fieldBRAND.setWidth("20em");
         fieldBRAND.setRequired(true);
+        fieldBRAND.setRequiredError("Pole Marka jest wymagane");
         fieldBRAND.setImmediate(true);
         newVehicleLayout.addComponent(fieldBRAND);
         fields.bind(fieldBRAND, fieldName);
@@ -40,6 +41,7 @@ public class AddVehicleWindow extends Window {
         fieldCOLOUR.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
         fieldCOLOUR.setWidth("20em");
         fieldCOLOUR.setRequired(true);
+        fieldCOLOUR.setRequiredError("Pole Kolor nadwozia jest wymagane");
         fieldCOLOUR.setImmediate(true);
         newVehicleLayout.addComponent(fieldCOLOUR);
         fields.bind(fieldCOLOUR, fieldName);
@@ -47,10 +49,12 @@ public class AddVehicleWindow extends Window {
         fieldName = VehicleView.MAX_LOAD;
         TextField fieldMAX_LOAD = new TextField(fieldName);
         fieldMAX_LOAD.setConverter(Integer.class);
+        fieldMAX_LOAD.setValue(" ");
         fieldMAX_LOAD.addValidator(new IntegerRangeValidator("Niewłaściwa wartość ładowności", 0, Integer.MAX_VALUE));
         fieldMAX_LOAD.setWidth("20em");
         fieldMAX_LOAD.setImmediate(true);
         fieldMAX_LOAD.setRequired(true);
+        fieldMAX_LOAD.setRequiredError("Pole Ładowność jest wymagane");
         newVehicleLayout.addComponent(fieldMAX_LOAD);
         fields.bind(fieldMAX_LOAD, fieldName);
 
@@ -61,6 +65,7 @@ public class AddVehicleWindow extends Window {
         fieldREGISTRATION_NR.setWidth("20em");
         fieldREGISTRATION_NR.setImmediate(true);
         fieldREGISTRATION_NR.setRequired(true);
+        fieldREGISTRATION_NR.setRequiredError("Pole Nr rejestracyjny jest wymagane");
         newVehicleLayout.addComponent(fieldREGISTRATION_NR);
         fields.bind(fieldREGISTRATION_NR, fieldName);
 

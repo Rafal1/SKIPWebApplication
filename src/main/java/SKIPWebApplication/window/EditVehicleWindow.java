@@ -48,7 +48,8 @@ public class EditVehicleWindow extends Window {
         fieldName = VehicleView.MAX_LOAD;
         TextField fieldMAX_LOAD = new TextField(fieldName);
         fieldMAX_LOAD.setValue(vehiclesList.getContainerProperty(vehiclesList.getValue(), VehicleView.MAX_LOAD).getValue().toString());
-        //fieldMAX_LOAD.addValidator(new IntegerRangeValidator("Niewłaściwa wartość ładowności", 0, Integer.MAX_VALUE));
+        fieldMAX_LOAD.setConverter(Integer.class);
+        fieldMAX_LOAD.addValidator(new IntegerRangeValidator("Niewłaściwa wartość ładowności", 0, Integer.MAX_VALUE));
         fieldMAX_LOAD.setWidth("20em");
         fieldMAX_LOAD.setImmediate(true);
         newVehicleLayout.addComponent(fieldMAX_LOAD);
@@ -81,7 +82,6 @@ public class EditVehicleWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Vehicle veh = new Vehicle();
-                //TODO wziac id z tabelki
                 veh.setId((Long)parent.getVehiclesList().getContainerProperty( parent.getVehiclesList().getValue(), VehicleView.ID).getValue());
                 veh.setBrand((String) fields.getField(VehicleView.BRAND).getValue());
                 veh.setColour((String) fields.getField(VehicleView.COLOUR).getValue());

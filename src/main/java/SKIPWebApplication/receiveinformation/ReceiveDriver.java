@@ -11,7 +11,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -91,8 +90,8 @@ public class ReceiveDriver implements ServerInfo {
             System.out.println("ReceiveDriver: error in changing driver ");
             return parsingResponse;
         }
-        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + dr.getId());
-        putQuery.setHeader("Content-Type", "application/json");
+        HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + dr.getId());
+        PostQuery.setHeader("Content-Type", "application/json");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -106,8 +105,8 @@ public class ReceiveDriver implements ServerInfo {
 
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            putQuery.setEntity(new UrlEncodedFormEntity(params));
-            unitsString = httpclient.execute(putQuery, responseHandler);
+            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(PostQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
             });
         } catch (ClientProtocolException e) {
@@ -165,8 +164,8 @@ public class ReceiveDriver implements ServerInfo {
             System.out.println("ReceiveDriver: error in updating driver coordinates ");
             return parsingResponse;
         }
-        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
-        putQuery.setHeader("Content-Type", "application/json");
+        HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
+        PostQuery.setHeader("Content-Type", "application/json");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String corJSON = null;
@@ -178,8 +177,8 @@ public class ReceiveDriver implements ServerInfo {
         params.add(new BasicNameValuePair("coordinates", corJSON));
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            putQuery.setEntity(new UrlEncodedFormEntity(params));
-            unitsString = httpclient.execute(putQuery, responseHandler);
+            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(PostQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Coordinates>() {
             });
         } catch (ClientProtocolException e) {

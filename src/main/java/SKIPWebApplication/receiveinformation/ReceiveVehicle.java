@@ -11,10 +11,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
-import returnobjects.Coordinates;
 import returnobjects.Driver;
 import returnobjects.Vehicle;
 
@@ -89,8 +87,8 @@ public class ReceiveVehicle implements ServerInfo {
             System.out.println("ReceiveVehicle: error in changing vehicle ");
             return parsingResponse;
         }
-        HttpPut putQuery = new HttpPut(SSL_ACCESS + "/vehicles/" + veh.getId());
-        putQuery.setHeader("Content-Type", "application/json");
+        HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/vehicles/" + veh.getId());
+        PostQuery.setHeader("Content-Type", "application/json");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -104,8 +102,8 @@ public class ReceiveVehicle implements ServerInfo {
 
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            putQuery.setEntity(new UrlEncodedFormEntity(params));
-            unitsString = httpclient.execute(putQuery, responseHandler);
+            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(PostQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
             });
         } catch (ClientProtocolException e) {
@@ -159,88 +157,4 @@ public class ReceiveVehicle implements ServerInfo {
         return parsingResponse;
     }
 
-    //todo test updateCoordinates
-    //czy to wgl jest potrzebne??
-
-    public static Coordinates updateVehicleCoordinates(Coordinates cor, Long ID) {
-        /*InputStream inputStream = getServletContext().getResourceAsStream("VAADIN\\resources\\config.properties");
-        try {
-            prop.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String url = prop.getProperty("WebServiceURL") + "/vehicles/" + ID + "/updateCoordinates";
-
-        Coordinates parsingResponse = new Coordinates();
-
-        URL obj = null;
-        try {
-            obj = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        HttpsURLConnection con = null;
-        try {
-            con = (HttpsURLConnection) obj.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // optional default is GET
-        try {
-            con.setRequestMethod("PUT");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-
-        // add request header
-        con.setRequestProperty("WebClient", "PUTVehicle");
-
-        ObjectMapper mapper = new ObjectMapper();
-        String corJSON = null;
-        try {
-            corJSON = mapper.writeValueAsString(cor);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        String urlParameters = "coordinates=" + corJSON;
-
-        con.setDoOutput(true);
-        DataOutputStream wr = null;
-        BufferedReader in = null;
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        try {
-            wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-
-            in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            parsingResponse = mapper.readValue(response.toString(), new TypeReference<Coordinates>() {
-            });
-        } catch (IOException e) {
-            System.out.print("Parsing array error");
-            e.printStackTrace();
-        }
-        try {
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return parsingResponse;*/
-        return null;
-    }
 }

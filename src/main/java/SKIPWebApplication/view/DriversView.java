@@ -140,7 +140,6 @@ public class DriversView extends VerticalLayout implements View {
         verLayout1.setMargin(true);
         for (String fieldName : firstTab) {
             TextField field = new TextField(fieldName);
-            //todo add validators
             field.setWidth("15em");
             verLayout1.addComponent(field);
             editorFields.bind(field, fieldName);
@@ -149,8 +148,6 @@ public class DriversView extends VerticalLayout implements View {
 
         FormLayout verLayout2 = new FormLayout();
         verLayout2.setMargin(true);
-        // todo 9.4.4 VaadinBook (validation)
-        //todo add validators
         for (String fieldName : secondTab) {
             TextField field = new TextField(fieldName);
             field.setWidth("15em");

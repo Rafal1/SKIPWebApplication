@@ -174,7 +174,6 @@ public class VehicleView extends VerticalLayout implements View {
         }
     }
 
-    //TODO
     private void initAddRemoveButtons() {
         addNewVehicleButton.addClickListener(new AddVehicleClickListener(this));
     }

@@ -48,8 +48,7 @@ public class AddVehicleWindow extends Window {
 
         fieldName = VehicleView.MAX_LOAD;
         TextField fieldMAX_LOAD = new TextField(fieldName);
-        fieldMAX_LOAD.setConverter(Integer.class);
-        fieldMAX_LOAD.setValue(" ");
+//        fieldMAX_LOAD.setConverter(Integer.class);
         fieldMAX_LOAD.addValidator(new IntegerRangeValidator("Niewłaściwa wartość ładowności", 0, Integer.MAX_VALUE));
         fieldMAX_LOAD.setWidth("20em");
         fieldMAX_LOAD.setImmediate(true);

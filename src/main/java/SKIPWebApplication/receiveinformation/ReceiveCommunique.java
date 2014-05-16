@@ -31,7 +31,7 @@ public class ReceiveCommunique implements ServerInfo {
 
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
-            System.out.println("ReceiveCommunique: error in getting driverList ");
+            System.out.println("ReceiveCommunique: error in getting CommuniqueList ");
             return parsingResponse;
         }
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/statements");
@@ -65,7 +65,7 @@ public class ReceiveCommunique implements ServerInfo {
         String url = SSL_ACCESS + "/statements";
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
-            System.out.println("ReceiveCommunique: error in adding driver ");
+            System.out.println("ReceiveCommunique: error in adding Communique ");
             return parsingResponse;
         }
         HttpPost httppost = new HttpPost(url);
@@ -86,7 +86,7 @@ public class ReceiveCommunique implements ServerInfo {
         Communique parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
-            System.out.println("ReceiveCommunique: error in changing driver ");
+            System.out.println("ReceiveCommunique: error in changing Communique");
             return parsingResponse;
         }
         HttpPost postQuery = new HttpPost(SSL_ACCESS + "/statements/" + dr.getId());

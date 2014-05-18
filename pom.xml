@@ -49,6 +49,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+           <groupId>org.vaadin.addons</groupId>
+           <artifactId>refresher</artifactId>
+           <version>1.2.3.7</version>
+        </dependency>
+        <dependency>
             <groupId>com.vaadin.tapio</groupId>
             <artifactId>googlemaps</artifactId>
             <version>0.7.1</version>

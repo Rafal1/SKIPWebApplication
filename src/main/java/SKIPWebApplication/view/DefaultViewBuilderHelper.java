@@ -48,7 +48,7 @@ public class DefaultViewBuilderHelper {
         };
         MenuBar menu = new MenuBar();
         menu.addItem("", new ThemeResource(
-                "../../resources/icons/skip.png"), null);
+                "../../resources/icons/skip.jpg"), null);
         menu.addItem(StringConsts.MAIN_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/home.png"), cmd);
         menu.addItem(StringConsts.DRIVERS_VIEW_NAME, new ThemeResource(

@@ -2,21 +2,24 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.CommuniqueFilterDecorator;
 import SKIPWebApplication.CommuniqueFilterGenerator;
-import SKIPWebApplication.ReadEnum;
 import SKIPWebApplication.StatusEnum;
+import SKIPWebApplication.WaitRefreshThread;
 import SKIPWebApplication.receiveinformation.ReceiveCommunique;
+import com.github.wolfie.refresher.Refresher;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.tapio.googlemaps.client.LatLon;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomTable;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 import returnobjects.Communique;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -32,7 +35,6 @@ public class CommuniqueView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
-    private boolean TestRead = false;
 
     public CommuniqueView() {
         setSizeFull();
@@ -40,6 +42,9 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private void initLayout() {
+        final Refresher refresher = new Refresher();
+        refresher.addListener(new TimeListener());
+        addExtension(refresher);
         Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
 
@@ -122,7 +127,6 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private Container buildTable() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.M.yyyy hh:mm:ss");
         IndexedContainer indx = new IndexedContainer();
         ArrayList<Communique> comList = ReceiveCommunique.getCommuniquesList();
 
@@ -142,11 +146,20 @@ public class CommuniqueView extends VerticalLayout implements View {
             indx.getContainerProperty(id, "Data nadesłania").setValue(c.getDate());
         }
 
+        new WaitRefreshThread().start();
+
         return indx;
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         DefaultViewBuilderHelper.checkLogin();
+    }
+
+    public class TimeListener implements Refresher.RefreshListener {
+        @Override
+        public void refresh(final Refresher source) {
+            buildTable();
+        }
     }
 }

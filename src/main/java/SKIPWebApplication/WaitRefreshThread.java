@@ -4,7 +4,7 @@ package SKIPWebApplication;
  * @author Rafal Zawadzki
  */
 public class WaitRefreshThread extends Thread {
-    private Integer waitTime = 3000; //600 000 - 10min
+    private Integer waitTime = 600000; //600 000 - 10min
 
     @Override
     public void run() {

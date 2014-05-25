@@ -1,6 +1,7 @@
 package SKIPWebApplication.view;
 
 import SKIPWebApplication.SkipapplicationUI;
+import SKIPWebApplication.receiveinformation.LoginErrorException;
 import SKIPWebApplication.receiveinformation.LoginService;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
@@ -50,13 +51,15 @@ public class LoginView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        Boolean corr = checkUserData(LOGIN.getValue(), PASSWORD.getValue());
-                        if (corr) {
+                        Boolean corr = null;
+                        try {
+                            corr = LoginService.login(LOGIN.getValue(), PASSWORD.getValue());
                             UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                             LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
                             PASSWORD.setValue("");
-                        } else {
-                            Notification.show("Niepoprawne dane logowania");
+
+                        } catch (LoginErrorException e) {
+                            Notification.show(e.getMessage());
                         }
                     }
                 });
@@ -73,14 +76,5 @@ public class LoginView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
 
-    }
-
-    private Boolean checkUserData(String login, String pass) {
-
-        if ( LoginService.login(login, pass)) {
-            VaadinSession.getCurrent().setAttribute("login", true);
-            return true;
-        }
-        return false;
     }
 }

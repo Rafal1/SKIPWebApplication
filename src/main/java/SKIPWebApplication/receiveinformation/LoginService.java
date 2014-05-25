@@ -26,10 +26,8 @@ import java.io.IOException;
  */
 public class LoginService implements ServerInfo {
 
-    public static final String COOKIE_STORE_SEESION_TAG = "CookieSession";
 
-
-    public static boolean login(String username, String password) {
+    public static boolean login(String username, String password) throws LoginErrorException {
 
         String parsingResponse;
 
@@ -37,42 +35,49 @@ public class LoginService implements ServerInfo {
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
 
         HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL + "?username=" + username + "&password=" + password);
-        CloseableHttpResponse response2 = null;
+        CloseableHttpResponse response = null;
         try {
-            httpClient.execute(httppost);
+            response = httpClient.execute(httppost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            parsingResponse = EntityUtils.toString(entity);
 
 
-            {
-                HttpGet httpGet = new HttpGet(SSL_ACCESS + "/login");
-                response2 = httpClient.execute(httpGet);
-                HttpEntity entity2 = response2.getEntity();
-                parsingResponse = EntityUtils.toString(entity2);
-                if (parsingResponse.equals(username)) {
-                    VaadinSession.getCurrent().setAttribute(COOKIE_STORE_SEESION_TAG, cookieStore);
+            if (statusCode == 200) {
+                String[] responseArray = parsingResponse.split(" ");
+                if (responseArray[0].equals(username)) {
+                    VaadinSession.getCurrent().setAttribute(HttpClientHelper.COOKIE_STORE_SEESION_TAG, cookieStore);
+                    VaadinSession.getCurrent().setAttribute(HttpClientHelper.USER_ROLE_SESSION_TAG, responseArray[1]);
                     return true;
-                } else
-                    return false;
-
-
-            }
-
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (response2 != null) {
-                    response2.close();
                 }
-                httpClient.close();
-            } catch (IOException e) {
+                else{
+                    throw new LoginErrorException("Serwer zwrócił niepoprawne dane");
+
+                }
+
+            } else
+                    throw new LoginErrorException("Błędne dane logowania");
+
+
+
+            }catch(ClientProtocolException e){
                 e.printStackTrace();
+                throw new LoginErrorException("Połączenie z serwerem jest w tej chwili nie możliwe, prosimy spróbować za chwile.");
+
+            }catch(IOException e){
+                e.printStackTrace();
+                throw new LoginErrorException("Błąd połączenia z serwerem");
+            }finally{
+                try {
+                    if (response != null) {
+                        response.close();
+                    }
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
 
     public static boolean logout() {
 

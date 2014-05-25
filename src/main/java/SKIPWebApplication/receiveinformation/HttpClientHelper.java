@@ -13,6 +13,8 @@ import org.apache.http.impl.client.HttpClients;
  */
 public class HttpClientHelper {
     public static final String HTTP_CLIENT_SESSION_TAG = "httpClient";
+    public static final String COOKIE_STORE_SEESION_TAG = "CookieSession";
+    public static final String USER_ROLE_SESSION_TAG = "userRole";
 
 
     public static HttpClient getHttpClient() {
@@ -29,10 +31,13 @@ public class HttpClientHelper {
     }
 
     private static HttpClient createHttpClient() {
-        Object cookieObject = VaadinSession.getCurrent().getAttribute(LoginService.COOKIE_STORE_SEESION_TAG);
+        Object cookieObject = VaadinSession.getCurrent().getAttribute(COOKIE_STORE_SEESION_TAG);
         if (cookieObject == null) {
             return null;
         }
+
+        // Jesli nie bedzie działo, z powodu błedu ssl nalezy odkomentować kod poniżej
+        // ten problem moze wystapic w przypadku połączenia z serwera zewmetrzmega
       /*  KeyStore trustStore = null;
         FileInputStream instream =null;
         try {

@@ -3,6 +3,7 @@ package SKIPWebApplication.view;
 import SKIPWebApplication.SkipapplicationService;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.window.AddDriverWindow;
+import SKIPWebApplication.window.AssociateVehicleWindow;
 import SKIPWebApplication.window.EditDriverWindow;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -16,6 +17,7 @@ import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.ui.*;
 import custommap.CustomMap;
 import returnobjects.Driver;
+import returnobjects.Vehicle;
 
 import java.util.ArrayList;
 
@@ -39,6 +41,7 @@ public class DriversView extends VerticalLayout implements View {
     private static final String REGISTRATION_NR = "Nr rejestracyjny";
     public static final String COMPANY_PHONE = "Tel. firmowy";
     public static final String PRIVATE_PHONE = "Tel. prywatny";
+    public static final String ASSOCIATED_VEHICLE = "Powiązany Pojazd";
     public static final String E_MAIL = "E-mail";
     private static final String LAST_DATE = "Zlokalizowano";
     private static final String COORDINATES = "Współrzędne";
@@ -46,8 +49,10 @@ public class DriversView extends VerticalLayout implements View {
             REGISTRATION_NR, COMPANY_PHONE};
     private static final String[] secondTab = new String[]{PRIVATE_PHONE, E_MAIL,
             LAST_DATE};
+
     private static final String[] notVisible = new String[]{ID, COORDINATES};
 
+    private TextField associateDriverField;
     IndexedContainer driversContainer;
 
     public DriversView() {
@@ -126,6 +131,7 @@ public class DriversView extends VerticalLayout implements View {
             }
         });
         driverMenu.addItem("Edytuj", new EditDriverCommand(this));
+        driverMenu.addItem("Przypisz pojazd", new AssociateVehileCommand(this));
         return driverMenu;
     }
 
@@ -152,9 +158,13 @@ public class DriversView extends VerticalLayout implements View {
             TextField field = new TextField(fieldName);
             field.setWidth("15em");
             verLayout2.addComponent(field);
+
+            verLayout2.addComponent(field);
+
             editorFields.bind(field, fieldName);
             editorFields.setBuffered(true);
         }
+
 
         SHEETTAB_DETAIL_SIZE = SkipapplicationService.createFormatForDetailSizeTab(SIZE_PER_TAB
                 * secondTab.length);
@@ -251,11 +261,30 @@ public class DriversView extends VerticalLayout implements View {
         public EditDriverCommand(DriversView dv) {
             this.dv = dv;
         }
+
         public void menuSelected(MenuBar.MenuItem selectedItem) {
             EditDriverWindow window = new EditDriverWindow(dv);
             getUI().addWindow(window);
         }
     }
+
+    private class AssociateVehileCommand implements MenuBar.Command {
+        DriversView dv;
+
+        public AssociateVehileCommand(DriversView dv) {
+            this.dv = dv;
+        }
+
+        public void menuSelected(MenuBar.MenuItem selectedItem) {
+            Object currentDriver = driversList.getValue();
+            Long driverId = (Long) driversList
+                    .getContainerProperty(currentDriver, ID)
+                    .getValue();
+            AssociateVehicleWindow window = new AssociateVehicleWindow(dv, driverId);
+            getUI().addWindow(window);
+        }
+    }
+
 
     private void initDriverList() {
         driversList.addValueChangeListener(new Property.ValueChangeListener() {
@@ -264,6 +293,17 @@ public class DriversView extends VerticalLayout implements View {
                 if (currentDriver != null) {
                     editorFields.setItemDataSource(driversList
                             .getItem(currentDriver));
+                    Long driverID = (Long) driversList
+                            .getContainerProperty(currentDriver, ID)
+                            .getValue();
+                    Vehicle assignVehicle = ReceiveDriver.getAssignedVehicle(driverID);
+                    if (assignVehicle != null) {
+                        driversList.getContainerProperty(currentDriver, REGISTRATION_NR)
+                                .setValue(assignVehicle.getRegistrationNumber());
+                    } else {
+                        driversList.getContainerProperty(currentDriver, REGISTRATION_NR)
+                                .setValue("brak");
+                    }
                     editorFields.setEnabled(false);
                     // mapa
                     String info = "Kierowca: " + (String) driversList
@@ -275,9 +315,9 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue();
                     if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
                         customMap.clearMarkers();
-                        customMap.addOneMarker(info, (LatLon) driversList
-                                .getContainerProperty(currentDriver, COORDINATES)
-                                .getValue());
+                    customMap.addOneMarker(info, (LatLon) driversList
+                            .getContainerProperty(currentDriver, COORDINATES)
+                            .getValue());
 
                 }
 
@@ -313,7 +353,8 @@ public class DriversView extends VerticalLayout implements View {
             ic.getContainerProperty(id, ID).setValue(driver.getId());
             ic.getContainerProperty(id, FNAME).setValue(driver.getFirstName());
             ic.getContainerProperty(id, LNAME).setValue(driver.getLastName());
-            ic.getContainerProperty(id, REGISTRATION_NR).setValue("test");
+
+            ic.getContainerProperty(id, REGISTRATION_NR).setValue("");
             if (driver.getLatestCoordinates() != null)
                 ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
             else

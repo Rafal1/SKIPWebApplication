@@ -16,6 +16,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
+import returnobjects.Vehicle;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -187,5 +188,53 @@ public class ReceiveDriver implements ServerInfo {
             e.printStackTrace();
         }
         return parsingResponse;
+    }
+    public static boolean assignVehicle(Long driverId,  Long vehicleId){
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if (httpclient == null) {
+            System.out.println("ReceiveDriver: error in assigned vehicle to driver ");
+            return false;
+        }
+
+        HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + driverId + "/assignVehicle");
+        PostQuery.setHeader("Content-Type", "application/json");
+
+        String unitsString = null;
+        params.add(new BasicNameValuePair("vehicleId", vehicleId.toString()));
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            unitsString = httpclient.execute(PostQuery, responseHandler);
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return unitsString != null && !unitsString.equals("");
+
+    }
+
+    public static Vehicle getAssignedVehicle(Long driverId){
+        Vehicle parsingResponse = null;
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/drivers/" + driverId + "/assignedVehicle");
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Vehicle>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
+
+
     }
 }

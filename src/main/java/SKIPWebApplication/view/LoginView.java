@@ -51,17 +51,19 @@ public class LoginView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        Boolean corr = null;
                         try {
-                            corr = LoginService.login(LOGIN.getValue(), PASSWORD.getValue());
-                            UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
-                            LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
-                            PASSWORD.setValue("");
+                             LoginService.login(LOGIN.getValue(), PASSWORD.getValue());
+                             VaadinSession.getCurrent().setAttribute("login", true);
+                             UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
+
+                             LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
+                             PASSWORD.setValue("");
 
                         } catch (LoginErrorException e) {
-                            Notification.show(e.getMessage());
+                            Notification.show("Exc " + e.getMessage());
                         }
                     }
+
                 });
         buttonLogIn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         serviceButtons.addComponent(buttonLogIn);

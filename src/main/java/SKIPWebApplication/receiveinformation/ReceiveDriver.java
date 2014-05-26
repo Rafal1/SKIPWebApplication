@@ -140,7 +140,7 @@ public class ReceiveDriver implements ServerInfo {
 
     public static Driver getDriver(Long id) {
         Driver parsingResponse = null;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/drivers/" + id);
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -198,7 +198,7 @@ public class ReceiveDriver implements ServerInfo {
         }
 
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + driverId + "/assignVehicle");
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         String unitsString = null;
         params.add(new BasicNameValuePair("vehicleId", vehicleId.toString()));
@@ -219,7 +219,7 @@ public class ReceiveDriver implements ServerInfo {
 
     public static Vehicle getAssignedVehicle(Long driverId){
         Vehicle parsingResponse = null;
-        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/drivers/" + driverId + "/assignedVehicle");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;

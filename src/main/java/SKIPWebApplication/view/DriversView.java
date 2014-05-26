@@ -291,19 +291,10 @@ public class DriversView extends VerticalLayout implements View {
             public void valueChange(Property.ValueChangeEvent event) {
                 Object currentDriver = driversList.getValue();
                 if (currentDriver != null) {
+
                     editorFields.setItemDataSource(driversList
                             .getItem(currentDriver));
-                    Long driverID = (Long) driversList
-                            .getContainerProperty(currentDriver, ID)
-                            .getValue();
-                    Vehicle assignVehicle = ReceiveDriver.getAssignedVehicle(driverID);
-                    if (assignVehicle != null) {
-                        driversList.getContainerProperty(currentDriver, REGISTRATION_NR)
-                                .setValue(assignVehicle.getRegistrationNumber());
-                    } else {
-                        driversList.getContainerProperty(currentDriver, REGISTRATION_NR)
-                                .setValue("brak");
-                    }
+
                     editorFields.setEnabled(false);
                     // mapa
                     String info = "Kierowca: " + (String) driversList
@@ -354,7 +345,17 @@ public class DriversView extends VerticalLayout implements View {
             ic.getContainerProperty(id, FNAME).setValue(driver.getFirstName());
             ic.getContainerProperty(id, LNAME).setValue(driver.getLastName());
 
-            ic.getContainerProperty(id, REGISTRATION_NR).setValue("");
+            //wysłanie zapytania o przypisany pojazd
+            Long driverID = driver.getId();
+            Vehicle assignVehicle = ReceiveDriver.getAssignedVehicle(driverID);
+            if (assignVehicle != null) {
+                ic.getContainerProperty(id, REGISTRATION_NR)
+                        .setValue(assignVehicle.getRegistrationNumber());
+            } else {
+                ic.getContainerProperty(id, REGISTRATION_NR)
+                        .setValue("brak");
+            }
+
             if (driver.getLatestCoordinates() != null)
                 ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
             else

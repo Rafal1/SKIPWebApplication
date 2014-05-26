@@ -2,9 +2,11 @@ package SKIPWebApplication.receiveinformation;
 
 import com.vaadin.server.VaadinSession;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -12,9 +14,12 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,9 +39,14 @@ public class LoginService implements ServerInfo {
         BasicCookieStore cookieStore = new BasicCookieStore();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
 
-        HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL + "?username=" + username + "&password=" + password);
+        HttpPost httppost = new HttpPost(SSL_ACCESS + LOGIN_SUFFIX_URL);
+        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("password", password));
         CloseableHttpResponse response = null;
         try {
+            httppost.setEntity(new UrlEncodedFormEntity(params));
             response = httpClient.execute(httppost);
             int statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();

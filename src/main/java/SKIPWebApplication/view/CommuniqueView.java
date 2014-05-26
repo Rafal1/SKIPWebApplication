@@ -2,7 +2,6 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.CommuniqueFilterDecorator;
 import SKIPWebApplication.CommuniqueFilterGenerator;
-import SKIPWebApplication.StatusEnum;
 import SKIPWebApplication.WaitRefreshThread;
 import SKIPWebApplication.receiveinformation.ReceiveCommunique;
 import com.github.wolfie.refresher.Refresher;
@@ -19,6 +18,7 @@ import com.vaadin.ui.VerticalSplitPanel;
 import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 import returnobjects.Communique;
+import returnobjects.Coordinates;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,8 +29,15 @@ import static com.vaadin.ui.Alignment.TOP_CENTER;
  * @author Rafal Zawadzki
  */
 public class CommuniqueView extends VerticalLayout implements View {
-    private static String PAGE_WIDTH = "1024px";
-    private final Integer SPLIT_POSITION = 52;
+
+    private static final String DRIVER_TAG = "Kierowca";
+    private static final String ID_TAG = "ID";
+    private static final String COMMUNIQUE_TYPE_TAG = "Komunikat";
+    private static final String DATE_TAG = "Data nadesłania";
+    private static final String COORDINATES_TAG = "koordynaty";
+
+    private static final String PAGE_WIDTH = "1024px";
+    private final static Integer SPLIT_POSITION = 52;
     private FilterTable commTable = new FilterTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
@@ -39,6 +46,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     public CommuniqueView() {
         setSizeFull();
         initLayout();
+
     }
 
     private void initLayout() {
@@ -73,7 +81,9 @@ public class CommuniqueView extends VerticalLayout implements View {
         splitPanel.addComponent(leftLayout);
 
         buildingRightLayout();
+
         splitPanel.addComponent(rightLayout);
+
 
         return splitPanel;
     }
@@ -97,12 +107,17 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setSelectable(true);
-        commTable.setContainerDataSource(buildTable());
+
         commTable.setFilterBarVisible(true);
         commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                customMap.addOneMarker("przyklad", new LatLon(52.324234, 25.2452342));
+                customMap.clearMarkers();
+                String driverName = event.getItem().getItemProperty(DRIVER_TAG).getValue().toString();
+                String communiqueTypeString = event.getItem().getItemProperty(COMMUNIQUE_TYPE_TAG).getValue().toString();
+                Coordinates coords = (Coordinates) event.getItem().getItemProperty(COORDINATES_TAG).getValue();
+                customMap.addOneMarker(driverName + " " + communiqueTypeString,
+                        new LatLon(coords.getLatitude(), coords.getLongitude()));
             }
         }
 
@@ -112,16 +127,14 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private void buildingRightLayout() {
+        rightLayout.setSizeFull();
         initMap();
-
-        // wstawiam w tym miejscu mape - Mariusz
-        //TODO usunac gdy na 100% będzie wiadaomo jak ma wyglądać widok
-
     }
 
     private void initMap() {
         customMap = new CustomMap();
-        Component map = customMap.getCustomMap();
+        customMap.setDefaultMarkerImage("VAADIN/resources/icons/messages.png");
+        VerticalLayout map = customMap.getCustomMap();
         rightLayout.addComponent(map);
         rightLayout.setExpandRatio(map, 1.0f);
     }
@@ -130,20 +143,25 @@ public class CommuniqueView extends VerticalLayout implements View {
         IndexedContainer indx = new IndexedContainer();
         ArrayList<Communique> comList = ReceiveCommunique.getCommuniquesList();
 
-        indx.addContainerProperty("Kierowca", String.class, null);
-        indx.addContainerProperty("ID", Integer.class, null);
-        indx.addContainerProperty("Komunikat", StatusEnum.class, null); //TODO improve style (visibility)
-        indx.addContainerProperty("Data nadesłania", Date.class, null);
-        commTable.setColumnAlignment("ID", CustomTable.ALIGN_CENTER);
-        commTable.setColumnAlignment("Komunikat", CustomTable.ALIGN_CENTER);
-        commTable.setColumnAlignment("Data nadesłania", CustomTable.ALIGN_CENTER);
+        //TODO Pozwoliłem sobie pozmieniać tutaj rodzaje klas tak żeby to jakotako działało, pozdrawiam Mariusz
+
+        indx.addContainerProperty(DRIVER_TAG, Long.class, null);
+        indx.addContainerProperty(ID_TAG, Long.class, null);
+        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, Integer.class, null); //TODO improve style (visibility)
+        indx.addContainerProperty(DATE_TAG, Date.class, null);
+        indx.addContainerProperty(COORDINATES_TAG, Coordinates.class, null);
+
+        commTable.setColumnAlignment(ID_TAG, CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment(COMMUNIQUE_TYPE_TAG, CustomTable.ALIGN_CENTER);
+        commTable.setColumnAlignment(DATE_TAG, CustomTable.ALIGN_CENTER);
 
         for (final Communique c : comList) {
             Object id = indx.addItem();
-            indx.getContainerProperty(id, "Kierowca").setValue(c.getDriverId());
-            indx.getContainerProperty(id, "ID").setValue(c.getId());
-            indx.getContainerProperty(id, "Komunikat").setValue(c.getState());
-            indx.getContainerProperty(id, "Data nadesłania").setValue(c.getDate());
+            indx.getContainerProperty(id, DRIVER_TAG).setValue(c.getDriverId());
+            indx.getContainerProperty(id, ID_TAG).setValue(c.getId());
+            indx.getContainerProperty(id, COMMUNIQUE_TYPE_TAG).setValue(c.getState());
+            indx.getContainerProperty(id, DATE_TAG).setValue(c.getDate());
+            indx.getContainerProperty(id, COORDINATES_TAG).setValue(c.getcoordinates());
         }
 
         new WaitRefreshThread().start();
@@ -154,12 +172,15 @@ public class CommuniqueView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         DefaultViewBuilderHelper.checkLogin();
+        commTable.setContainerDataSource(buildTable());
+        commTable.setVisibleColumns(new Object[]{DRIVER_TAG, ID_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
     }
 
     public class TimeListener implements Refresher.RefreshListener {
         @Override
         public void refresh(final Refresher source) {
-            buildTable();
+            commTable.setContainerDataSource(buildTable());
+            commTable.setVisibleColumns(new Object[]{DRIVER_TAG, ID_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
         }
     }
 }

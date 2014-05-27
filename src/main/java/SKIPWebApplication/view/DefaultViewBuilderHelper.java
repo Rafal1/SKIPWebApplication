@@ -3,6 +3,7 @@ package SKIPWebApplication.view;
 import SKIPWebApplication.SkipapplicationUI;
 import SKIPWebApplication.consts.StringConsts;
 import SKIPWebApplication.receiveinformation.LoginService;
+import SKIPWebApplication.window.AddAccountWindow;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
@@ -32,23 +33,30 @@ public class DefaultViewBuilderHelper {
                     else
                         Notification.show("Nie udało sie wylogować, spróbuj jeszcze raz");
                 }
-                if (selectedItem.getText().equals(StringConsts.COMMUNIQUE_VIEW_NAME)) {
+                else if (selectedItem.getText().equals(StringConsts.COMMUNIQUE_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.COMMUNIQUE_VIEW);
                 }
-                if (selectedItem.getText().equals(StringConsts.DRIVERS_VIEW_NAME)) {
+                else if (selectedItem.getText().equals(StringConsts.DRIVERS_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.DRIVERS_VIEW);
                 }
-                if (selectedItem.getText().equals(StringConsts.VEHICLE_VIEW_NAME)) {
+                else if (selectedItem.getText().equals(StringConsts.VEHICLE_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.VEHICLE_VIEW);
                 }
-                if (selectedItem.getText().equals(StringConsts.MAIN_VIEW_NAME)) {
+                else if (selectedItem.getText().equals(StringConsts.MAIN_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
+                }
+                else if (selectedItem.getText().equals(StringConsts.ADD_NEW_ACCOUNT)) {
+                    UI.getCurrent().addWindow(new AddAccountWindow(UI.getCurrent().getContent()));
                 }
             }
         };
         MenuBar menu = new MenuBar();
         menu.addItem("", new ThemeResource(
-                "../../resources/icons/skip.jpg"), null);
+                "../../resources/icons/gap_small.png"), null);
+        menu.addItem("", new ThemeResource(
+                "../../resources/icons/logo_skip_small.png"), null);
+        menu.addItem("", new ThemeResource(
+                "../../resources/icons/gap.png"), null);
         menu.addItem(StringConsts.MAIN_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/home.png"), cmd);
         menu.addItem(StringConsts.DRIVERS_VIEW_NAME, new ThemeResource(
@@ -57,6 +65,8 @@ public class DefaultViewBuilderHelper {
                 "../../resources/icons/car.png"), cmd);
         menu.addItem(StringConsts.COMMUNIQUE_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/messages.png"), cmd);
+        menu.addItem(StringConsts.ADD_NEW_ACCOUNT, new ThemeResource(
+                "../../resources/icons/add_user.png"), cmd);
         menu.addItem(StringConsts.LOGOUT_STRING, new ThemeResource(
                 "../../resources/icons/log_out.png"), cmd);
         menu.setHeight("73px");

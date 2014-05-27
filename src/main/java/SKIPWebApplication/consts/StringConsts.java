@@ -15,6 +15,7 @@ public interface StringConsts {
     public final static String DRIVERS_VIEW_NAME = "Kierowcy";
     public final static String VEHICLE_VIEW_NAME = "Pojazdy";
     public final static String COMMUNIQUE_VIEW_NAME = "Wiadomości";
+    public final static String ADD_NEW_ACCOUNT = "Dodaj użytkownika";
 
     //MainView
     public final static String MORE_LABEL = ">";

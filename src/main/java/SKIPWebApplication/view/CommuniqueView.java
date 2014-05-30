@@ -2,10 +2,11 @@ package SKIPWebApplication.view;
 
 import SKIPWebApplication.CommuniqueFilterDecorator;
 import SKIPWebApplication.CommuniqueFilterGenerator;
-import SKIPWebApplication.WaitRefreshThread;
 import SKIPWebApplication.receiveinformation.ReceiveCommunique;
+import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import com.github.wolfie.refresher.Refresher;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.navigator.View;
@@ -19,7 +20,9 @@ import custommap.CustomMap;
 import org.tepi.filtertable.FilterTable;
 import returnobjects.Communique;
 import returnobjects.Coordinates;
+import returnobjects.Driver;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -38,20 +41,37 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     private static final String PAGE_WIDTH = "1024px";
     private final static Integer SPLIT_POSITION = 52;
-    private FilterTable commTable = new FilterTable();
+    private FilterTable commTable = createTable();
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
+    private Integer refreshTimeMilis = 300000;
 
     public CommuniqueView() {
         setSizeFull();
         initLayout();
+//        createTable();
+    }
 
+    private static FilterTable createTable() {
+        FilterTable tab = new FilterTable() {
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+                if (property.getType() == Date.class) {
+                    SimpleDateFormat df =
+                            new SimpleDateFormat("hh:mm:ss dd-MM-yyyy");
+                    return df.format((Date) property.getValue());
+                }
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        return tab;
     }
 
     private void initLayout() {
         final Refresher refresher = new Refresher();
         refresher.addListener(new TimeListener());
+        refresher.setRefreshInterval(refreshTimeMilis);
         addExtension(refresher);
         Component navigationBar = DefaultViewBuilderHelper.getDefaultMenuPanel();
         Component bodyContent = getBodyContent();
@@ -108,6 +128,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setSelectable(true);
 
+
         commTable.setFilterBarVisible(true);
         commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -143,9 +164,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         IndexedContainer indx = new IndexedContainer();
         ArrayList<Communique> comList = ReceiveCommunique.getCommuniquesList();
 
-        //TODO Pozwoliłem sobie pozmieniać tutaj rodzaje klas tak żeby to jakotako działało, pozdrawiam Mariusz
-
-        indx.addContainerProperty(DRIVER_TAG, Long.class, null);
+        indx.addContainerProperty(DRIVER_TAG, String.class, null);
         indx.addContainerProperty(ID_TAG, Long.class, null);
         indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, Integer.class, null); //TODO improve style (visibility)
         indx.addContainerProperty(DATE_TAG, Date.class, null);
@@ -157,15 +176,12 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         for (final Communique c : comList) {
             Object id = indx.addItem();
-            indx.getContainerProperty(id, DRIVER_TAG).setValue(c.getDriverId());
+            indx.getContainerProperty(id, DRIVER_TAG).setValue(getRepresentStringOfDriver(c.getDriverId()));
             indx.getContainerProperty(id, ID_TAG).setValue(c.getId());
             indx.getContainerProperty(id, COMMUNIQUE_TYPE_TAG).setValue(c.getState());
             indx.getContainerProperty(id, DATE_TAG).setValue(c.getDate());
             indx.getContainerProperty(id, COORDINATES_TAG).setValue(c.getcoordinates());
         }
-
-        new WaitRefreshThread().start();
-
         return indx;
     }
 
@@ -182,5 +198,29 @@ public class CommuniqueView extends VerticalLayout implements View {
             commTable.setContainerDataSource(buildTable());
             commTable.setVisibleColumns(new Object[]{DRIVER_TAG, ID_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
         }
+
+    }
+
+    private String checkCommuniqueKind(Integer x) {
+        switch (x) {
+            case 0:
+                return "Jazda";
+            case 1:
+                return "Jazda";
+            case 2:
+                return "Jazda";
+            case 3:
+                return "Jazda";
+            case 4:
+                return "Jazda";
+            case 5:
+                return "Jazda";
+        }
+        return null;
+    }
+
+    private String getRepresentStringOfDriver(Long ID) {
+        Driver dr = ReceiveDriver.getDriver(ID);
+        return new String(dr.getFirstName() + " " + dr.getLastName());
     }
 }

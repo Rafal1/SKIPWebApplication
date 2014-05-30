@@ -126,9 +126,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.vaadin.addons</groupId>
-            <artifactId>filteringtable</artifactId>
-            <version>0.9.3.v7</version>
+           <groupId>org.vaadin.addons</groupId>
+           <artifactId>filteringtable</artifactId>
+           <version>0.9.9.v7</version>
         </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>

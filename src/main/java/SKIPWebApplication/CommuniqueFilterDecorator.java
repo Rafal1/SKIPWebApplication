@@ -111,6 +111,7 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
         cinfInst.setOkCaption("Filtruj");
         cinfInst.setResetCaption("Resetuj");
         cinfInst.setLtPrompt("Mniejsze");
+        cinfInst.setValueMarker("Wartość");
         return cinfInst;
     }
 

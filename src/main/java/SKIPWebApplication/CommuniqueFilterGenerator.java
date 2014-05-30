@@ -12,18 +12,6 @@ import org.tepi.filtertable.FilterGenerator;
 public class CommuniqueFilterGenerator implements FilterGenerator {
     @Override
     public Container.Filter generateFilter(Object o, Object o2) {
-//        if ("ID".equals(o)) {
-//                    /* Create an 'equals' filter for the ID field */
-//            if (o2 != null && o2 instanceof String) {
-//                try {
-//
-//                    return new Compare.Equal(o,
-//                            Integer.parseInt( o2.toString()));
-//                } catch (NumberFormatException ignored) {
-//                    // If no integer was entered, just generate default filter
-//                }
-//            }
-//        }
         return null;
     }
 

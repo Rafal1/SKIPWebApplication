@@ -22,7 +22,7 @@ public class AddAccountWindow extends Window {
     public static final String USERNAME = "Login";
     public static final String PASSWORD = "Hasło";
 
-    public AddAccountWindow(final Component parent) {
+    public AddAccountWindow(final ManageAccountWindow parent) {
         super("Nowy użytkownik systemu");
         FormLayout newAccountLayout =  new FormLayout();
         final FieldGroup fields = new FieldGroup();
@@ -65,10 +65,6 @@ public class AddAccountWindow extends Window {
         addAccount.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                /*Driver driver = new Driver();
-                driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
-                driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());*/
-
                 Account account = new Account();
                 account.setUsername((String) fields.getField(USERNAME).getValue());
                 account.setPassword((String) fields.getField(PASSWORD).getValue());
@@ -102,11 +98,12 @@ public class AddAccountWindow extends Window {
         addCloseListener(new Window.CloseListener() {
             @Override
             public void windowClose(Window.CloseEvent e) {
-                parent.setEnabled(true);
+                parent.refreshDataSource();
+                parent.setVisible(true);
             }
         }
         );
-        parent.setEnabled(false);
+        parent.setVisible(false);
 
         setContent(newAccountLayout);
 

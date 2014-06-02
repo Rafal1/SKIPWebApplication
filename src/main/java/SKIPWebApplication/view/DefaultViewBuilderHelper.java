@@ -3,7 +3,7 @@ package SKIPWebApplication.view;
 import SKIPWebApplication.SkipapplicationUI;
 import SKIPWebApplication.consts.StringConsts;
 import SKIPWebApplication.receiveinformation.LoginService;
-import SKIPWebApplication.window.AddAccountWindow;
+import SKIPWebApplication.window.ManageAccountWindow;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
@@ -45,8 +45,8 @@ public class DefaultViewBuilderHelper {
                 else if (selectedItem.getText().equals(StringConsts.MAIN_VIEW_NAME)) {
                     UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                 }
-                else if (selectedItem.getText().equals(StringConsts.ADD_NEW_ACCOUNT)) {
-                    UI.getCurrent().addWindow(new AddAccountWindow(UI.getCurrent().getContent()));
+                else if (selectedItem.getText().equals(StringConsts.MANAGE_ACCOUNTS)) {
+                    UI.getCurrent().addWindow(new ManageAccountWindow(UI.getCurrent().getContent()));
                 }
             }
         };
@@ -65,8 +65,8 @@ public class DefaultViewBuilderHelper {
                 "../../resources/icons/car.png"), cmd);
         menu.addItem(StringConsts.COMMUNIQUE_VIEW_NAME, new ThemeResource(
                 "../../resources/icons/messages.png"), cmd);
-        menu.addItem(StringConsts.ADD_NEW_ACCOUNT, new ThemeResource(
-                "../../resources/icons/add_user.png"), cmd);
+        menu.addItem(StringConsts.MANAGE_ACCOUNTS, new ThemeResource(
+                "../../resources/icons/manage_users.png"), cmd);
         menu.addItem(StringConsts.LOGOUT_STRING, new ThemeResource(
                 "../../resources/icons/log_out.png"), cmd);
         menu.setHeight("73px");

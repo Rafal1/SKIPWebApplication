@@ -8,11 +8,12 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Account;
-import returnobjects.Driver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,5 +63,49 @@ public class ReceiveAccount implements ServerInfo {
         }
 
         return result;
+    }
+
+    public static List<Account> prepareForAccountsList() {
+        ArrayList<Account> parsingResponse = new ArrayList<Account>();
+
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if (httpclient == null) {
+            System.out.println("ReceiveAccount: error in getting accountList ");
+            return parsingResponse;
+        }
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/admins");
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<ArrayList<Account>>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parsingResponse;
+    }
+
+    public static String deleteAccount(String username) {
+        String url = SSL_ACCESS + "/admins/" + username;
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if (httpclient == null) {
+            System.out.println("ReceiveAccount: error in deleting account ");
+            return null;
+        }
+        HttpDelete delQuery = new HttpDelete(url);
+        String parsingResponse = null;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            parsingResponse = httpclient.execute(delQuery, responseHandler);
+        } catch (ClientProtocolException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
+        return parsingResponse;
     }
 }

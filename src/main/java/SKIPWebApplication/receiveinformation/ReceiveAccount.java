@@ -65,7 +65,7 @@ public class ReceiveAccount implements ServerInfo {
         return result;
     }
 
-    public static List<Account> prepareForAccountsList() {
+    public static List<Account> getAccountsList() {
         ArrayList<Account> parsingResponse = new ArrayList<Account>();
 
         HttpClient httpclient = HttpClientHelper.getHttpClient();

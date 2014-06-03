@@ -52,12 +52,18 @@ public class LoginView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         try {
-                             LoginService.login(LOGIN.getValue(), PASSWORD.getValue());
-                             VaadinSession.getCurrent().setAttribute("login", true);
-                             UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
+                            boolean isLogged = LoginService.login(LOGIN.getValue(), PASSWORD.getValue());
+                            if(isLogged) {
+                                UI.getCurrent().getNavigator().addView(SkipapplicationUI.DRIVERS_VIEW, new DriversView());
+                                UI.getCurrent().getNavigator().addView(SkipapplicationUI.VEHICLE_VIEW, new VehicleView());
+                                UI.getCurrent().getNavigator().addView(SkipapplicationUI.COMMUNIQUE_VIEW, new CommuniqueView());
+                                UI.getCurrent().getNavigator().addView(SkipapplicationUI.MAIN_VIEW, new MainView());
+                                VaadinSession.getCurrent().setAttribute("login", true);
+                                UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
+                            }
 
-                             LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
-                             PASSWORD.setValue("");
+                            LOGIN.setValue(""); //inaczej po wylogowaniu zostana pokazane wpisane dane z ostatniego logowania
+                            PASSWORD.setValue("");
 
                         } catch (LoginErrorException e) {
                             Notification.show("Exc " + e.getMessage());

@@ -17,6 +17,8 @@ public interface StringConsts {
     public final static String COMMUNIQUE_VIEW_NAME = "Wiadomości";
     public final static String MANAGE_ACCOUNTS = "Zarządzaj użytkownikami";
 
+    public static final String ROLE_MASTER = "ROLE_MASTER";
+
     //MainView
     public final static String MORE_LABEL = ">";
     public final static String LESS_LABEL = "<";

@@ -93,7 +93,7 @@ public class ManageAccountWindow extends Window {
     }
 
     public void refreshDataSource() {
-        accountsContainer = prepareForAccountsList(ReceiveAccount.prepareForAccountsList());
+        accountsContainer = prepareForAccountsList(ReceiveAccount.getAccountsList());
         accountsList.setContainerDataSource(accountsContainer);
         accountsList.setColumnReorderingAllowed(false);
         accountsList.setVisibleColumns(new Object[]{LOGIN});

@@ -111,15 +111,6 @@ public class CommuniqueView extends VerticalLayout implements View {
     private void buildingLeftLayout() {
         leftLayout.setSizeFull();
 
-//    private Button resFilters = new Button("Usuń Filtry");
-//        resFilters.addClickListener(new Button.ClickListener() {  TODO po dodaniu przycisku pojawia sie duża wolna przestrzeń
-//            @Override
-//            public void buttonClick(Button.ClickEvent clickEvent) {
-//                commTable.resetFilters();
-//            }
-//        });
-//        leftLayout.addComponent(resFilters);
-
         commTable.setWidth("100%");
         commTable.setRefreshingEnabled(true);
         commTable.setImmediate(true);

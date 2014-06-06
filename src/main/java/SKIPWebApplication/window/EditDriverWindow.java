@@ -19,7 +19,7 @@ import java.util.Date;
  */
 public class EditDriverWindow extends Window {
 
-    public EditDriverWindow(final DriversView parent) {
+    public EditDriverWindow(final DriversView parent, final long drID) {
         super("Edycja kierowcy");
         FormLayout newDriverLayout = new FormLayout();
         final FieldGroup fields = new FieldGroup();
@@ -91,7 +91,8 @@ public class EditDriverWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Driver driver = new Driver();
-                driver.setId((Long)parent.getDriversList().getContainerProperty( parent.getDriversList().getValue(), DriversView.ID).getValue());
+                driver.setId(drID);
+                //driver.setId((Long)parent.getDriversList().getContainerProperty( parent.getDriversList().getValue(), DriversView.ID).getValue());
                 driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
@@ -114,7 +115,12 @@ public class EditDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    ReceiveDriver.changeDriver(driver);
+                    Driver DrOld = ReceiveDriver.getDriver(driver.getId());
+                    driver = ReceiveDriver.changeDriver(driver);
+                    if (DrOld.equals(driver)) {
+                        Notification.show("Nie wprowadzono zmian");
+                        return;
+                    }
                     Notification.show("Wprowadzono zmiany");
                     parent.refreshDataSource();
                     close();
@@ -128,7 +134,7 @@ public class EditDriverWindow extends Window {
             public void windowClose(Window.CloseEvent e) {
                 parent.setEnabled(true);
             }
-        } );
+        });
 
         parent.setEnabled(false);
 

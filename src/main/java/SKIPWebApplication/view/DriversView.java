@@ -263,7 +263,11 @@ public class DriversView extends VerticalLayout implements View {
         }
 
         public void menuSelected(MenuBar.MenuItem selectedItem) {
-            EditDriverWindow window = new EditDriverWindow(dv);
+            Object currentDriver = driversList.getValue();
+            Long driverId = (Long) driversList
+                    .getContainerProperty(currentDriver, ID)
+                    .getValue();
+            EditDriverWindow window = new EditDriverWindow(dv, driverId);
             getUI().addWindow(window);
         }
     }

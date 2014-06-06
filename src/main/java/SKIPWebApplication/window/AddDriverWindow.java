@@ -1,5 +1,6 @@
 package SKIPWebApplication.window;
 
+import SKIPWebApplication.receiveinformation.ReceiveAccountUser;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.view.DriversView;
 import com.vaadin.data.Validator;
@@ -8,8 +9,8 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
+import returnobjects.Account;
 import returnobjects.Driver;
-import returnobjects.User;
 
 import java.util.Collection;
 import java.util.Date;
@@ -127,7 +128,7 @@ public class AddDriverWindow extends Window {
                 driver.setCoordinatesUpdateDate(new Date());
                 driver.setLatestCoordinates(null);
 
-                User usr = new User();
+                Account usr = new Account();
                 usr.setEnabled(true);
                 usr.setUsername((String) fields.getField(AddAccountWindow.USERNAME).getValue());
                 usr.setPassword((String) fields.getField(AddAccountWindow.PASSWORD).getValue());
@@ -145,8 +146,15 @@ public class AddDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    //ReceiveAccountUser.
-                    ReceiveDriver.addDriver(driver);
+                    Account userAcc = ReceiveAccountUser.addAccount(usr);
+                    Driver driverToChange = ReceiveDriver.getDriver(userAcc.getEntity());
+                    Driver Dchanged = ReceiveDriver.changeDriver(driverToChange);
+                    if(Dchanged == null){
+                        String warning = "Dodanie kierowcy nie powiodło się";
+                        Notification.show(warning);
+                        System.out.println(warning);
+                        return;
+                    }
                     Notification.show("Dodano nowego kierowcę");
                     parent.refreshDataSource();
                     close();

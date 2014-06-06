@@ -118,14 +118,12 @@ public class VehicleView extends VerticalLayout implements View {
 
             verLayout1.addComponent(field);
             editorFields.bind(field, fieldName);
-            editorFields.setBuffered(false); // narazie może być, ale musi być
-            // true aby podłączone
-            // walidatory działały
+            editorFields.setBuffered(false);
         }
 
         editorFields.setBuffered(false);
         editorFields.setEnabled(false);
-        tabsheet.addTab(verLayout1, "Informacje ogólne", null);
+        tabsheet.addTab(verLayout1, "Informacje", null);
         editorLayout.addComponent(tabsheet);
 
     }
@@ -208,7 +206,7 @@ public class VehicleView extends VerticalLayout implements View {
             }
         });
 
-        vehicleMenu.addItem("Edytuj",new EditVehicleCommand(this));
+        vehicleMenu.addItem("Edytuj", new EditVehicleCommand(this));
 
         return vehicleMenu;
     }
@@ -231,6 +229,7 @@ public class VehicleView extends VerticalLayout implements View {
 
         for (Vehicle vehicle : allVehicles) {
             Object id = ic.addItem();
+            System.out.println("behicle id " + vehicle.getId());
             ic.getContainerProperty(id, ID).setValue(vehicle.getId());
             ic.getContainerProperty(id, BRAND).setValue(vehicle.getBrand() != null ? vehicle.getBrand() : "");
             ic.getContainerProperty(id, COLOUR).setValue(vehicle.getColour() != null ? vehicle.getColour() : "");
@@ -266,6 +265,10 @@ public class VehicleView extends VerticalLayout implements View {
 
         @Override
         public void buttonClick(Button.ClickEvent event) {
+            Object currentDriver = vehiclesList.getValue();
+            Long vehicleId = (Long) vehiclesList
+                    .getContainerProperty(currentDriver, ID)
+                    .getValue();
             AddVehicleWindow window = new AddVehicleWindow(vv);
             getUI().addWindow(window);
         }
@@ -282,8 +285,13 @@ public class VehicleView extends VerticalLayout implements View {
         public EditVehicleCommand(VehicleView vv) {
             this.vv = vv;
         }
+
         public void menuSelected(MenuBar.MenuItem selectedItem) {
-            EditVehicleWindow window = new EditVehicleWindow(vv);
+            Object currentDriver = vehiclesList.getValue();
+            Long driverID = (Long) vehiclesList
+                    .getContainerProperty(currentDriver, ID)
+                    .getValue();
+            EditVehicleWindow window = new EditVehicleWindow(vv, driverID);
             getUI().addWindow(window);
         }
     }

@@ -51,9 +51,10 @@ public class ReceiveAccountUser implements ServerInfo {
             return null;
         } catch (IOException e) {
             return null;
-        } catch (Exception e) {
+        }  catch (Exception e) {
             return null;
         }
+
         return result;
     }
 

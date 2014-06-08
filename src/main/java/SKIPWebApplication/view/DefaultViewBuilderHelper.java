@@ -30,7 +30,7 @@ public class DefaultViewBuilderHelper {
                 //TODO conditions for other views
                 if (selectedItem.getText().equals(StringConsts.LOGOUT_STRING)) {
                     if(LoginService.logout())
-                        UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
+                        UI.getCurrent().getPage().setLocation( "/" );
                     else
                         Notification.show("Nie udało sie wylogować, spróbuj jeszcze raz");
                 }
@@ -55,12 +55,17 @@ public class DefaultViewBuilderHelper {
             }
         };
         MenuBar menu = new MenuBar();
-        menu.addItem("", new ThemeResource(
-                "../../resources/icons/gap_small.png"), null);
+        menu.setHtmlContentAllowed(true);
+        if(VaadinSession.getCurrent() == null) {
+            menu.addItem("", new ThemeResource(
+                    "../../resources/icons/gap_small.png"), null);
+        }   else {
+            menu.addItem("Użytkownik:<br/><b>"
+                    + VaadinSession.getCurrent().getAttribute(HttpClientHelper.USER_LOGIN) + "</b>"
+            , null, null).setCheckable(false);
+        }
         menu.addItem("", new ThemeResource(
                 "../../resources/icons/logo_skip_small.png"), null);
-        menu.addItem("", new ThemeResource(
-                "../../resources/icons/gap.png"), null);
         if(!(VaadinSession.getCurrent().getAttribute(HttpClientHelper.USER_ROLE_SESSION_TAG) != null
                 && VaadinSession.getCurrent().getAttribute(HttpClientHelper.USER_ROLE_SESSION_TAG)
                 .equals(StringConsts.ROLE_MASTER))) {

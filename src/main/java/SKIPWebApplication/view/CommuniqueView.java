@@ -110,7 +110,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private void buildingLeftLayout() {
         leftLayout.setSizeFull();
 
-        commTable.setWidth("100%");
+        commTable.setSizeFull();
         commTable.setRefreshingEnabled(true);
         commTable.setImmediate(true);
         commTable.setSortEnabled(true);

@@ -1,6 +1,9 @@
 package SKIPWebApplication.receiveinformation;
 
+import SKIPWebApplication.consts.StringConsts;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.UI;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -55,9 +58,13 @@ public class LoginService implements ServerInfo {
 
             if (statusCode == 200) {
                 String[] responseArray = parsingResponse.split(" ");
+
+                if(responseArray[1].equals(StringConsts.ROLE_USER))
+                    throw new LoginErrorException("Błędne dane logowania");
                 if (responseArray[0].equals(username)) {
                     VaadinSession.getCurrent().setAttribute(HttpClientHelper.COOKIE_STORE_SEESION_TAG, cookieStore);
                     VaadinSession.getCurrent().setAttribute(HttpClientHelper.USER_ROLE_SESSION_TAG, responseArray[1]);
+                    VaadinSession.getCurrent().setAttribute(HttpClientHelper.USER_LOGIN, username);
                     return true;
                 }
                 else{
@@ -105,6 +112,7 @@ public class LoginService implements ServerInfo {
             e.printStackTrace();
         }
         VaadinSession.getCurrent().close();
+
         return true;
     }
 

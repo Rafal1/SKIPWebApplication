@@ -18,6 +18,7 @@ public interface StringConsts {
     public final static String MANAGE_ACCOUNTS = "Zarządzaj użytkownikami";
 
     public static final String ROLE_MASTER = "ROLE_MASTER";
+    public static final String ROLE_USER = "ROLE_USER";
 
     //MainView
     public final static String MORE_LABEL = ">";

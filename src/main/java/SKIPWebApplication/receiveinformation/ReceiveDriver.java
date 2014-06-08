@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
@@ -92,7 +91,7 @@ public class ReceiveDriver implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + dr.getId());
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -166,7 +165,7 @@ public class ReceiveDriver implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String corJSON = null;
@@ -189,7 +188,8 @@ public class ReceiveDriver implements ServerInfo {
         }
         return parsingResponse;
     }
-    public static boolean assignVehicle(Long driverId,  Long vehicleId){
+
+    public static boolean assignVehicle(Long driverId, Long vehicleId) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
@@ -217,7 +217,7 @@ public class ReceiveDriver implements ServerInfo {
 
     }
 
-    public static Vehicle getAssignedVehicle(Long driverId){
+    public static Vehicle getAssignedVehicle(Long driverId) {
         Vehicle parsingResponse = null;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/drivers/" + driverId + "/assignedVehicle");
@@ -234,7 +234,5 @@ public class ReceiveDriver implements ServerInfo {
             e.printStackTrace();
         }
         return parsingResponse;
-
-
     }
 }

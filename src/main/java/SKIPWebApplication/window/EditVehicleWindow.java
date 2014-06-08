@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public class EditVehicleWindow extends Window {
 
-    public EditVehicleWindow(final VehicleView parent) {
+    public EditVehicleWindow(final VehicleView parent, final long vehID) {
         super("Edycja pojazdu");
         FormLayout newVehicleLayout = new FormLayout();
         final FieldGroup fields = new FieldGroup();
@@ -91,7 +91,7 @@ public class EditVehicleWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Vehicle veh = new Vehicle();
-                veh.setId((Long) parent.getVehiclesList().getContainerProperty(parent.getVehiclesList().getValue(), VehicleView.ID).getValue());
+                veh.setId(vehID);
                 veh.setBrand((String) fields.getField(VehicleView.BRAND).getValue());
                 veh.setColour((String) fields.getField(VehicleView.COLOUR).getValue());
                 veh.setTruckload(Integer.parseInt(fields.getField(VehicleView.MAX_LOAD).getValue().toString()));
@@ -110,8 +110,14 @@ public class EditVehicleWindow extends Window {
                 }
 
                 if (valOk) {
-                    ReceiveVehicle.changeVehicle(veh);
+                    veh = ReceiveVehicle.changeVehicle(veh);
+                    if(veh == null){
+                        Notification.show("Nie wprowadzono zmian");
+                        close();
+                        return;
+                    }
                     Notification.show("Wprowadzono zmiany");
+                    parent.refreshDataSource();
                     close();
                 }
             }

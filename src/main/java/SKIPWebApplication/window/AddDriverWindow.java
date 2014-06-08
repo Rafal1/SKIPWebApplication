@@ -1,5 +1,6 @@
 package SKIPWebApplication.window;
 
+import SKIPWebApplication.receiveinformation.ReceiveAccountUser;
 import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.view.DriversView;
 import com.vaadin.data.Validator;
@@ -8,11 +9,10 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-import returnobjects.Coordinates;
+import returnobjects.Account;
 import returnobjects.Driver;
 
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +30,27 @@ public class AddDriverWindow extends Window {
         fields.setBuffered(true);
 
         String fieldName = "";
+        fieldName = AddAccountWindow.USERNAME;
+        TextField fieldUSERNAME = new TextField(fieldName);
+        fieldUSERNAME.addValidator(new StringLengthValidator("Niepoprawna długość loginu", 3, 50, false));
+        fieldUSERNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Login zawiera nie właściwe znaki"));
+        fieldUSERNAME.setWidth("20em");
+        fieldUSERNAME.setImmediate(true);
+        fieldUSERNAME.setRequired(true);
+        fieldUSERNAME.setRequiredError("Pole login jest wymagane.");
+        newDriverLayout.addComponent(fieldUSERNAME);
+        fields.bind(fieldUSERNAME, fieldName);
+
+        fieldName = AddAccountWindow.PASSWORD;
+        PasswordField fieldPASSWORD = new PasswordField(fieldName);
+        fieldPASSWORD.addValidator(new StringLengthValidator("Niepoprawna długość hasła", 3, 64, false));
+        fieldPASSWORD.setWidth("20em");
+        fieldPASSWORD.setImmediate(true);
+        fieldPASSWORD.setRequired(true);
+        fieldPASSWORD.setRequiredError("Pole hasło jest wymagane.");
+        newDriverLayout.addComponent(fieldPASSWORD);
+        fields.bind(fieldPASSWORD, fieldName);
+
         fieldName = DriversView.FNAME;
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
@@ -64,9 +85,10 @@ public class AddDriverWindow extends Window {
 
         fieldName = DriversView.PRIVATE_PHONE;
         TextField fieldPRIVATE_PHONE = new TextField(fieldName);
-        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("\\d{3,12}", "Telefon prywatny zawiera nie właściwe znaki."));
+        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("(^\\d{3,12}$)", "Telefon prywatny zawiera nie właściwą liczbę znaków."));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
+        fieldPRIVATE_PHONE.setRequired(true);
         newDriverLayout.addComponent(fieldPRIVATE_PHONE);
         fields.bind(fieldPRIVATE_PHONE, fieldName);
 
@@ -102,14 +124,10 @@ public class AddDriverWindow extends Window {
                 driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
 
-                //todo set initial values of parameters (ralted to coordinates)
-                driver.setCoordinatesUpdateDate(new Date());
-
-                //losowanie koordynatów tak aby każdy kierowca miał inne połozenie, pózniej można usunąć
-                //TODO
-                double lat = Math.random() * 2 + 50;
-                double lon = Math.random() * 2 + 20;
-                driver.setLatestCoordinates(new Coordinates(lat, lon));
+                Account usr = new Account();
+                usr.setEnabled(true);
+                usr.setUsername((String) fields.getField(AddAccountWindow.USERNAME).getValue());
+                usr.setPassword((String) fields.getField(AddAccountWindow.PASSWORD).getValue());
 
                 Boolean valOk = true;
                 Collection colFields = fields.getFields();
@@ -124,7 +142,18 @@ public class AddDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    ReceiveDriver.addDriver(driver);
+                    Account userAcc = ReceiveAccountUser.addAccount(usr);
+                    Driver driverToChange = ReceiveDriver.getDriver(userAcc.getEntity());
+                    driver.setId(userAcc.getEntity());
+                    driver.setCoordinatesUpdateDate(driverToChange.getCoordinatesUpdateDate());
+                    driver.setLatestCoordinates(driverToChange.getLatestCoordinates());
+                    Driver Dchanged = ReceiveDriver.changeDriver(driver);
+                    if(Dchanged == null){
+                        String warning = "Dodanie kierowcy nie powiodło się";
+                        Notification.show(warning);
+                        System.out.println(warning);
+                        return;
+                    }
                     Notification.show("Dodano nowego kierowcę");
                     parent.refreshDataSource();
                     close();

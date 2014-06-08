@@ -5,20 +5,20 @@ import javax.validation.constraints.Min;
 
 
 public class Coordinates {
-	
+
 	private long id;
-	
+
 	@Min(-180)
 	@Max(180)
 	private double longitude;
-	
+
 	@Min(-90)
 	@Max(90)
 	private double latitude;
 
-	//Left for Hibernate 
+	//Left for Hibernate
 	public Coordinates() {}
-	
+
 	public Coordinates(double longitude, double latitude) {
 		super();
 		this.longitude = longitude;
@@ -34,7 +34,7 @@ public class Coordinates {
 		this.id = id;
 	}
 
-	
+
 	public double getLongitude() {
 		return longitude;
 	}
@@ -50,6 +50,6 @@ public class Coordinates {
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
-	
+
 
 }

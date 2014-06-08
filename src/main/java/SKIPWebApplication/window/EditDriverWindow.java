@@ -8,18 +8,17 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-import returnobjects.Coordinates;
 import returnobjects.Driver;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * @author Rafal Zawadzki
  */
 public class EditDriverWindow extends Window {
 
-    public EditDriverWindow(final DriversView parent) {
+    public EditDriverWindow(final DriversView parent, final long driverId, final ArrayList<Driver> drListArray) {
         super("Edycja kierowcy");
         FormLayout newDriverLayout = new FormLayout();
         final FieldGroup fields = new FieldGroup();
@@ -91,15 +90,16 @@ public class EditDriverWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Driver driver = new Driver();
-                driver.setId((Long)parent.getDriversList().getContainerProperty( parent.getDriversList().getValue(), DriversView.ID).getValue());
+                driver.setId(driverId);
                 driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
                 driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
-                //todo set initial values of parameters (ralted to coordinates)
-                driver.setCoordinatesUpdateDate(new Date());
-                driver.setLatestCoordinates(new Coordinates(15.1, 25.1));
+
+                Driver tmp = searchDrID(driverId, drListArray);
+                driver.setCoordinatesUpdateDate(tmp.getCoordinatesUpdateDate());
+                driver.setLatestCoordinates(tmp.getLatestCoordinates());
 
                 Boolean valOk = true;
                 Collection colFields = fields.getFields();
@@ -114,7 +114,13 @@ public class EditDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    ReceiveDriver.changeDriver(driver);
+                    Long idVeh = ReceiveDriver.getAssignedVehicle(driverId).getId();
+                    driver = ReceiveDriver.changeDriver(driver);
+                    Boolean control = ReceiveDriver.assignVehicle(driverId, idVeh);
+                    if (driver == null && control.equals(false)) {
+                        Notification.show("Nie wprowadzono zmian");
+                        return;
+                    }
                     Notification.show("Wprowadzono zmiany");
                     parent.refreshDataSource();
                     close();
@@ -123,12 +129,13 @@ public class EditDriverWindow extends Window {
         }
         );
 
+
         addCloseListener(new Window.CloseListener() {
             @Override
             public void windowClose(Window.CloseEvent e) {
                 parent.setEnabled(true);
             }
-        } );
+        });
 
         parent.setEnabled(false);
 
@@ -139,5 +146,15 @@ public class EditDriverWindow extends Window {
         setDraggable(false);
 
         center();
+    }
+
+    private Driver searchDrID(long id, ArrayList<Driver> li) {
+        for (int i = 0; i < li.size(); i++) {
+            Driver tmp = li.get(i);
+            if (tmp.getId() == id) {
+                return tmp;
+            }
+        }
+        return null;
     }
 }

@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
-import returnobjects.Driver;
 import returnobjects.Vehicle;
 
 import java.io.IOException;
@@ -67,6 +66,8 @@ public class ReceiveVehicle implements ServerInfo {
             return parsingResponse;
         }
         HttpPost httppost = new HttpPost(url);
+        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             httppost.setEntity(new UrlEncodedFormEntity(params));
@@ -88,7 +89,7 @@ public class ReceiveVehicle implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/vehicles/" + veh.getId());
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -147,7 +148,7 @@ public class ReceiveVehicle implements ServerInfo {
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             unitsString = httpclient.execute(getQuery, responseHandler);
-            parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Vehicle>() {
             });
         } catch (ClientProtocolException e) {
             e.printStackTrace();

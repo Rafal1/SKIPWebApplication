@@ -104,21 +104,11 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         splitPanel.addComponent(rightLayout);
 
-
         return splitPanel;
     }
 
     private void buildingLeftLayout() {
         leftLayout.setSizeFull();
-
-//    private Button resFilters = new Button("Usuń Filtry");
-//        resFilters.addClickListener(new Button.ClickListener() {  TODO po dodaniu przycisku pojawia sie duża wolna przestrzeń
-//            @Override
-//            public void buttonClick(Button.ClickEvent clickEvent) {
-//                commTable.resetFilters();
-//            }
-//        });
-//        leftLayout.addComponent(resFilters);
 
         commTable.setWidth("100%");
         commTable.setRefreshingEnabled(true);
@@ -127,7 +117,6 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterGenerator(new CommuniqueFilterGenerator());
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setSelectable(true);
-
 
         commTable.setFilterBarVisible(true);
         commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
@@ -141,7 +130,6 @@ public class CommuniqueView extends VerticalLayout implements View {
                         new LatLon(coords.getLatitude(), coords.getLongitude()));
             }
         }
-
         );
 
         leftLayout.addComponent(commTable);
@@ -166,7 +154,7 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         indx.addContainerProperty(DRIVER_TAG, String.class, null);
         indx.addContainerProperty(ID_TAG, Long.class, null);
-        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, Integer.class, null); //TODO improve style (visibility)
+        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, String.class, null);
         indx.addContainerProperty(DATE_TAG, Date.class, null);
         indx.addContainerProperty(COORDINATES_TAG, Coordinates.class, null);
 
@@ -178,7 +166,7 @@ public class CommuniqueView extends VerticalLayout implements View {
             Object id = indx.addItem();
             indx.getContainerProperty(id, DRIVER_TAG).setValue(getRepresentStringOfDriver(c.getDriverId()));
             indx.getContainerProperty(id, ID_TAG).setValue(c.getId());
-            indx.getContainerProperty(id, COMMUNIQUE_TYPE_TAG).setValue(c.getState());
+            indx.getContainerProperty(id, COMMUNIQUE_TYPE_TAG).setValue(checkCommuniqueKind(c.getState()));
             indx.getContainerProperty(id, DATE_TAG).setValue(c.getDate());
             indx.getContainerProperty(id, COORDINATES_TAG).setValue(c.getcoordinates());
         }
@@ -204,17 +192,17 @@ public class CommuniqueView extends VerticalLayout implements View {
     private String checkCommuniqueKind(Integer x) {
         switch (x) {
             case 0:
-                return "Jazda";
+                return "Start";
             case 1:
-                return "Jazda";
+                return "Jedź";
             case 2:
-                return "Jazda";
+                return "Pauza";
             case 3:
-                return "Jazda";
+                return "Ładuj";
             case 4:
-                return "Jazda";
+                return "Awaria";
             case 5:
-                return "Jazda";
+                return "Koniec";
         }
         return null;
     }

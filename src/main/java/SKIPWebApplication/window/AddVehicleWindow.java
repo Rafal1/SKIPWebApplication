@@ -119,7 +119,7 @@ public class AddVehicleWindow extends Window {
             public void windowClose(Window.CloseEvent e) {
                 parent.setEnabled(true);
             }
-        } );
+        });
         parent.setEnabled(false);
 
         setContent(newVehicleLayout);

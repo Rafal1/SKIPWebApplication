@@ -36,15 +36,15 @@ public class DriversView extends VerticalLayout implements View {
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
     public static final String ID = "Id";
-    public static final String FNAME = "Imie";
-    public static final String LNAME = "Nazwisko";
-    private static final String REGISTRATION_NR = "Nr rejestracyjny";
-    public static final String COMPANY_PHONE = "Tel. firmowy";
-    public static final String PRIVATE_PHONE = "Tel. prywatny";
-    public static final String ASSOCIATED_VEHICLE = "Powiązany Pojazd";
-    public static final String E_MAIL = "E-mail";
-    private static final String LAST_DATE = "Zlokalizowano";
-    private static final String COORDINATES = "Współrzędne";
+    public static final String FNAME = "Imię:";
+    public static final String LNAME = "Nazwisko:";
+    private static final String REGISTRATION_NR = "Nr rejestracyjny:";
+    public static final String COMPANY_PHONE = "Tel. firmowy:";
+    public static final String PRIVATE_PHONE = "Tel. prywatny:";
+    public static final String ASSOCIATED_VEHICLE = "Powiązany pojazd:";
+    public static final String E_MAIL = "E-mail:";
+    private static final String LAST_DATE = "Zlokalizowano:";
+    private static final String COORDINATES = "Współrzędne:";
     private static final String[] firstTab = new String[]{FNAME, LNAME,
             REGISTRATION_NR, COMPANY_PHONE};
     private static final String[] secondTab = new String[]{PRIVATE_PHONE, E_MAIL,
@@ -298,7 +298,7 @@ public class DriversView extends VerticalLayout implements View {
                     editorFields.setItemDataSource(driversList
                             .getItem(currentDriver));
 
-                    editorFields.setEnabled(false);
+                    editorFields.setReadOnly(true);
                     // mapa
                     String info = "Kierowca: " + (String) driversList
                             .getContainerProperty(currentDriver, FNAME)

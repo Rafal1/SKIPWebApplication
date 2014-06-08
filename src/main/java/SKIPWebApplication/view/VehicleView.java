@@ -32,10 +32,10 @@ public class VehicleView extends VerticalLayout implements View {
     private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
-    public static final String BRAND = "Marka";
-    public static final String COLOUR = "Kolor nadwozia";
-    public static final String REGISTRATION_NR = "Nr rejestracyjny";
-    public static final String MAX_LOAD = "Ładowność (kg)";
+    public static final String BRAND = "Marka:";
+    public static final String COLOUR = "Kolor nadwozia:";
+    public static final String REGISTRATION_NR = "Nr rejestracyjny:";
+    public static final String MAX_LOAD = "Ładowność (kg):";
     public static final String ID = "Id";
     private static final String[] firstTab = new String[]{BRAND, REGISTRATION_NR,
             COLOUR, MAX_LOAD};
@@ -122,7 +122,7 @@ public class VehicleView extends VerticalLayout implements View {
         }
 
         editorFields.setBuffered(false);
-        editorFields.setEnabled(false);
+
         tabsheet.addTab(verLayout1, "Informacje", null);
         editorLayout.addComponent(tabsheet);
 
@@ -183,7 +183,7 @@ public class VehicleView extends VerticalLayout implements View {
                 if (currentVehicle != null) {
                     editorFields.setItemDataSource(vehiclesList
                             .getItem(currentVehicle));
-                    editorFields.setEnabled(false);
+                    editorFields.setReadOnly(true);
                 }
 
                 rightLayout.setVisible(currentVehicle != null);

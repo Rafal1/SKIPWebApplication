@@ -123,10 +123,6 @@ public class AddDriverWindow extends Window {
                 driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
 
-                //todo set initial values of parameters
-                //driver.setCoordinatesUpdateDate(new Date());
-                //driver.setLatestCoordinates(null);
-
                 Account usr = new Account();
                 usr.setEnabled(true);
                 usr.setUsername((String) fields.getField(AddAccountWindow.USERNAME).getValue());

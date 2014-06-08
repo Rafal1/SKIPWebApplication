@@ -51,8 +51,7 @@ public class DriversView extends VerticalLayout implements View {
             LAST_DATE};
 
     private static final String[] notVisible = new String[]{ID, COORDINATES};
-
-    private TextField associateDriverField;
+    private ArrayList<Driver> currentDrList = ReceiveDriver.getDriversList();
     IndexedContainer driversContainer;
 
     public DriversView() {
@@ -264,17 +263,10 @@ public class DriversView extends VerticalLayout implements View {
 
         public void menuSelected(MenuBar.MenuItem selectedItem) {
             Object currentDriver = driversList.getValue();
-           Long driverId = (Long) driversList
+            Long driverId = (Long) driversList
                     .getContainerProperty(currentDriver, ID)
                     .getValue();
-//            Long driverCor = (Long) driversList
-//                     .getContainerProperty(currentDriver, COORDINATES)
-//                     .getValue();
-//            Long driverLastDate = (Long) driversList
-//                     .getContainerProperty(currentDriver, LAST_DATE)
-//                     .getValue();
-            //TODO transport Coordinates and date
-            EditDriverWindow window = new EditDriverWindow(dv, driverId);
+            EditDriverWindow window = new EditDriverWindow(dv, driverId, currentDrList);
             getUI().addWindow(window);
         }
     }
@@ -370,7 +362,7 @@ public class DriversView extends VerticalLayout implements View {
             if (driver.getLatestCoordinates() != null)
                 ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
             else
-            ic.getContainerProperty(id, COORDINATES).setValue(null);
+                ic.getContainerProperty(id, COORDINATES).setValue(null);
             ic.getContainerProperty(id, COMPANY_PHONE).setValue(driver.getPhoneNumber() != null ? driver.getPhoneNumber() : "");
             ic.getContainerProperty(id, PRIVATE_PHONE).setValue(driver.getPhoneNumber2() != null ? driver.getPhoneNumber2() : "");
             ic.getContainerProperty(id, E_MAIL).setValue(driver.getEmail() != null ? driver.getEmail() : "");
@@ -381,7 +373,9 @@ public class DriversView extends VerticalLayout implements View {
     }
 
     public void refreshDataSource() {
-        driversContainer = prepareForDriversList(ReceiveDriver.getDriversList());
+        ArrayList<Driver> newListOfDrivers = ReceiveDriver.getDriversList();
+        currentDrList = newListOfDrivers;
+        driversContainer = prepareForDriversList(newListOfDrivers);
         driversList.setContainerDataSource(driversContainer);
         driversList.setColumnReorderingAllowed(false);
         driversList.setVisibleColumns(new Object[]{FNAME, LNAME,

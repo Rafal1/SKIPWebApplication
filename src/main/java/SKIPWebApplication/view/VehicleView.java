@@ -264,10 +264,6 @@ public class VehicleView extends VerticalLayout implements View {
 
         @Override
         public void buttonClick(Button.ClickEvent event) {
-            Object currentDriver = vehiclesList.getValue();
-            Long vehicleId = (Long) vehiclesList
-                    .getContainerProperty(currentDriver, ID)
-                    .getValue();
             AddVehicleWindow window = new AddVehicleWindow(vv);
             getUI().addWindow(window);
         }

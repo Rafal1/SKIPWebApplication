@@ -307,12 +307,16 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(currentDriver, REGISTRATION_NR)
                             .getValue();
-                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
+                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)  {
+                        customMap.getCustomMap().setVisible(true);
                         customMap.clearMarkers();
-                    customMap.addOneMarker(info, (LatLon) driversList
-                            .getContainerProperty(currentDriver, COORDINATES)
-                            .getValue());
-
+                        customMap.addOneMarker(info, (LatLon) driversList
+                                .getContainerProperty(currentDriver, COORDINATES)
+                                .getValue());
+                    }
+                    else{
+                        customMap.getCustomMap().setVisible(false);
+                    }
                 }
 
                 rightLayout.setVisible(currentDriver != null);
@@ -366,7 +370,9 @@ public class DriversView extends VerticalLayout implements View {
                         .setValue("brak");
             }
 
-            if (driver.getLatestCoordinates() != null)
+            if (driver.getLatestCoordinates() != null  &&
+                    (driver.getLatestCoordinates().getLatitude() != 0
+                    && driver.getLatestCoordinates().getLongitude() != 0))
                 ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
             else
                 ic.getContainerProperty(id, COORDINATES).setValue(null);

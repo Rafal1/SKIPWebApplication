@@ -40,9 +40,12 @@ public class CustomMap {
     }
 
     public long addMarkerFromDriver(Driver driver) {
-           return  addMarker(MainView.makeMarkerName(driver), new LatLon(
-                         driver.getLatestCoordinates().getLatitude(),
-                         driver.getLatestCoordinates().getLongitude()));
+        if (driver.getLatestCoordinates() == null || (driver.getLatestCoordinates().getLatitude() == 0 && driver.getLatestCoordinates().getLongitude() == 0)) {
+            return -1;
+        }
+        return addMarker(MainView.makeMarkerName(driver), new LatLon(
+                driver.getLatestCoordinates().getLatitude(),
+                driver.getLatestCoordinates().getLongitude()));
 
 
     }
@@ -110,7 +113,7 @@ public class CustomMap {
 
     private long addMarker(String name, LatLon coords) {
         googleMap.setCenter(coords);
-       long markerId =  googleMap.addMarker(name, coords, false,
+        long markerId = googleMap.addMarker(name, coords, false,
                 imagePath).getId();
 
 

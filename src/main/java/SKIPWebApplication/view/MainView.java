@@ -23,13 +23,11 @@ import static com.vaadin.ui.Alignment.TOP_CENTER;
  */
 public class MainView extends VerticalLayout implements View {
 
-
     private CustomMap customMap;
     private Table table = new Table();
     ArrayList<Driver> driverList;
     private boolean isTableVisible = true;
 
-    //AnimatorProxy proxy = new AnimatorProxy();
     public MainView() {
         setSizeFull();
         initLayout();
@@ -64,8 +62,6 @@ public class MainView extends VerticalLayout implements View {
         layout.setComponentAlignment(mainPanel, TOP_CENTER);
         layout.setSizeFull();
         addComponent(layout);
-
-
     }
 
     private Component getBodyContent() {
@@ -80,14 +76,10 @@ public class MainView extends VerticalLayout implements View {
 
 
                 if (isTableVisible) {
-                    // proxy.animate(table, AnimType.FADE_OUT).setDuration(200);
                     isTableVisible = false;
                     tableLayout.setVisible(false);
                     moreLessButton.setCaption(StringConsts.MORE_LABEL);
                 } else {
-                    //proxy.animate(table, AnimType.FADE_IN).setDuration(300);
-                    //TODO animacja pojawiania i zanikania
-
                     isTableVisible = true;
                     tableLayout.setVisible(true);
                     moreLessButton.setCaption(StringConsts.LESS_LABEL);

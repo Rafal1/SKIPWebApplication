@@ -85,9 +85,10 @@ public class AddDriverWindow extends Window {
 
         fieldName = DriversView.PRIVATE_PHONE;
         TextField fieldPRIVATE_PHONE = new TextField(fieldName);
-        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("\\d{3,12}", "Telefon prywatny zawiera nie właściwe znaki."));
+        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("(^\\d{3,12}$)", "Telefon prywatny zawiera nie właściwą liczbę znaków."));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
+        fieldPRIVATE_PHONE.setRequired(true);
         newDriverLayout.addComponent(fieldPRIVATE_PHONE);
         fields.bind(fieldPRIVATE_PHONE, fieldName);
 

@@ -43,6 +43,7 @@ public class AddDriverWindow extends Window {
 
         fieldName = AddAccountWindow.PASSWORD;
         PasswordField fieldPASSWORD = new PasswordField(fieldName);
+        fieldPASSWORD.addValidator(new RegexpValidator("(^\\d{3,50}$)", "Hasło powinno składać się z cyfr."));
         fieldPASSWORD.addValidator(new StringLengthValidator("Niepoprawna długość hasła", 3, 64, false));
         fieldPASSWORD.setWidth("20em");
         fieldPASSWORD.setImmediate(true);

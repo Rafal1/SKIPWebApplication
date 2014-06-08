@@ -350,7 +350,14 @@ public class DriversView extends VerticalLayout implements View {
 
             //wysłanie zapytania o przypisany pojazd
             Long driverID = driver.getId();
-            Vehicle assignVehicle = ReceiveDriver.getAssignedVehicle(driverID);
+
+            Vehicle assignVehicle;
+            try {
+                assignVehicle = ReceiveDriver.getAssignedVehicle(driverID);
+            } catch (Exception e) {
+                assignVehicle = null;
+            }
+
             if (assignVehicle != null) {
                 ic.getContainerProperty(id, REGISTRATION_NR)
                         .setValue(assignVehicle.getRegistrationNumber());

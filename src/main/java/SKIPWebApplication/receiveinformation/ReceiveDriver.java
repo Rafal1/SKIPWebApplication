@@ -226,6 +226,8 @@ public class ReceiveDriver implements ServerInfo {
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             unitsString = httpclient.execute(getQuery, responseHandler);
+            if(parsingResponse == null)
+                return parsingResponse;
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Vehicle>() {
             });
         } catch (ClientProtocolException e) {

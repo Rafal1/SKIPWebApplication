@@ -41,6 +41,8 @@ public class ReceiveAccountUser implements ServerInfo {
             return null;
         }
         HttpPost httppost = new HttpPost(url);
+        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             httppost.setEntity(new UrlEncodedFormEntity(params));
@@ -63,7 +65,7 @@ public class ReceiveAccountUser implements ServerInfo {
 
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
-            System.out.println("ReceiveAccount: error in getting accountList ");
+            System.out.println("ReceiveAccountUser: error in getting accountList ");
             return parsingResponse;
         }
         HttpGet getQuery = new HttpGet(SSL_ACCESS + "/users");

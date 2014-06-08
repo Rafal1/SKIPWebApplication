@@ -104,7 +104,6 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         splitPanel.addComponent(rightLayout);
 
-
         return splitPanel;
     }
 
@@ -119,7 +118,6 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setFilterDecorator(new CommuniqueFilterDecorator());
         commTable.setSelectable(true);
 
-
         commTable.setFilterBarVisible(true);
         commTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -132,7 +130,6 @@ public class CommuniqueView extends VerticalLayout implements View {
                         new LatLon(coords.getLatitude(), coords.getLongitude()));
             }
         }
-
         );
 
         leftLayout.addComponent(commTable);
@@ -157,7 +154,7 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         indx.addContainerProperty(DRIVER_TAG, String.class, null);
         indx.addContainerProperty(ID_TAG, Long.class, null);
-        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, String.class, null); //TODO improve style (visibility)
+        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, String.class, null);
         indx.addContainerProperty(DATE_TAG, Date.class, null);
         indx.addContainerProperty(COORDINATES_TAG, Coordinates.class, null);
 

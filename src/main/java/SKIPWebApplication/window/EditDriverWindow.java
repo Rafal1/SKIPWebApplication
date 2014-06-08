@@ -8,18 +8,16 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-import returnobjects.Coordinates;
 import returnobjects.Driver;
 
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * @author Rafal Zawadzki
  */
 public class EditDriverWindow extends Window {
 
-    public EditDriverWindow(final DriversView parent, final long drID) {
+    public EditDriverWindow(final DriversView parent, final long driverId) {
         super("Edycja kierowcy");
         FormLayout newDriverLayout = new FormLayout();
         final FieldGroup fields = new FieldGroup();
@@ -91,16 +89,17 @@ public class EditDriverWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
 
                 Driver driver = new Driver();
-                driver.setId(drID);
+                driver.setId(driverId);
                 //driver.setId((Long)parent.getDriversList().getContainerProperty( parent.getDriversList().getValue(), DriversView.ID).getValue());
                 driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
                 driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
-                //todo set initial values of parameters (ralted to coordinates)
-                driver.setCoordinatesUpdateDate(new Date());
-                driver.setLatestCoordinates(new Coordinates(15.1, 25.1));
+
+                //TODO :)
+                //driver.setCoordinatesUpdateDate(new Date());
+                //driver.setLatestCoordinates(new Coordinates(15, 21));
 
                 Boolean valOk = true;
                 Collection colFields = fields.getFields();
@@ -115,9 +114,8 @@ public class EditDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    Driver DrOld = ReceiveDriver.getDriver(driver.getId());
                     driver = ReceiveDriver.changeDriver(driver);
-                    if (DrOld.equals(driver)) {
+                    if (driver == null) {
                         Notification.show("Nie wprowadzono zmian");
                         return;
                     }

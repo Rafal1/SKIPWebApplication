@@ -13,7 +13,6 @@ import returnobjects.Account;
 import returnobjects.Driver;
 
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -125,8 +124,8 @@ public class AddDriverWindow extends Window {
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
 
                 //todo set initial values of parameters
-                driver.setCoordinatesUpdateDate(new Date());
-                driver.setLatestCoordinates(null);
+                //driver.setCoordinatesUpdateDate(new Date());
+                //driver.setLatestCoordinates(null);
 
                 Account usr = new Account();
                 usr.setEnabled(true);
@@ -148,7 +147,10 @@ public class AddDriverWindow extends Window {
                 if (valOk) {
                     Account userAcc = ReceiveAccountUser.addAccount(usr);
                     Driver driverToChange = ReceiveDriver.getDriver(userAcc.getEntity());
-                    Driver Dchanged = ReceiveDriver.changeDriver(driverToChange);
+                    driver.setId(userAcc.getEntity());
+                    driver.setCoordinatesUpdateDate(driverToChange.getCoordinatesUpdateDate());
+                    driver.setLatestCoordinates(driverToChange.getLatestCoordinates());
+                    Driver Dchanged = ReceiveDriver.changeDriver(driver);
                     if(Dchanged == null){
                         String warning = "Dodanie kierowcy nie powiodło się";
                         Notification.show(warning);

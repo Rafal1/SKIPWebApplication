@@ -66,6 +66,8 @@ public class ReceiveVehicle implements ServerInfo {
             return parsingResponse;
         }
         HttpPost httppost = new HttpPost(url);
+        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             httppost.setEntity(new UrlEncodedFormEntity(params));
@@ -87,7 +89,7 @@ public class ReceiveVehicle implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/vehicles/" + veh.getId());
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;

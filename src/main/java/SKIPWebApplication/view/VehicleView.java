@@ -229,7 +229,6 @@ public class VehicleView extends VerticalLayout implements View {
 
         for (Vehicle vehicle : allVehicles) {
             Object id = ic.addItem();
-            System.out.println("behicle id " + vehicle.getId());
             ic.getContainerProperty(id, ID).setValue(vehicle.getId());
             ic.getContainerProperty(id, BRAND).setValue(vehicle.getBrand() != null ? vehicle.getBrand() : "");
             ic.getContainerProperty(id, COLOUR).setValue(vehicle.getColour() != null ? vehicle.getColour() : "");

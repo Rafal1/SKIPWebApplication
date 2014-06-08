@@ -91,7 +91,7 @@ public class ReceiveDriver implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + dr.getId());
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -165,7 +165,7 @@ public class ReceiveDriver implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + id + "/updateCoordinates");
-        PostQuery.setHeader("Content-Type", "application/json");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
         String corJSON = null;

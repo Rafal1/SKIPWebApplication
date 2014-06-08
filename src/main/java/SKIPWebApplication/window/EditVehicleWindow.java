@@ -92,7 +92,6 @@ public class EditVehicleWindow extends Window {
 
                 Vehicle veh = new Vehicle();
                 veh.setId(vehID);
-                //veh.setId((Long) parent.getVehiclesList().getContainerProperty(parent.getVehiclesList().getValue(), VehicleView.ID).getValue());
                 veh.setBrand((String) fields.getField(VehicleView.BRAND).getValue());
                 veh.setColour((String) fields.getField(VehicleView.COLOUR).getValue());
                 veh.setTruckload(Integer.parseInt(fields.getField(VehicleView.MAX_LOAD).getValue().toString()));
@@ -111,14 +110,15 @@ public class EditVehicleWindow extends Window {
                 }
 
                 if (valOk) {
-                    System.out.println("wzięte ID " + veh.getId());
-                    Vehicle oldVeh = ReceiveVehicle.getVehicle(veh.getId());
                     veh = ReceiveVehicle.changeVehicle(veh);
-                    if(!oldVeh.equals(veh)){
-                        Notification.show("Wprowadzono zmiany");
+                    if(veh == null){
+                        Notification.show("Nie wprowadzono zmian");
                         close();
+                        return;
                     }
-                    Notification.show("Nie wprowadzono zmian");
+                    Notification.show("Wprowadzono zmiany");
+                    parent.refreshDataSource();
+                    close();
                 }
             }
         }

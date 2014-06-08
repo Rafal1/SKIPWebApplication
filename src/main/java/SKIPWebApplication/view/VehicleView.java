@@ -29,7 +29,6 @@ public class VehicleView extends VerticalLayout implements View {
     private TextField searchField = new TextField();
     private Button addNewVehicleButton = new Button("Nowy");
     private VerticalLayout rightLayout = new VerticalLayout();
-    private CustomMap customMap;
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
     public static final String BRAND = "Marka:";
@@ -96,7 +95,6 @@ public class VehicleView extends VerticalLayout implements View {
         editorLayout.setMargin(true);
         initVehiclesList();
         initEditor();
-        initMap();
         initSearch();
         initAddRemoveButtons();
 
@@ -126,13 +124,6 @@ public class VehicleView extends VerticalLayout implements View {
         tabsheet.addTab(verLayout1, "Informacje", null);
         editorLayout.addComponent(tabsheet);
 
-    }
-
-    private void initMap() {
-        customMap = new CustomMap();
-        customMap.clearMarkers();
-        rightLayout.addComponent(customMap.getCustomMap());
-        rightLayout.setExpandRatio(customMap.getCustomMap(), 1.0f);
     }
 
     private void initSearch() {

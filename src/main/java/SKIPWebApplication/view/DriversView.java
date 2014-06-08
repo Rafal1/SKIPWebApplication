@@ -307,11 +307,21 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(currentDriver, REGISTRATION_NR)
                             .getValue();
-                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)
-                        customMap.clearMarkers();
-                    customMap.addOneMarker(info, (LatLon) driversList
+
+                    LatLon coordinates =(LatLon) driversList
                             .getContainerProperty(currentDriver, COORDINATES)
-                            .getValue());
+                            .getValue();
+
+                    if(coordinates != null) {
+                        customMap.clearMarkers();
+                        customMap.addOneMarker(info, coordinates);
+                    }
+                    if(Math.abs(coordinates.getLat()) < 0.00001 && Math.abs(coordinates.getLon()) < 0.00001) {
+                        customMap.getGoogleMap().setVisible(false);
+                    } else {
+                        customMap.getGoogleMap().setVisible(true);
+                    }
+
 
                 }
 

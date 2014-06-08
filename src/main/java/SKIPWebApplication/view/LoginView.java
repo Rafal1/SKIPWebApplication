@@ -66,7 +66,7 @@ public class LoginView extends VerticalLayout implements View {
                             PASSWORD.setValue("");
 
                         } catch (LoginErrorException e) {
-                            Notification.show("Exc " + e.getMessage());
+                            Notification.show(e.getMessage());
                         }
                     }
 

@@ -20,66 +20,80 @@ public class AssociateVehicleWindow extends Window {
     Table vehicleTable;
     Long driverId;
 
-   public AssociateVehicleWindow(final DriversView parent , final Long driverId){
-       super("Przypisanie pojazdu");
-       this.driverId =  driverId;
-       FormLayout associateLayout = new FormLayout();
-       createVehicleTable();
-       associateLayout.addComponent(vehicleTable);
-       associateLayout.setSpacing(true);
+    public AssociateVehicleWindow(final DriversView parent, final Long driverId) {
+        super("Przypisanie pojazdu");
+        this.driverId = driverId;
+        FormLayout associateLayout = new FormLayout();
+        createVehicleTable();
+        associateLayout.addComponent(vehicleTable);
+        associateLayout.setSpacing(true);
 
-       Button changeDriver = new Button("Zatwierdź");
-       Button cancel = new Button("Anuluj");
-       HorizontalLayout hl = new HorizontalLayout();
-       hl.addComponent(changeDriver);
-       hl.addComponent(cancel);
-       associateLayout.addComponent(hl);
-       cancel.addClickListener(new Button.ClickListener() {
-           @Override
-           public void buttonClick(Button.ClickEvent event) {
-               close();
-           }
-       });
-       changeDriver.addClickListener(new Button.ClickListener() {
-           @Override
-           public void buttonClick(Button.ClickEvent event) {
+        Button changeDriver = new Button("Zatwierdź");
+        Button cancel = new Button("Anuluj");
+        Button delete = new Button("Usuń przypisanie");
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.addComponent(changeDriver);
+        hl.addComponent(cancel);
+        hl.addComponent(delete);
+        associateLayout.addComponent(hl);
+        cancel.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                close();
+            }
+        });
+        changeDriver.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
 
-               Object rowId = vehicleTable.getValue(); // get the selected rows id
-               if(rowId != null){
-                   if(ReceiveDriver.assignVehicle(driverId, (Long) rowId)){
+                Object rowId = vehicleTable.getValue(); // get the selected rows id
+                if (rowId != null) {
+                    if (ReceiveDriver.assignVehicle(driverId, (Long) rowId)) {
                         Notification.show("Przypisano nowy pojazd do kierowcy");
                         parent.refreshDataSource();
-                   }else{
-                       Notification.show("Błąd: Nie udało się przypisać pojazdu.");
-                   }
-                   close();
-               }
-               else{
-                   Notification.show("Prosze zaznaczyć pojazd który ma zostać przypisany.");
-               }
-           }
-       }
-       );
+                    } else {
+                        Notification.show("Błąd: Nie udało się przypisać pojazdu.");
+                    }
+                    close();
+                } else {
+                    Notification.show("Prosze zaznaczyć pojazd który ma zostać przypisany.");
+                }
+            }
+        }
+        );
+        delete.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
 
-       addCloseListener(new Window.CloseListener() {
-           @Override
-           public void windowClose(Window.CloseEvent e) {
-               parent.setEnabled(true);
-           }
-       } );
+                ReceiveDriver.deleteVehicleAssigment(driverId);
+                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
+                parent.refreshDataSource();
 
-       parent.setEnabled(false);
+                close();
 
-       setContent(associateLayout);
 
-       setResizable(false);
+            }
+        });
 
-       setDraggable(false);
+        addCloseListener(new Window.CloseListener() {
+            @Override
+            public void windowClose(Window.CloseEvent e) {
+                parent.setEnabled(true);
+            }
+        });
 
-       center();
-   }
+        parent.setEnabled(false);
 
-    private void createVehicleTable(){
+        setContent(associateLayout);
+
+        setResizable(false);
+
+        setDraggable(false);
+
+        center();
+    }
+
+    private void createVehicleTable() {
         vehicleTable = new Table();
         vehicleTable.setWidth("40em");
         vehicleTable.addContainerProperty(VehicleView.BRAND, String.class, null);
@@ -103,6 +117,6 @@ public class AssociateVehicleWindow extends Window {
         vehicleTable.setImmediate(true);
     }
 
-   }
+}
 
 

@@ -262,4 +262,27 @@ public class ReceiveDriver implements ServerInfo {
         }
         return parsingResponse;
     }
+
+    public static void deleteVehicleAssigment( long driverId) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        if (httpclient == null) {
+            System.out.println("ReceiveDriver: error in assigned vehicle to driver ");
+            return;
+        }
+
+        HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + driverId + "/assignVehicle");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        String unitsString = null;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(PostQuery, responseHandler);
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

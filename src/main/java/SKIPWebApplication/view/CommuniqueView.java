@@ -208,7 +208,10 @@ public class CommuniqueView extends VerticalLayout implements View {
     }
 
     private String getRepresentStringOfDriver(Long ID) {
+        String representation = "(brak)";
         Driver dr = ReceiveDriver.getDriver(ID);
-        return new String(dr.getFirstName() + " " + dr.getLastName());
+        if(dr != null)
+            representation = dr.getFirstName() + " " + dr.getLastName();
+        return representation;
     }
 }

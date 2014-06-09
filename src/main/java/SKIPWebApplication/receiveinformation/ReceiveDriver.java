@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
+import returnobjects.Account;
 import returnobjects.Coordinates;
 import returnobjects.Driver;
 import returnobjects.Vehicle;
@@ -118,7 +119,10 @@ public class ReceiveDriver implements ServerInfo {
     }
 
     public static String deleteDriver(Long ID) {
-        String url = SSL_ACCESS + "/drivers/" + ID;
+        String username = getDriverUsername(ID);
+        if(username == null)
+            return null;
+        String url = SSL_ACCESS + "/users/" + username;
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
             System.out.println("ReceiveDriver: error in deleting driver ");
@@ -135,6 +139,27 @@ public class ReceiveDriver implements ServerInfo {
             return null;
         }
         return parsingResponse;
+    }
+
+    public static String getDriverUsername(Long driverId) {
+        Account parsingResponse = null;
+        HttpClient httpclient = HttpClientHelper.getHttpClient();
+        HttpGet getQuery = new HttpGet(SSL_ACCESS + "/users/driver/" + driverId);
+        ObjectMapper mapper = new ObjectMapper();
+        String unitsString;
+        try {
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            unitsString = httpclient.execute(getQuery, responseHandler);
+            parsingResponse = mapper.readValue(unitsString, new TypeReference<Account>() {
+            });
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return parsingResponse.getUsername();
     }
 
     public static Driver getDriver(Long id) {

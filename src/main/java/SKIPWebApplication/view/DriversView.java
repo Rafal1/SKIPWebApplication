@@ -125,8 +125,12 @@ public class DriversView extends VerticalLayout implements View {
                 String result = ReceiveDriver.deleteDriver((Long) driversList
                         .getContainerProperty(contactId, ID)
                         .getValue());
-                Notification.show("Kierowca został usunięty");
-                refreshDataSource();
+                if(result != null) {
+                    Notification.show("Kierowca został usunięty");
+                    refreshDataSource();
+                } else {
+                    Notification.show("Wystąpił błąd podczas usuwania kierowcy.");
+                }
             }
         });
         driverMenu.addItem("Edytuj", new EditDriverCommand(this));

@@ -162,7 +162,8 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setColumnAlignment(COMMUNIQUE_TYPE_TAG, CustomTable.ALIGN_CENTER);
         commTable.setColumnAlignment(DATE_TAG, CustomTable.ALIGN_CENTER);
 
-        for (final Communique c : comList) {
+        for(int i = comList.size() - 1 ; i >= 0 ; i--) {
+            Communique c = comList.get(i);
             Object id = indx.addItem();
             indx.getContainerProperty(id, DRIVER_TAG).setValue(getRepresentStringOfDriver(c.getDriverId()));
             indx.getContainerProperty(id, ID_TAG).setValue(c.getId());

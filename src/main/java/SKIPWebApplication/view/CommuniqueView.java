@@ -45,7 +45,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
-    private Integer refreshTimeMilis = 300000;
+    private Integer refreshTimeMilis = 60000;
 
     public CommuniqueView() {
         setSizeFull();

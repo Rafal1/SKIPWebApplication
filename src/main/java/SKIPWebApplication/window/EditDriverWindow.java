@@ -115,19 +115,14 @@ public class EditDriverWindow extends Window {
 
                 if (valOk) {
                     Long idVeh = ReceiveDriver.getAssignedVehicle(driverId).getId();
-//                    Boolean controlAssignment = true;
                     Boolean assignVeh = false;
-//                    if (idVeh == null) {
-//                        controlAssignment = false;
-//                    }
                     driver = ReceiveDriver.changeDriver(driver);
-//                    if (controlAssignment) {
                     assignVeh = ReceiveDriver.assignVehicle(driverId, idVeh);
                     if (!assignVeh) {
                         Notification.show("Nie wprowadzono zmian");
+                        close();
                         return;
                     }
-//                }
 
                     if (driver == null) {
                         Notification.show("Nie wprowadzono zmian");

@@ -30,7 +30,7 @@ public class EditDriverWindow extends Window {
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.FNAME).getValue());
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
-        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Imię zawiera niewłaściwe znaki"));
+        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-łóńźżćśęą]*$", "Imię zawiera niewłaściwe znaki"));
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldFNAME);
@@ -40,7 +40,7 @@ public class EditDriverWindow extends Window {
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.LNAME).getValue());
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera niewłaściwe znaki."));
+        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-łóńźżćśęą]*$", "Nazwisko zawiera niewłaściwe znaki."));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldLNAME);
@@ -115,9 +115,21 @@ public class EditDriverWindow extends Window {
 
                 if (valOk) {
                     Long idVeh = ReceiveDriver.getAssignedVehicle(driverId).getId();
+//                    Boolean controlAssignment = true;
+                    Boolean assignVeh = false;
+//                    if (idVeh == null) {
+//                        controlAssignment = false;
+//                    }
                     driver = ReceiveDriver.changeDriver(driver);
-                    Boolean control = ReceiveDriver.assignVehicle(driverId, idVeh);
-                    if (driver == null && control.equals(false)) {
+//                    if (controlAssignment) {
+                    assignVeh = ReceiveDriver.assignVehicle(driverId, idVeh);
+                    if (!assignVeh) {
+                        Notification.show("Nie wprowadzono zmian");
+                        return;
+                    }
+//                }
+
+                    if (driver == null) {
                         Notification.show("Nie wprowadzono zmian");
                         return;
                     }
@@ -127,6 +139,7 @@ public class EditDriverWindow extends Window {
                 }
             }
         }
+
         );
 
 
@@ -135,7 +148,9 @@ public class EditDriverWindow extends Window {
             public void windowClose(Window.CloseEvent e) {
                 parent.setEnabled(true);
             }
-        });
+        }
+
+        );
 
         parent.setEnabled(false);
 
@@ -146,6 +161,7 @@ public class EditDriverWindow extends Window {
         setDraggable(false);
 
         center();
+
     }
 
     private Driver searchDrID(long id, ArrayList<Driver> li) {

@@ -30,7 +30,7 @@ public class EditDriverWindow extends Window {
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.FNAME).getValue());
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
-        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-łóńźżćśęą]*$", "Imię zawiera niewłaściwe znaki"));
+        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Imię zawiera niewłaściwe znaki"));
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldFNAME);
@@ -40,7 +40,7 @@ public class EditDriverWindow extends Window {
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.LNAME).getValue());
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-łóńźżćśęą]*$", "Nazwisko zawiera niewłaściwe znaki."));
+        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera niewłaściwe znaki."));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldLNAME);
@@ -49,7 +49,7 @@ public class EditDriverWindow extends Window {
         fieldName = DriversView.COMPANY_PHONE;
         TextField fieldCOMPANY_PHONE = new TextField(fieldName);
         fieldCOMPANY_PHONE.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.COMPANY_PHONE).getValue());
-        fieldCOMPANY_PHONE.addValidator(new RegexpValidator("\\d{3,12}", "Telefon firmowy zawiera niewłaściwe znaki."));
+        fieldCOMPANY_PHONE.addValidator(new RegexpValidator("^\\d{3,12}$", "Telefon firmowy zawiera niewłaściwe znaki."));
         fieldCOMPANY_PHONE.setWidth("20em");
         fieldCOMPANY_PHONE.setImmediate(true);
         newDriverLayout.addComponent(fieldCOMPANY_PHONE);
@@ -58,7 +58,7 @@ public class EditDriverWindow extends Window {
         fieldName = DriversView.PRIVATE_PHONE;
         TextField fieldPRIVATE_PHONE = new TextField(fieldName);
         fieldPRIVATE_PHONE.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.PRIVATE_PHONE).getValue());
-        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("\\d{3,12}", "Telefon prywatny zawiera niewłaściwe znaki."));
+        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("^\\d{3,12}$", "Telefon prywatny zawiera niewłaściwe znaki."));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
         newDriverLayout.addComponent(fieldPRIVATE_PHONE);

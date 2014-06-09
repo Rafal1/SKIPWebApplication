@@ -50,7 +50,7 @@ public class AssociateVehicleWindow extends Window {
                         Notification.show("Przypisano nowy pojazd do kierowcy");
                         parent.refreshDataSource();
                    }else{
-                       Notification.show("Błąd: Nie udało się przypisać kierowcy");
+                       Notification.show("Błąd: Nie udało się przypisać pojazdu.");
                    }
                    close();
                }

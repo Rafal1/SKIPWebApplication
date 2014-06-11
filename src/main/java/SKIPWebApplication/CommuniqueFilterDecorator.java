@@ -14,26 +14,6 @@ public class CommuniqueFilterDecorator implements FilterDecorator {
 
     @Override
     public String getEnumFilterDisplayName(Object o, Object stat) {
-
-        if ("Komunikat".equals(o)) {
-            StatusEnum state = (StatusEnum) stat;
-            switch (state) {
-                case Pauza:
-                    return "Pauza";
-                case Start:
-                    return "Start";
-            }
-        }
-
-        if ("Status".equals(o)) {
-            ReadEnum state = (ReadEnum) stat;
-            switch (state) {
-                case Nieprzeczytany:
-                    return "Nieprzeczytany";
-                case Przeczytany:
-                    return "Przeczytany";
-            }
-        }
         return null;
     }
 

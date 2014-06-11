@@ -9,6 +9,7 @@ import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import returnobjects.Driver;
+import returnobjects.Vehicle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,19 +115,18 @@ public class EditDriverWindow extends Window {
                 }
 
                 if (valOk) {
-                    Long idVeh = ReceiveDriver.getAssignedVehicle(driverId).getId();
-                    Boolean assignVeh = false;
+                    Vehicle Veh = ReceiveDriver.getAssignedVehicle(driverId);
                     driver = ReceiveDriver.changeDriver(driver);
-                    assignVeh = ReceiveDriver.assignVehicle(driverId, idVeh);
-                    if (!assignVeh) {
-                        Notification.show("Nie wprowadzono zmian");
-                        close();
-                        return;
-                    }
-
                     if (driver == null) {
                         Notification.show("Nie wprowadzono zmian");
                         return;
+                    }
+                    if (Veh != null) { // lack of assigned Driver
+                        Boolean assignVeh = ReceiveDriver.assignVehicle(driverId, Veh.getId());
+                        if (!assignVeh) {
+                            Notification.show("Nie wprowadzono zmian");
+                            return;
+                        }
                     }
                     Notification.show("Wprowadzono zmiany");
                     parent.refreshDataSource();
@@ -136,8 +136,6 @@ public class EditDriverWindow extends Window {
         }
 
         );
-
-
         addCloseListener(new Window.CloseListener() {
             @Override
             public void windowClose(Window.CloseEvent e) {

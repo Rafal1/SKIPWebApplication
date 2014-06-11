@@ -1,5 +1,6 @@
 package SKIPWebApplication.view;
 
+import SKIPWebApplication.CommuniqueEnum;
 import SKIPWebApplication.CommuniqueFilterDecorator;
 import SKIPWebApplication.CommuniqueFilterGenerator;
 import SKIPWebApplication.receiveinformation.ReceiveCommunique;
@@ -45,12 +46,11 @@ public class CommuniqueView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
-    private Integer refreshTimeMilis = 60000;
+    private Integer refreshTimeMilis = 3000;
 
     public CommuniqueView() {
         setSizeFull();
         initLayout();
-//        createTable();
     }
 
     private static FilterTable createTable() {
@@ -154,7 +154,7 @@ public class CommuniqueView extends VerticalLayout implements View {
 
         indx.addContainerProperty(DRIVER_TAG, String.class, null);
         indx.addContainerProperty(ID_TAG, Long.class, null);
-        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, String.class, null);
+        indx.addContainerProperty(COMMUNIQUE_TYPE_TAG, CommuniqueEnum.class, null);
         indx.addContainerProperty(DATE_TAG, Date.class, null);
         indx.addContainerProperty(COORDINATES_TAG, Coordinates.class, null);
 
@@ -190,20 +190,20 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     }
 
-    private String checkCommuniqueKind(Integer x) {
+    private CommuniqueEnum checkCommuniqueKind(Integer x) {
         switch (x) {
             case 0:
-                return "Start";
+                return CommuniqueEnum.Start;
             case 1:
-                return "Jedź";
+                return CommuniqueEnum.Jedź;
             case 2:
-                return "Pauza";
+                return CommuniqueEnum.Pauza;
             case 3:
-                return "Ładuj";
+                return CommuniqueEnum.Ładuj;
             case 4:
-                return "Awaria";
+                return CommuniqueEnum.Awaria;
             case 5:
-                return "Koniec";
+                return CommuniqueEnum.Koniec;
         }
         return null;
     }

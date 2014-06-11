@@ -37,15 +37,6 @@ public class LoginView extends VerticalLayout implements View {
         content.setMargin(true);
         HorizontalLayout serviceButtons = new HorizontalLayout();
         serviceButtons.setSpacing(true);
-        Button buttonForget = new Button("Przypomnij hasło",
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.LOGIN_VIEW);
-                        //TODO view for password reminder
-                    }
-                });
-        serviceButtons.addComponent(buttonForget);
 
         Button buttonLogIn = new Button("Zaloguj",
                 new Button.ClickListener() {

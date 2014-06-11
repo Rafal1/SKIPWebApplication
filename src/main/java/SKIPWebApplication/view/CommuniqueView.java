@@ -46,7 +46,10 @@ public class CommuniqueView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
     private CustomMap customMap;
-    private Integer refreshTimeMilis = 3000;
+    private Integer refreshTimeMilis = 15000;
+    private Object actualDriverFilter;
+    private Object actualCommuniqueFilter;
+    private Object actualDateFilter;
 
     public CommuniqueView() {
         setSizeFull();
@@ -184,10 +187,15 @@ public class CommuniqueView extends VerticalLayout implements View {
     public class TimeListener implements Refresher.RefreshListener {
         @Override
         public void refresh(final Refresher source) {
+            actualDriverFilter = commTable.getFilterFieldValue(DRIVER_TAG);
+            actualCommuniqueFilter = commTable.getFilterFieldValue(COMMUNIQUE_TYPE_TAG);
+            actualDateFilter = commTable.getFilterFieldValue(DATE_TAG);
             commTable.setContainerDataSource(buildTable());
             commTable.setVisibleColumns(new Object[]{DRIVER_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
+            commTable.setFilterFieldValue(DRIVER_TAG, actualDriverFilter);
+            commTable.setFilterFieldValue(COMMUNIQUE_TYPE_TAG, actualCommuniqueFilter);
+            commTable.setFilterFieldValue(DATE_TAG, actualDateFilter);
         }
-
     }
 
     private CommuniqueEnum checkCommuniqueKind(Integer x) {

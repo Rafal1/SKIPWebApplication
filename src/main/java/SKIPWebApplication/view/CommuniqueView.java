@@ -178,14 +178,14 @@ public class CommuniqueView extends VerticalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         DefaultViewBuilderHelper.checkLogin();
         commTable.setContainerDataSource(buildTable());
-        commTable.setVisibleColumns(new Object[]{DRIVER_TAG, ID_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
+        commTable.setVisibleColumns(new Object[]{DRIVER_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
     }
 
     public class TimeListener implements Refresher.RefreshListener {
         @Override
         public void refresh(final Refresher source) {
             commTable.setContainerDataSource(buildTable());
-            commTable.setVisibleColumns(new Object[]{DRIVER_TAG, ID_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
+            commTable.setVisibleColumns(new Object[]{DRIVER_TAG, COMMUNIQUE_TYPE_TAG, DATE_TAG});
         }
 
     }

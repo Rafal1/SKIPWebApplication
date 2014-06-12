@@ -50,6 +50,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     private Object actualDriverFilter;
     private Object actualCommuniqueFilter;
     private Object actualDateFilter;
+    private ArrayList<Driver> driverArrayList = ReceiveDriver.getDriversList();
 
     public CommuniqueView() {
         setSizeFull();
@@ -165,7 +166,7 @@ public class CommuniqueView extends VerticalLayout implements View {
         commTable.setColumnAlignment(COMMUNIQUE_TYPE_TAG, CustomTable.ALIGN_CENTER);
         commTable.setColumnAlignment(DATE_TAG, CustomTable.ALIGN_CENTER);
 
-        for(int i = comList.size() - 1 ; i >= 0 ; i--) {
+        for (int i = comList.size() - 1; i >= 0; i--) {
             Communique c = comList.get(i);
             Object id = indx.addItem();
             indx.getContainerProperty(id, DRIVER_TAG).setValue(getRepresentStringOfDriver(c.getDriverId()));
@@ -187,6 +188,7 @@ public class CommuniqueView extends VerticalLayout implements View {
     public class TimeListener implements Refresher.RefreshListener {
         @Override
         public void refresh(final Refresher source) {
+            driverArrayList = ReceiveDriver.getDriversList();
             actualDriverFilter = commTable.getFilterFieldValue(DRIVER_TAG);
             actualCommuniqueFilter = commTable.getFilterFieldValue(COMMUNIQUE_TYPE_TAG);
             actualDateFilter = commTable.getFilterFieldValue(DATE_TAG);
@@ -218,9 +220,11 @@ public class CommuniqueView extends VerticalLayout implements View {
 
     private String getRepresentStringOfDriver(Long ID) {
         String representation = "(brak)";
-        Driver dr = ReceiveDriver.getDriver(ID);
-        if(dr != null)
-            representation = dr.getFirstName() + " " + dr.getLastName();
+        for(Driver d : driverArrayList){
+            if(d.getId() == ID){
+                representation = d.getFirstName() + " " + d.getLastName();
+            }
+        }
         return representation;
     }
 }

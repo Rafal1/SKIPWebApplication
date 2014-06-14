@@ -1,5 +1,6 @@
 package SKIPWebApplication.view;
 
+import SKIPWebApplication.receiveinformation.ReceiveDriver;
 import SKIPWebApplication.receiveinformation.ReceiveVehicle;
 import SKIPWebApplication.window.AddVehicleWindow;
 import SKIPWebApplication.window.EditVehicleWindow;
@@ -12,7 +13,7 @@ import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
-import custommap.CustomMap;
+import returnobjects.Driver;
 import returnobjects.Vehicle;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class VehicleView extends VerticalLayout implements View {
 
     private Table vehiclesList = new Table();
     private TextField searchField = new TextField();
-    private Button addNewVehicleButton = new Button("Nowy");
+    private Button addNewVehicleButton = new Button("Nowy pojazd");
     private VerticalLayout rightLayout = new VerticalLayout();
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
@@ -189,9 +190,27 @@ public class VehicleView extends VerticalLayout implements View {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 Object currentVehicle = vehiclesList.getValue();
+                ArrayList<Driver> ListToFind = ReceiveDriver.getDriversList();
+                Long driverID = null;
+                for (Driver d : ListToFind) {
+                    if(d.getAssignedVehicle()==null){
+                        //System.out.println("JEST");
+                        continue;
+                    }
+                    Long curID = d.getAssignedVehicle().getId();
+                    if (curID == vehiclesList
+                            .getContainerProperty(currentVehicle, ID)
+                            .getValue()) {
+                        driverID = d.getId();
+                    }
+                }
+                if (driverID != null) {
+                    ReceiveDriver.deleteVehicleAssigment(driverID);
+                }
                 String result = ReceiveVehicle.deleteVehicle((Long) vehiclesList
                         .getContainerProperty(currentVehicle, ID)
                         .getValue());
+                System.out.println(result);
                 Notification.show("Pojazd został usunięty");
                 refreshDataSource();
             }
@@ -221,9 +240,9 @@ public class VehicleView extends VerticalLayout implements View {
         for (Vehicle vehicle : allVehicles) {
             Object id = ic.addItem();
             ic.getContainerProperty(id, ID).setValue(vehicle.getId());
-            ic.getContainerProperty(id, BRAND).setValue(vehicle.getBrand() != null ? vehicle.getBrand() : "");
-            ic.getContainerProperty(id, COLOUR).setValue(vehicle.getColour() != null ? vehicle.getColour() : "");
-            ic.getContainerProperty(id, REGISTRATION_NR).setValue(vehicle.getRegistrationNumber() != null ? vehicle.getRegistrationNumber() : "");
+            ic.getContainerProperty(id, BRAND).setValue(vehicle.getBrand() != null ? vehicle.getBrand() : "(brak)");
+            ic.getContainerProperty(id, COLOUR).setValue(vehicle.getColour() != null ? vehicle.getColour() : "(brak)");
+            ic.getContainerProperty(id, REGISTRATION_NR).setValue(vehicle.getRegistrationNumber() != null ? vehicle.getRegistrationNumber() : "(brak)");
             ic.getContainerProperty(id, MAX_LOAD).setValue(vehicle.getTruckload());
         }
 

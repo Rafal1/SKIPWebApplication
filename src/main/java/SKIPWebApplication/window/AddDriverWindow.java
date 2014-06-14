@@ -43,7 +43,7 @@ public class AddDriverWindow extends Window {
 
         fieldName = AddAccountWindow.PASSWORD;
         PasswordField fieldPASSWORD = new PasswordField(fieldName);
-        fieldPASSWORD.addValidator(new RegexpValidator("(^\\d{3,50}$)", "Hasło powinno składać się z cyfr."));
+        fieldPASSWORD.addValidator(new RegexpValidator("(^\\d{3,64}$)", "Hasło powinno składać się z cyfr"));
         fieldPASSWORD.addValidator(new StringLengthValidator("Niepoprawna długość hasła", 3, 64, false));
         fieldPASSWORD.setWidth("20em");
         fieldPASSWORD.setImmediate(true);
@@ -59,47 +59,47 @@ public class AddDriverWindow extends Window {
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         fieldFNAME.setRequired(true);
-        fieldFNAME.setRequiredError("Pole Imię jest wymagane.");
+        fieldFNAME.setRequiredError("Pole Imię jest wymagane");
         newDriverLayout.addComponent(fieldFNAME);
         fields.bind(fieldFNAME, fieldName);
 
         fieldName = DriversView.LNAME;
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera nie właściwe znaki."));
+        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera nie właściwe znaki"));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         fieldLNAME.setRequired(true);
-        fieldLNAME.setRequiredError("Pole Nazwisko jest wymagane.");
+        fieldLNAME.setRequiredError("Pole Nazwisko jest wymagane");
         newDriverLayout.addComponent(fieldLNAME);
         fields.bind(fieldLNAME, fieldName);
 
         fieldName = DriversView.COMPANY_PHONE;
         TextField fieldCOMPANY_PHONE = new TextField(fieldName);
-        fieldCOMPANY_PHONE.addValidator(new RegexpValidator("^\\d{3,12}$", "Telefon firmowy zawiera nie właściwe znaki."));
+        fieldCOMPANY_PHONE.addValidator(new RegexpValidator("^\\d{3,12}$", "Telefon firmowy zawiera nie właściwe znaki"));
         fieldCOMPANY_PHONE.setWidth("20em");
         fieldCOMPANY_PHONE.setImmediate(true);
         fieldCOMPANY_PHONE.setRequired(true);
-        fieldCOMPANY_PHONE.setRequiredError("Pole Tel. firmowy wymagane.");
+        fieldCOMPANY_PHONE.setRequiredError("Pole Tel. firmowy wymagane");
         newDriverLayout.addComponent(fieldCOMPANY_PHONE);
         fields.bind(fieldCOMPANY_PHONE, fieldName);
 
         fieldName = DriversView.PRIVATE_PHONE;
         TextField fieldPRIVATE_PHONE = new TextField(fieldName);
-        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("(^\\d{3,12}$)", "Telefon prywatny zawiera nie właściwą liczbę znaków."));
+        fieldPRIVATE_PHONE.addValidator(new RegexpValidator("(^$|^\\d{3,12}$)", "Telefon prywatny zawiera nie właściwą liczbę znaków"));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
-        fieldPRIVATE_PHONE.setRequired(true);
+      //  fieldPRIVATE_PHONE.setRequired(true);
         newDriverLayout.addComponent(fieldPRIVATE_PHONE);
         fields.bind(fieldPRIVATE_PHONE, fieldName);
 
         fieldName = DriversView.E_MAIL;
         TextField fieldE_MAIL = new TextField(fieldName);
-        fieldE_MAIL.addValidator(new EmailValidator("Niepoprawny adres email."));
+        fieldE_MAIL.addValidator(new EmailValidator("Niepoprawny adres email"));
         fieldE_MAIL.setWidth("20em");
         fieldE_MAIL.setImmediate(true);
         fieldE_MAIL.setRequired(true);
-        fieldE_MAIL.setRequiredError("Pole E-mail jest wymagane.");
+        fieldE_MAIL.setRequiredError("Pole E-mail jest wymagane");
         newDriverLayout.addComponent(fieldE_MAIL);
         fields.bind(fieldE_MAIL, fieldName);
 
@@ -122,7 +122,11 @@ public class AddDriverWindow extends Window {
                 driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
-                driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
+                String privateNumber = (String) fields.getField(DriversView.PRIVATE_PHONE).getValue();
+                if(privateNumber.isEmpty()){
+                    privateNumber = null;
+                }
+                driver.setPhoneNumber2(privateNumber);
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
 
                 Account usr = new Account();
@@ -149,7 +153,7 @@ public class AddDriverWindow extends Window {
                     driver.setCoordinatesUpdateDate(driverToChange.getCoordinatesUpdateDate());
                     driver.setLatestCoordinates(driverToChange.getLatestCoordinates());
                     Driver Dchanged = ReceiveDriver.changeDriver(driver);
-                    if(Dchanged == null){
+                    if (Dchanged == null) {
                         String warning = "Dodanie kierowcy nie powiodło się";
                         Notification.show(warning);
                         System.out.println(warning);

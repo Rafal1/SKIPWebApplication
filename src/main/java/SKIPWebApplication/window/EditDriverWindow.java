@@ -58,7 +58,8 @@ public class EditDriverWindow extends Window {
 
         fieldName = DriversView.PRIVATE_PHONE;
         TextField fieldPRIVATE_PHONE = new TextField(fieldName);
-        fieldPRIVATE_PHONE.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.PRIVATE_PHONE).getValue());
+        String phoneFromContainer = (String) driversList.getContainerProperty(driversList.getValue(), DriversView.PRIVATE_PHONE).getValue();
+        fieldPRIVATE_PHONE.setValue(phoneFromContainer.equals("(brak)") ? "" : phoneFromContainer);
         fieldPRIVATE_PHONE.addValidator(new RegexpValidator("^\\d{3,12}$", "Telefon prywatny zawiera niewłaściwe znaki."));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
@@ -89,15 +90,13 @@ public class EditDriverWindow extends Window {
         changeDriver.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-
                 Driver driver = new Driver();
                 driver.setId(driverId);
                 driver.setFirstName((String) fields.getField(DriversView.FNAME).getValue());
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
-                driver.setPhoneNumber2((String) fields.getField(DriversView.PRIVATE_PHONE).getValue());
+                driver.setPhoneNumber2(fields.getField(DriversView.PRIVATE_PHONE).getValue().equals("") ? null : (String) fields.getField(DriversView.PRIVATE_PHONE).getValue() );
                 driver.setEmail((String) fields.getField(DriversView.E_MAIL).getValue());
-
                 Driver tmp = searchDrID(driverId, drListArray);
                 driver.setCoordinatesUpdateDate(tmp.getCoordinatesUpdateDate());
                 driver.setLatestCoordinates(tmp.getLatestCoordinates());

@@ -125,7 +125,7 @@ public class DriversView extends VerticalLayout implements View {
                 String result = ReceiveDriver.deleteDriver((Long) driversList
                         .getContainerProperty(contactId, ID)
                         .getValue());
-                if(result != null) {
+                if (result != null) {
                     Notification.show("Kierowca został usunięty");
                     refreshDataSource();
                 } else {
@@ -311,14 +311,13 @@ public class DriversView extends VerticalLayout implements View {
                             .getValue() + "\nPojazd: " + (String) driversList
                             .getContainerProperty(currentDriver, REGISTRATION_NR)
                             .getValue();
-                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null)  {
+                    if (driversList.getContainerProperty(currentDriver, COORDINATES).getValue() != null) {
                         customMap.getCustomMap().setVisible(true);
                         customMap.clearMarkers();
                         customMap.addOneMarker(info, (LatLon) driversList
                                 .getContainerProperty(currentDriver, COORDINATES)
                                 .getValue());
-                    }
-                    else{
+                    } else {
                         customMap.getCustomMap().setVisible(false);
                     }
                 }
@@ -371,19 +370,19 @@ public class DriversView extends VerticalLayout implements View {
                         .setValue(assignVehicle.getRegistrationNumber());
             } else {
                 ic.getContainerProperty(id, REGISTRATION_NR)
-                        .setValue("brak");
+                        .setValue("(brak)");
             }
 
-            if (driver.getLatestCoordinates() != null  &&
+            if (driver.getLatestCoordinates() != null &&
                     (driver.getLatestCoordinates().getLatitude() != 0
-                    && driver.getLatestCoordinates().getLongitude() != 0))
+                            && driver.getLatestCoordinates().getLongitude() != 0))
                 ic.getContainerProperty(id, COORDINATES).setValue(new LatLon(driver.getLatestCoordinates().getLatitude(), driver.getLatestCoordinates().getLongitude()));
             else
-                ic.getContainerProperty(id, COORDINATES).setValue(null);
-            ic.getContainerProperty(id, COMPANY_PHONE).setValue(driver.getPhoneNumber() != null ? driver.getPhoneNumber() : "");
-            ic.getContainerProperty(id, PRIVATE_PHONE).setValue(driver.getPhoneNumber2() != null ? driver.getPhoneNumber2() : "");
-            ic.getContainerProperty(id, E_MAIL).setValue(driver.getEmail() != null ? driver.getEmail() : "");
-            ic.getContainerProperty(id, LAST_DATE).setValue(driver.getCoordinatesUpdateDate() != null ? driver.getCoordinatesUpdateDate().toLocaleString() : "");
+            ic.getContainerProperty(id, COORDINATES).setValue(null);
+            ic.getContainerProperty(id, COMPANY_PHONE).setValue(driver.getPhoneNumber() != null ? driver.getPhoneNumber() : "(brak)");
+            ic.getContainerProperty(id, PRIVATE_PHONE).setValue(driver.getPhoneNumber2() != null ? driver.getPhoneNumber2() : "(brak)");
+            ic.getContainerProperty(id, E_MAIL).setValue(driver.getEmail() != null ? driver.getEmail() : "(brak)");
+            ic.getContainerProperty(id, LAST_DATE).setValue(driver.getCoordinatesUpdateDate() != null ? driver.getCoordinatesUpdateDate().toLocaleString() : "(brak)");
         }
 
         return ic;

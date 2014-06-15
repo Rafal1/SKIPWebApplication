@@ -144,7 +144,7 @@ public class DriversView extends VerticalLayout implements View {
                         .getContainerProperty(currentDriver, ID)
                         .getValue();
                 ReceiveDriver.deleteVehicleAssigment(driverId);
-                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
+                Notification.show("Usunięto przypisanie pojazdu do kierowcy", Notification.Type.HUMANIZED_MESSAGE);
                 refreshDataSource();
             }
         });

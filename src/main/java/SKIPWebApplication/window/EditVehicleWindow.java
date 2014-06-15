@@ -7,6 +7,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import returnobjects.Vehicle;
 
@@ -29,7 +30,7 @@ public class EditVehicleWindow extends Window {
         TextField fieldBRAND = new TextField(fieldName);
         fieldBRAND.setValue((String) vehiclesList.getContainerProperty(vehiclesList.getValue(), VehicleView.BRAND).getValue());
         fieldBRAND.addValidator(new StringLengthValidator("Niepoprawna długość pola marka", 3, 64, false));
-        fieldBRAND.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Marka zawiera nie właściwe znaki"));
+        fieldBRAND.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Marka zawiera nie właściwe znaki"));
         fieldBRAND.setWidth("20em");
         fieldBRAND.setRequired(true);
         fieldBRAND.setRequiredError("Pole Marka jest wymagane");
@@ -41,7 +42,7 @@ public class EditVehicleWindow extends Window {
         TextField fieldCOLOUR = new TextField(fieldName);
         fieldCOLOUR.setValue((String) vehiclesList.getContainerProperty(vehiclesList.getValue(), VehicleView.COLOUR).getValue());
         fieldCOLOUR.addValidator(new StringLengthValidator("Niepoprawna długość pola Kolor nadwozia", 3, 64, false));
-        fieldCOLOUR.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
+        fieldCOLOUR.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
         fieldCOLOUR.setWidth("20em");
         fieldCOLOUR.setRequired(true);
         fieldCOLOUR.setRequiredError("Pole Kolor nadwozia jest wymagane");
@@ -66,7 +67,7 @@ public class EditVehicleWindow extends Window {
         TextField fieldREGISTRATION_NR = new TextField(fieldName);
         fieldREGISTRATION_NR.setValue((String) vehiclesList.getContainerProperty(vehiclesList.getValue(), VehicleView.REGISTRATION_NR).getValue());
         fieldREGISTRATION_NR.addValidator(new StringLengthValidator("Niepoprawna długość pola Nr rejestracyjny", 4, 12, false));
-        fieldREGISTRATION_NR.addValidator(new RegexpValidator("^[A-Z0-9-]*$", "pole Kolor zawiera nie właściwe znaki"));
+        fieldREGISTRATION_NR.addValidator(new RegexpValidator("^[A-Z0-9-]+$", "pole Kolor zawiera nie właściwe znaki"));
         fieldREGISTRATION_NR.setWidth("20em");
         fieldREGISTRATION_NR.setRequired(true);
         fieldREGISTRATION_NR.setRequiredError("Pole Nr rejestracyjny jest wymagane");
@@ -94,7 +95,17 @@ public class EditVehicleWindow extends Window {
                 veh.setId(vehID);
                 veh.setBrand((String) fields.getField(VehicleView.BRAND).getValue());
                 veh.setColour((String) fields.getField(VehicleView.COLOUR).getValue());
-                veh.setTruckload(Integer.parseInt(fields.getField(VehicleView.MAX_LOAD).getValue().toString()));
+
+                Integer truckLoad = null;
+                try{
+                   truckLoad = Integer.parseInt(fields.getField(VehicleView.MAX_LOAD).getValue().toString());
+                } catch(NumberFormatException e) {
+                    Notification delayNot = new Notification("Proszę wypełnić pola poprawnie");
+                    delayNot.setDelayMsec(1000);
+                    delayNot.show(Page.getCurrent());
+                    return;
+                }
+                veh.setTruckload(truckLoad);
                 veh.setRegistrationNumber((String) fields.getField(VehicleView.REGISTRATION_NR).getValue());
 
                 Boolean valOk = true;
@@ -104,8 +115,11 @@ public class EditVehicleWindow extends Window {
                     try {
                         fi.validate();
                     } catch (Validator.InvalidValueException e) {
-                        Notification.show("Proszę wypełnić pola poprawnie");
+                        Notification delayNot = new Notification("Proszę wypełnić pola poprawnie");
+                        delayNot.setDelayMsec(1000);
+                        delayNot.show(Page.getCurrent());
                         valOk = false;
+                        break;
                     }
                 }
 

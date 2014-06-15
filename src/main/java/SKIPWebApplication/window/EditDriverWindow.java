@@ -7,6 +7,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import returnobjects.Driver;
 import returnobjects.Vehicle;
@@ -31,7 +32,7 @@ public class EditDriverWindow extends Window {
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.FNAME).getValue());
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
-        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Imię zawiera niewłaściwe znaki"));
+        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Imię zawiera niewłaściwe znaki"));
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldFNAME);
@@ -41,7 +42,7 @@ public class EditDriverWindow extends Window {
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.setValue((String) driversList.getContainerProperty(driversList.getValue(), DriversView.LNAME).getValue());
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera niewłaściwe znaki."));
+        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Nazwisko zawiera niewłaściwe znaki."));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         newDriverLayout.addComponent(fieldLNAME);
@@ -108,8 +109,11 @@ public class EditDriverWindow extends Window {
                     try {
                         fi.validate();
                     } catch (Validator.InvalidValueException e) {
-                        Notification.show("Proszę wypełnić pola poprawnie");
+                        Notification delayNot = new Notification("Proszę wypełnić pola poprawnie");
+                        delayNot.setDelayMsec(1000);
+                        delayNot.show(Page.getCurrent());
                         valOk = false;
+                        break;
                     }
                 }
 

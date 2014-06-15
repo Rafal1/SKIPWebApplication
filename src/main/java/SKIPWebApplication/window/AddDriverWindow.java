@@ -8,6 +8,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import returnobjects.Account;
 import returnobjects.Driver;
@@ -33,7 +34,7 @@ public class AddDriverWindow extends Window {
         fieldName = AddAccountWindow.USERNAME;
         TextField fieldUSERNAME = new TextField(fieldName);
         fieldUSERNAME.addValidator(new StringLengthValidator("Niepoprawna długość loginu", 3, 50, false));
-        fieldUSERNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Login zawiera nie właściwe znaki"));
+        fieldUSERNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Login zawiera nie właściwe znaki"));
         fieldUSERNAME.setWidth("20em");
         fieldUSERNAME.setImmediate(true);
         fieldUSERNAME.setRequired(true);
@@ -55,7 +56,7 @@ public class AddDriverWindow extends Window {
         fieldName = DriversView.FNAME;
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
-        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Imie zawiera nie właściwe znaki"));
+        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Imie zawiera nie właściwe znaki"));
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         fieldFNAME.setRequired(true);
@@ -66,7 +67,7 @@ public class AddDriverWindow extends Window {
         fieldName = DriversView.LNAME;
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]*$", "Nazwisko zawiera nie właściwe znaki"));
+        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Nazwisko zawiera nie właściwe znaki"));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         fieldLNAME.setRequired(true);
@@ -141,8 +142,11 @@ public class AddDriverWindow extends Window {
                     try {
                         fi.validate();
                     } catch (Validator.InvalidValueException e) {
-                        Notification.show("Proszę wypełnić pola poprawnie");
+                        Notification delayNot = new Notification("Proszę wypełnić pola poprawnie");
+                        delayNot.setDelayMsec(1000);
+                        delayNot.show(Page.getCurrent());
                         valOk = false;
+                        break;
                     }
                 }
 

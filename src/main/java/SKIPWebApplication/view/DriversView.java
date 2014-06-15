@@ -135,6 +135,19 @@ public class DriversView extends VerticalLayout implements View {
         });
         driverMenu.addItem("Edytuj", new EditDriverCommand(this));
         driverMenu.addItem("Przypisz pojazd", new AssociateVehileCommand(this));
+        driverMenu.addItem("Usuń przypisanie", new MenuBar.Command(){
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem menuItem) {
+                Object currentDriver = driversList.getValue();
+                Long driverId = (Long) driversList
+                        .getContainerProperty(currentDriver, ID)
+                        .getValue();
+                ReceiveDriver.deleteVehicleAssigment(driverId);
+                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
+                refreshDataSource();
+            }
+        });
         return driverMenu;
     }
 

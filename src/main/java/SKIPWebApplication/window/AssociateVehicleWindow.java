@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * User: Mariusz
  * Date: 25.05.14
  * Time: 18:00
- * To change this template use File | Settings | File Templates.
+
  */
 public class AssociateVehicleWindow extends Window {
     Table vehicleTable;
@@ -30,11 +30,11 @@ public class AssociateVehicleWindow extends Window {
 
         Button changeDriver = new Button("Zatwierdź");
         Button cancel = new Button("Anuluj");
-        Button delete = new Button("Usuń przypisanie");
+
         HorizontalLayout hl = new HorizontalLayout();
         hl.addComponent(changeDriver);
         hl.addComponent(cancel);
-        hl.addComponent(delete);
+
         associateLayout.addComponent(hl);
         cancel.addClickListener(new Button.ClickListener() {
             @Override
@@ -61,19 +61,7 @@ public class AssociateVehicleWindow extends Window {
             }
         }
         );
-        delete.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
 
-                ReceiveDriver.deleteVehicleAssigment(driverId);
-                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
-                parent.refreshDataSource();
-
-                close();
-
-
-            }
-        });
 
         addCloseListener(new Window.CloseListener() {
             @Override

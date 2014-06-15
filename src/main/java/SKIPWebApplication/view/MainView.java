@@ -10,6 +10,7 @@ import com.vaadin.ui.*;
 import custommap.CustomMap;
 import custommap.SKIPMarkerClickListener;
 import returnobjects.Driver;
+import returnobjects.Vehicle;
 
 import java.util.ArrayList;
 
@@ -147,7 +148,12 @@ public class MainView extends VerticalLayout implements View {
     }
 
     public static String makeMarkerName(Driver driver) {
-        return driver.getFirstName() + " " + driver.getLastName();
+        String regVehicle = "";
+        Vehicle assigmDriver = ReceiveDriver.getAssignedVehicle(driver.getId());
+        if(assigmDriver != null){
+             regVehicle =" Pojazd:  " +  assigmDriver.getRegistrationNumber();
+        }
+        return "Kierowca: " +  driver.getFirstName() + " " + driver.getLastName() + regVehicle;
 
     }
 }

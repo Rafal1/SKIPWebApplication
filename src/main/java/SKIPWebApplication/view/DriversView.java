@@ -25,6 +25,7 @@ import java.util.ArrayList;
  * @author Rafal Zawadzki
  */
 public class DriversView extends VerticalLayout implements View {
+    private static final String NO_REGISTRATION_NUMBER = "(brak)";
     private final String SHEETTAB_GENERAL_SIZE = "184px"; // constant
     private static String SHEETTAB_DETAIL_SIZE;
     private final Integer SIZE_PER_TAB = 46;
@@ -52,7 +53,8 @@ public class DriversView extends VerticalLayout implements View {
 
     private static final String[] notVisible = new String[]{ID, COORDINATES};
     private ArrayList<Driver> currentDrList = ReceiveDriver.getDriversList();
-    IndexedContainer driversContainer;
+    private IndexedContainer driversContainer;
+    MenuBar.MenuItem deleteAssociate;
 
     public DriversView() {
         setSizeFull();
@@ -135,6 +137,7 @@ public class DriversView extends VerticalLayout implements View {
         });
         driverMenu.addItem("Edytuj", new EditDriverCommand(this));
         driverMenu.addItem("Przypisz pojazd", new AssociateVehileCommand(this));
+        deleteAssociate = driverMenu.addItem("Usuń przypisanie pojazdu", new DeleteAssociateVehileCommand());
         return driverMenu;
     }
 
@@ -292,12 +295,33 @@ public class DriversView extends VerticalLayout implements View {
         }
     }
 
+    private class DeleteAssociateVehileCommand implements MenuBar.Command {
+        public void menuSelected(MenuBar.MenuItem selectedItem) {
+            Object currentDriver = driversList.getValue();
+            Long driverId = (Long) driversList
+                    .getContainerProperty(currentDriver, ID)
+                    .getValue();
+            boolean result = ReceiveDriver.deleteVehicleAssigment(driverId);
+            if (result)
+                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
+            else
+                Notification.show("Błąd podczas usunięcia przypisania pojazdu");
+            refreshDataSource();
+        }
+    }
+
 
     private void initDriverList() {
         driversList.addValueChangeListener(new Property.ValueChangeListener() {
             public void valueChange(Property.ValueChangeEvent event) {
                 Object currentDriver = driversList.getValue();
                 if (currentDriver != null) {
+
+                    if(driversList.getContainerProperty(currentDriver, REGISTRATION_NR).getValue()
+                            .equals(NO_REGISTRATION_NUMBER))
+                        deleteAssociate.setVisible(false);
+                    else
+                        deleteAssociate.setVisible(true);
 
                     editorFields.setItemDataSource(driversList
                             .getItem(currentDriver));
@@ -370,7 +394,7 @@ public class DriversView extends VerticalLayout implements View {
                         .setValue(assignVehicle.getRegistrationNumber());
             } else {
                 ic.getContainerProperty(id, REGISTRATION_NR)
-                        .setValue("(brak)");
+                        .setValue(NO_REGISTRATION_NUMBER);
             }
 
             if (driver.getLatestCoordinates() != null &&

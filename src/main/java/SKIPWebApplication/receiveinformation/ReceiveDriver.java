@@ -265,12 +265,12 @@ public class ReceiveDriver implements ServerInfo {
         return parsingResponse;
     }
 
-    public static void deleteVehicleAssigment( long driverId) {
+    public static boolean deleteVehicleAssigment( long driverId) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         HttpClient httpclient = HttpClientHelper.getHttpClient();
         if (httpclient == null) {
             System.out.println("ReceiveDriver: error in assigned vehicle to driver ");
-            return;
+            return false;
         }
 
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + driverId + "/assignVehicle");
@@ -283,8 +283,11 @@ public class ReceiveDriver implements ServerInfo {
 
         } catch (ClientProtocolException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 }

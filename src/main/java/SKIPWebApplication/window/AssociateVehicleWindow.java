@@ -30,11 +30,9 @@ public class AssociateVehicleWindow extends Window {
 
         Button changeDriver = new Button("Zatwierdź");
         Button cancel = new Button("Anuluj");
-        Button delete = new Button("Usuń przypisanie");
         HorizontalLayout hl = new HorizontalLayout();
         hl.addComponent(changeDriver);
         hl.addComponent(cancel);
-        hl.addComponent(delete);
         associateLayout.addComponent(hl);
         cancel.addClickListener(new Button.ClickListener() {
             @Override
@@ -61,19 +59,6 @@ public class AssociateVehicleWindow extends Window {
             }
         }
         );
-        delete.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-
-                ReceiveDriver.deleteVehicleAssigment(driverId);
-                Notification.show("Usunięto przypisanie pojazdu do kierowcy");
-                parent.refreshDataSource();
-
-                close();
-
-
-            }
-        });
 
         addCloseListener(new Window.CloseListener() {
             @Override

@@ -7,7 +7,6 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 
 /**
@@ -26,7 +25,7 @@ public class LoginView extends VerticalLayout implements View {
         Panel panel = new Panel();
         panel.setSizeUndefined();
         addComponent(panel);
-        ThemeResource logo = new ThemeResource("../../resources/icons/skip.jpg");
+        ThemeResource logo = new ThemeResource("../../resources/icons/logo_skip_small.png");
         Image logoComp = new Image(null, logo);
         FormLayout content = new FormLayout();
         content.addComponent(logoComp);
@@ -49,7 +48,7 @@ public class LoginView extends VerticalLayout implements View {
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.VEHICLE_VIEW, new VehicleView());
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.COMMUNIQUE_VIEW, new CommuniqueView());
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.MAIN_VIEW, new MainView());
-                                VaadinSession.getCurrent().setAttribute("login", true);
+
                                 UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                             }
 

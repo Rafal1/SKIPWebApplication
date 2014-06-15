@@ -15,7 +15,7 @@ public class HttpClientHelper {
     public static final String HTTP_CLIENT_SESSION_TAG = "httpClient";
     public static final String COOKIE_STORE_SEESION_TAG = "CookieSession";
     public static final String USER_ROLE_SESSION_TAG = "userRole";
-    public static final String USER_LOGIN = "login";
+    public static final String USER_LOGIN = "loginName";
 
 
     public static HttpClient getHttpClient() {

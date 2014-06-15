@@ -191,6 +191,7 @@ public class VehicleView extends VerticalLayout implements View {
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 Object currentVehicle = vehiclesList.getValue();
                 ArrayList<Driver> ListToFind = ReceiveDriver.getDriversList();
+
                 Long driverID = null;
                 for (Driver d : ListToFind) {
                     if(d.getAssignedVehicle()==null){
@@ -210,7 +211,6 @@ public class VehicleView extends VerticalLayout implements View {
                 String result = ReceiveVehicle.deleteVehicle((Long) vehiclesList
                         .getContainerProperty(currentVehicle, ID)
                         .getValue());
-                System.out.println(result);
                 Notification.show("Pojazd został usunięty");
                 refreshDataSource();
             }

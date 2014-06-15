@@ -90,7 +90,6 @@ public class AddDriverWindow extends Window {
         fieldPRIVATE_PHONE.addValidator(new RegexpValidator("(^$|^\\d{3,12}$)", "Telefon prywatny zawiera nie właściwą liczbę znaków"));
         fieldPRIVATE_PHONE.setWidth("20em");
         fieldPRIVATE_PHONE.setImmediate(true);
-      //  fieldPRIVATE_PHONE.setRequired(true);
         newDriverLayout.addComponent(fieldPRIVATE_PHONE);
         fields.bind(fieldPRIVATE_PHONE, fieldName);
 
@@ -124,7 +123,7 @@ public class AddDriverWindow extends Window {
                 driver.setLastName((String) fields.getField(DriversView.LNAME).getValue());
                 driver.setPhoneNumber((String) fields.getField(DriversView.COMPANY_PHONE).getValue());
                 String privateNumber = (String) fields.getField(DriversView.PRIVATE_PHONE).getValue();
-                if(privateNumber.isEmpty()){
+                if (privateNumber.isEmpty()) {
                     privateNumber = null;
                 }
                 driver.setPhoneNumber2(privateNumber);
@@ -152,6 +151,11 @@ public class AddDriverWindow extends Window {
 
                 if (valOk) {
                     Account userAcc = ReceiveAccountUser.addAccount(usr);
+                    if (userAcc == null) {
+                        String warning = "Login jest już zajęty";
+                        Notification.show(warning);
+                        return;
+                    }
                     Driver driverToChange = ReceiveDriver.getDriver(userAcc.getEntity());
                     driver.setId(userAcc.getEntity());
                     driver.setCoordinatesUpdateDate(driverToChange.getCoordinatesUpdateDate());
@@ -160,7 +164,6 @@ public class AddDriverWindow extends Window {
                     if (Dchanged == null) {
                         String warning = "Dodanie kierowcy nie powiodło się";
                         Notification.show(warning);
-                        System.out.println(warning);
                         return;
                     }
                     Notification.show("Dodano nowego kierowcę");

@@ -49,7 +49,7 @@ public class LoginView extends VerticalLayout implements View {
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.VEHICLE_VIEW, new VehicleView());
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.COMMUNIQUE_VIEW, new CommuniqueView());
                                 UI.getCurrent().getNavigator().addView(SkipapplicationUI.MAIN_VIEW, new MainView());
-                                VaadinSession.getCurrent().setAttribute("login", true);
+
                                 UI.getCurrent().getNavigator().navigateTo(SkipapplicationUI.MAIN_VIEW);
                             }
 

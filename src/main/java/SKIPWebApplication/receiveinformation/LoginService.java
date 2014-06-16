@@ -116,6 +116,7 @@ public class LoginService implements ServerInfo {
         VaadinSession.getCurrent().setAttribute(HttpClientHelper.USER_ROLE_SESSION_TAG, null);
         VaadinSession.getCurrent().setAttribute(HttpClientHelper.USER_LOGIN, null);
         VaadinSession.getCurrent().setAttribute("login", false);
+        VaadinSession.getCurrent().close();
 
         return true;
     }

@@ -56,7 +56,7 @@ public class AddDriverWindow extends Window {
         fieldName = DriversView.FNAME;
         TextField fieldFNAME = new TextField(fieldName);
         fieldFNAME.addValidator(new StringLengthValidator("Niepoprawna długość imienia", 3, 64, false));
-        fieldFNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Imie zawiera nie właściwe znaki"));
+        fieldFNAME.addValidator(new RegexpValidator("^[\\p{L}]*$", "Imie zawiera nie właściwe znaki"));
         fieldFNAME.setWidth("20em");
         fieldFNAME.setImmediate(true);
         fieldFNAME.setRequired(true);
@@ -67,7 +67,7 @@ public class AddDriverWindow extends Window {
         fieldName = DriversView.LNAME;
         TextField fieldLNAME = new TextField(fieldName);
         fieldLNAME.addValidator(new StringLengthValidator("Niepoprawna długość nazwiska", 3, 64, false));
-        fieldLNAME.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Nazwisko zawiera nie właściwe znaki"));
+        fieldLNAME.addValidator(new RegexpValidator("^[\\p{L}]*$", "Nazwisko zawiera nie właściwe znaki"));
         fieldLNAME.setWidth("20em");
         fieldLNAME.setImmediate(true);
         fieldLNAME.setRequired(true);
@@ -163,6 +163,12 @@ public class AddDriverWindow extends Window {
                     Driver Dchanged = ReceiveDriver.changeDriver(driver);
                     if (Dchanged == null) {
                         String warning = "Dodanie kierowcy nie powiodło się";
+                        String delCheck = ReceiveAccountUser.deleteAccount(userAcc.getUsername());
+                        if(delCheck==null){
+                            Notification err = new Notification("W bazie pozostał pusty user, skontaktuj się z administratorem");
+                            err.setDelayMsec(10000);
+                            err.show(Page.getCurrent());
+                        }
                         Notification.show(warning);
                         return;
                     }

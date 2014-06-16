@@ -92,7 +92,7 @@ public class ReceiveDriver implements ServerInfo {
             return parsingResponse;
         }
         HttpPost PostQuery = new HttpPost(SSL_ACCESS + "/drivers/" + dr.getId());
-        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        PostQuery.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 
         ObjectMapper mapper = new ObjectMapper();
         String unitsString;
@@ -103,10 +103,9 @@ public class ReceiveDriver implements ServerInfo {
             e.printStackTrace();
         }
         params.add(new BasicNameValuePair("driver", drJSON));
-
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            PostQuery.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
             unitsString = httpclient.execute(PostQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Driver>() {
             });
@@ -231,7 +230,7 @@ public class ReceiveDriver implements ServerInfo {
         params.add(new BasicNameValuePair("vehicleId", vehicleId.toString()));
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            PostQuery.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
             unitsString = httpclient.execute(PostQuery, responseHandler);
 
         } catch (ClientProtocolException e) {

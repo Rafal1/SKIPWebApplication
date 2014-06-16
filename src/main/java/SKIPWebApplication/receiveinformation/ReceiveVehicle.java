@@ -70,7 +70,7 @@ public class ReceiveVehicle implements ServerInfo {
 
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            httppost.setEntity(new UrlEncodedFormEntity(params));
+            httppost.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
             parsingResponse = httpclient.execute(httppost, responseHandler);
         } catch (ClientProtocolException e) {
             return null;
@@ -103,7 +103,7 @@ public class ReceiveVehicle implements ServerInfo {
 
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            PostQuery.setEntity(new UrlEncodedFormEntity(params));
+            PostQuery.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
             unitsString = httpclient.execute(PostQuery, responseHandler);
             parsingResponse = mapper.readValue(unitsString, new TypeReference<Vehicle>() {
             });

@@ -32,7 +32,7 @@ public class VehicleView extends VerticalLayout implements View {
     private VerticalLayout rightLayout = new VerticalLayout();
     private FormLayout editorLayout = new FormLayout();
     private FieldGroup editorFields = new FieldGroup();
-    public static final String BRAND = "Marka:";
+    public static final String BRAND = "Model:";
     public static final String COLOUR = "Kolor nadwozia:";
     public static final String REGISTRATION_NR = "Nr rejestracyjny:";
     public static final String MAX_LOAD = "Ładowność (kg):";

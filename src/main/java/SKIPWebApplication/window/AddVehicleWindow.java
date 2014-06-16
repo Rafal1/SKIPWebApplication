@@ -28,10 +28,10 @@ public class AddVehicleWindow extends Window {
         fieldName = VehicleView.BRAND;
         TextField fieldBRAND = new TextField(fieldName);
         fieldBRAND.addValidator(new StringLengthValidator("Niepoprawna długość pola marka", 3, 64, false));
-        fieldBRAND.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "Marka zawiera nie właściwe znaki"));
+        fieldBRAND.addValidator(new RegexpValidator("^[\\p{L}0-9- ]*$", "Model zawiera nie właściwe znaki"));
         fieldBRAND.setWidth("20em");
         fieldBRAND.setRequired(true);
-        fieldBRAND.setRequiredError("Pole Marka jest wymagane");
+        fieldBRAND.setRequiredError("Pole Model jest wymagane");
         fieldBRAND.setImmediate(true);
         newVehicleLayout.addComponent(fieldBRAND);
         fields.bind(fieldBRAND, fieldName);
@@ -39,7 +39,7 @@ public class AddVehicleWindow extends Window {
         fieldName = VehicleView.COLOUR;
         TextField fieldCOLOUR = new TextField(fieldName);
         fieldCOLOUR.addValidator(new StringLengthValidator("Niepoprawna długość pola Kolor nadwozia", 3, 64, false));
-        fieldCOLOUR.addValidator(new RegexpValidator("^[a-zA-Z-]+$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
+        fieldCOLOUR.addValidator(new RegexpValidator("^[\\p{L}]*$", "pole Kolor nadwozia zawiera niewłaściwe znaki"));
         fieldCOLOUR.setWidth("20em");
         fieldCOLOUR.setRequired(true);
         fieldCOLOUR.setRequiredError("Pole Kolor nadwozia jest wymagane");
